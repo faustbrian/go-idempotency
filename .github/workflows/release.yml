@@ -1,0 +1,148 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ecosystem-compatibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+          cache-dependency-path: compatibility/ecosystem/go.sum
+      - name: Verify published ecosystem contracts
+        working-directory: compatibility/ecosystem
+        run: |
+          go test ./...
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: idempotency
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d idempotency"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 20
+      valkey:
+        image: valkey/valkey:9.0
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "valkey-cli ping"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 20
+    env:
+      POSTGRES_URL: >-
+        postgres://postgres:postgres@127.0.0.1:5432/idempotency?sslmode=disable
+      VALKEY_ADDR: 127.0.0.1:6379
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+          cache: true
+      - name: Validate semantic version tag
+        shell: bash
+        run: |
+          if [[ ! "$GITHUB_REF_NAME" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "invalid semantic version tag: $GITHUB_REF_NAME" >&2
+            exit 1
+          fi
+      - name: Verify formatting and APIs
+        shell: bash
+        run: |
+          test -z "$(gofmt -l .)"
+          go run golang.org/x/lint/golint@v0.0.0-20241112194109-818c5a804067 \
+            -set_exit_status ./...
+          for package in $(go list ./...); do
+            go doc "$package" >/dev/null
+          done
+          go test . -run '^Example' -count=1
+      - name: Test race and backend integration contracts
+        run: go test -race ./... -count=1
+      - name: Vet
+        run: go vet ./...
+      - name: Static analysis
+        run: go run honnef.co/go/tools/cmd/staticcheck@latest ./...
+      - name: Vulnerability scan
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+      - name: Enforce exact production coverage
+        shell: bash
+        run: |
+          packages=$(go list ./... | grep -v '/idempotencytest$' | paste -sd, -)
+          go test -coverpkg="$packages" -coverprofile=coverage.out ./...
+          coverage=$(go tool cover -func=coverage.out | awk '/^total:/ {print $3}')
+          test "$coverage" = "100.0%"
+
+  valkey-failover:
+    runs-on: ubuntu-latest
+    env:
+      VALKEY_FAILOVER_ADDRS: 127.0.0.1:6380,127.0.0.1:6381
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+          cache: true
+      - name: Start Valkey primary and replica
+        run: |
+          docker run -d --name valkey-failover \
+            -p 6380:6380 -p 6381:6381 \
+            valkey/valkey:9.0 sh -c '
+              mkdir -p /tmp/primary /tmp/replica
+              valkey-server --port 6380 --dir /tmp/primary \
+                --appendonly yes --save "" \
+                --maxmemory-policy noeviction --daemonize yes
+              valkey-server --port 6381 --dir /tmp/replica \
+                --replicaof 127.0.0.1 6380 \
+                --appendonly yes --save "" \
+                --maxmemory-policy noeviction --daemonize yes
+              tail -f /dev/null
+            '
+          for _ in {1..30}; do
+            if docker exec valkey-failover valkey-cli -p 6381 \
+              info replication | grep -q 'master_link_status:up'; then
+              break
+            fi
+            sleep 1
+          done
+          docker exec valkey-failover valkey-cli -p 6381 \
+            info replication | grep -q 'master_link_status:up'
+      - name: Verify Valkey promotion recovery
+        run: >-
+          go test -race ./valkey
+          -run TestValkeyReplicaPromotionPreservesOwnership
+          -count=1 -v
+
+  publish:
+    needs: [ecosystem-compatibility, verify, valkey-failover]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
