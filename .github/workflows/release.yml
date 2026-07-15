@@ -42,7 +42,7 @@ jobs:
         postgres://postgres:postgres@127.0.0.1:5432/idempotency?sslmode=disable
       VALKEY_ADDR: 127.0.0.1:6379
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v5
         with:
           go-version: "1.25.x"
