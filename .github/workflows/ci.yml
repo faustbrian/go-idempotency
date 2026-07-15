@@ -1,0 +1,216 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache: true
+      - name: Check formatting
+        run: test -z "$(gofmt -l .)"
+      - name: API documentation
+        shell: bash
+        run: |
+          go run golang.org/x/lint/golint@v0.0.0-20241112194109-818c5a804067 \
+            -set_exit_status ./...
+          for package in $(go list ./...); do
+            go doc "$package" >/dev/null
+          done
+          go test . -run '^Example' -count=1
+      - name: Vet
+        run: go vet ./...
+      - name: Static analysis
+        run: go run honnef.co/go/tools/cmd/staticcheck@latest ./...
+      - name: Vulnerability scan
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+
+  unit:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: idempotency
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d idempotency"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 20
+    env:
+      POSTGRES_URL: >-
+        postgres://postgres:postgres@127.0.0.1:5432/idempotency?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache: true
+      - name: Unit and race tests
+        run: go test -race ./...
+      - name: Exact production coverage
+        shell: bash
+        run: |
+          packages=$(go list ./... | grep -v '/idempotencytest$' | paste -sd, -)
+          go test -coverpkg="$packages" -coverprofile=coverage.out ./...
+          coverage=$(go tool cover -func=coverage.out | awk '/^total:/ {print $3}')
+          test "$coverage" = "100.0%"
+      - name: Fuzz smoke test
+        run: |
+          go test . -run=^$ \
+            -fuzz=FuzzKeyAndFingerprintValidation -fuzztime=10s \
+            -parallel=4 -timeout=2m
+          go test ./canonical -run=^$ -fuzz=FuzzJSONIsIdempotent \
+            -fuzztime=10s -parallel=4 -timeout=2m
+          go test ./memory -run=^$ \
+            -fuzz=FuzzTakeoverPermanentlyFencesOldOwner -fuzztime=10s \
+            -parallel=4 -timeout=2m
+          go test ./postgres -run=^$ \
+            -fuzz=FuzzPersistedRecordDecoderFailsClosed -fuzztime=10s \
+            -parallel=4 -timeout=2m
+          go test ./valkey -run=^$ \
+            -fuzz=FuzzPersistedHashDecoderFailsClosed -fuzztime=10s \
+            -parallel=4 -timeout=2m
+          go test ./idempotencyhttp -run=^$ \
+            -fuzz=FuzzMalformedReplayFailsClosed -fuzztime=10s \
+            -parallel=4 -timeout=2m
+          go test ./idempotencyrpc -run=^$ \
+            -fuzz=FuzzMalformedReplayFailsClosed -fuzztime=10s \
+            -parallel=4 -timeout=2m
+      - name: Memory benchmarks
+        run: go test ./memory -run=^$ -bench=. -benchtime=100x
+
+  compatibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache: true
+      - name: Persisted records and schema descriptors
+        run: >-
+          go test ./postgres ./valkey
+          -run 'Test(RecordCodec|SchemaMigration|RecordKey)'
+          -count=1
+      - name: Reproducible module graph
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+
+  postgres:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["16", "17"]
+    services:
+      postgres:
+        image: postgres:${{ matrix.version }}-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: idempotency
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d idempotency"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 20
+    env:
+      POSTGRES_URL: >-
+        postgres://postgres:postgres@127.0.0.1:5432/idempotency?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache: true
+      - name: PostgreSQL conformance and cleanup
+        run: go test -race ./postgres -count=1 -v
+      - name: PostgreSQL latency, storage, contention, and cleanup benchmarks
+        run: go test ./postgres -run=^$ -bench=. -benchtime=20x
+
+  valkey-9:
+    runs-on: ubuntu-latest
+    services:
+      valkey:
+        image: valkey/valkey:9.0
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "valkey-cli ping"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 20
+    env:
+      VALKEY_ADDR: 127.0.0.1:6379
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache: true
+      - name: Valkey integration and fault tests
+        run: go test -race ./valkey -count=1 -v
+      - name: Valkey hot-key benchmarks
+        run: go test ./valkey -run=^$ -bench=. -benchtime=100x
+
+  valkey-9-cluster:
+    runs-on: ubuntu-latest
+    env:
+      VALKEY_CLUSTER_ADDRS: >-
+        127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25.x"
+          cache: true
+      - name: Start three-primary Valkey cluster
+        run: |
+          docker run -d --name valkey-cluster \
+            -p 7000-7002:7000-7002 \
+            -p 17000-17002:17000-17002 \
+            valkey/valkey:9.0 sh -c '
+              for port in 7000 7001 7002; do
+                valkey-server --port $port \
+                  --cluster-enabled yes \
+                  --cluster-config-file nodes-$port.conf \
+                  --cluster-node-timeout 5000 \
+                  --appendonly no --save "" \
+                  --maxmemory-policy noeviction \
+                  --daemonize yes
+              done
+              sleep 1
+              yes yes | valkey-cli --cluster create \
+                127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 \
+                --cluster-replicas 0
+              tail -f /dev/null
+            '
+          for _ in {1..30}; do
+            if docker exec valkey-cluster valkey-cli -p 7000 cluster info \
+              | grep -q 'cluster_state:ok'; then
+              break
+            fi
+            sleep 1
+          done
+          docker exec valkey-cluster valkey-cli -p 7000 cluster info \
+            | grep -q 'cluster_state:ok'
+      - name: Valkey cluster conformance
+        run: >-
+          go test -race ./valkey -run TestValkey9ClusterConformance
+          -count=1 -v
