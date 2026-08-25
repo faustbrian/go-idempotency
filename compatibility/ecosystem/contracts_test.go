@@ -17,10 +17,10 @@ import (
 	idempotencypostgres "github.com/faustbrian/go-idempotency/postgres"
 	log "github.com/faustbrian/go-log"
 	migrations "github.com/faustbrian/go-migrations"
-	"github.com/faustbrian/go-transactional-outbox"
-	outboxpostgres "github.com/faustbrian/go-transactional-outbox/postgres"
 	queuecore "github.com/faustbrian/go-queue/core"
 	telemetry "github.com/faustbrian/go-telemetry"
+	"github.com/faustbrian/go-transactional-outbox"
+	outboxpostgres "github.com/faustbrian/go-transactional-outbox/postgres"
 	webhook "github.com/faustbrian/go-webhook"
 	webhookidempotency "github.com/faustbrian/go-webhook/adapters/idempotency"
 )

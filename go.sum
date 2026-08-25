@@ -5,9 +5,9 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/deszhou/jcs v1.0.0 h1:UurX9TNVNWfH4rqxAP8RArQTtrYAdG94yBReqR5xbzE=
 github.com/deszhou/jcs v1.0.0/go.mod h1:G5aTSLY15c0js1StRUuHrs+4BqNRmV42jdgsH71mPI0=
-github.com/faustbrian/go-clock v1.0.0 h1:Xgh+WEPWkDdFis8gOfz/mnOwWzKhF3wkPVO8CQjyxxo=
+github.com/faustbrian/go-clock v1.0.0 h1:T4szy3diqGtid0gPgiWmVJ7CpA48oWyXnHKXyBoYY7U=
 github.com/faustbrian/go-clock v1.0.0/go.mod h1:WKZ5p79IKGNTZGDp2L81cYjbsEjv3+9U0be7uwS8t6Y=
-github.com/faustbrian/go-migrations v1.0.0 h1:w+AqOkbZI43kMaVY10ZZHDXyRfYzOlWuIwArhmpTKIE=
+github.com/faustbrian/go-migrations v1.0.0 h1:hdJUV6V0G4hdfSpxFNieDMooNCIQV5XSZNz7dcBIzvo=
 github.com/faustbrian/go-migrations v1.0.0/go.mod h1:ruXWnP6IfkNr6dXeffW5bFouIr0WwBucvvMYTbhEh+I=
 github.com/go-logr/logr v1.2.2/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=
 github.com/go-logr/logr v1.4.3 h1:CjnDlHq8ikf6E492q6eKboGOC0T8CDaOvkHCIg8idEI=
