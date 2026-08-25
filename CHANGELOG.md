@@ -6,6 +6,8 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-08-25
+
 ### Compatibility
 
 - Regenerate the exported API baseline with the repository's Go 1.26
@@ -27,8 +29,6 @@ public API reaches its first stable version.
 - Harden standalone documentation validation with deterministic spelling and
   link checks, package-specific documentation gates, and repository-local
   contributor guidance.
-
-## [1.0.0] - 2026-08-25
 
 ### Documentation
 
