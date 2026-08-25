@@ -6,6 +6,11 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+### Compatibility
+
+- Regenerate the exported API baseline with the repository's Go 1.26
+  toolchain so JSON-backed contracts retain their intended stable identity.
+
 ### Changed
 
 - Exclude intentional nested modules from root local-proxy archives so local,
