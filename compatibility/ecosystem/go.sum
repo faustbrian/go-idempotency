@@ -33,7 +33,7 @@ github.com/ebitengine/purego v0.10.0 h1:QIw4xfpWT6GWTzaW5XEKy3HXoqrJGx1ijYHzTF0/
 github.com/ebitengine/purego v0.10.0/go.mod h1:iIjxzd6CiRiOG0UyXP+V1+jWqUXVjPKLAI0mRfJZTmQ=
 github.com/faustbrian/go-clock v1.0.0 h1:epaYb4WObVwF7YaeXZvfiyJ3/wrinKASY3GUKI1rJsw=
 github.com/faustbrian/go-clock v1.0.0/go.mod h1:WKZ5p79IKGNTZGDp2L81cYjbsEjv3+9U0be7uwS8t6Y=
-github.com/faustbrian/go-idempotency v1.0.0 h1:NLYAVI7sBtCzLAKirWUOzYi/jxvJCo3OaY6WDYCv714=
+github.com/faustbrian/go-idempotency v1.0.0 h1:suXyxXhnicgOXoHArPmage1B/Eg5XgDp4WVoTkQemxo=
 github.com/faustbrian/go-idempotency v1.0.0/go.mod h1:lGj3MjYGff9T06XoWqbs41WxXeenM1zX0FREhpKT1yA=
 github.com/faustbrian/go-log v1.0.0 h1:UZ9I/gG3o2J+7I0YyAFbQ9CcG2ASxLlrSwzai6AsDCo=
 github.com/faustbrian/go-log v1.0.0/go.mod h1:hwFD9uvNXWat2MF855ncxF4opNWHjhsErO/mE6SUN6E=
