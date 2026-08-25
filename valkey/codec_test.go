@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/idempotency"
+	"github.com/faustbrian/go-idempotency"
 )
 
 func TestRecordVersion1FixtureRemainsReadableAndWritable(t *testing.T) {

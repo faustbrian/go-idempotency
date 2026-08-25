@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/faustbrian/golib/pkg/idempotency"
+	"github.com/faustbrian/go-idempotency"
 	"github.com/jackc/pgx/v5"
 )
 

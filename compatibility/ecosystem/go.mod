@@ -1,21 +1,21 @@
-module github.com/faustbrian/golib/pkg/idempotency/compatibility/ecosystem
+module github.com/faustbrian/go-idempotency/compatibility/ecosystem
 
 go 1.26.6
 
 require (
-	github.com/faustbrian/golib/pkg/idempotency v0.0.0
-	github.com/faustbrian/golib/pkg/log v0.0.0
-	github.com/faustbrian/golib/pkg/migrations v0.0.0
-	github.com/faustbrian/golib/pkg/outbox v0.0.0
-	github.com/faustbrian/golib/pkg/queue v0.0.0
-	github.com/faustbrian/golib/pkg/telemetry v0.0.0
-	github.com/faustbrian/golib/pkg/webhook v0.0.0
+	github.com/faustbrian/go-idempotency v1.0.0
+	github.com/faustbrian/go-log v1.0.0
+	github.com/faustbrian/go-migrations v1.0.0
+	github.com/faustbrian/go-queue v1.0.0
+	github.com/faustbrian/go-telemetry v1.0.0
+	github.com/faustbrian/go-transactional-outbox v1.0.0
+	github.com/faustbrian/go-webhook v1.0.0
 )
 
 require (
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/faustbrian/golib/pkg/clock v0.0.0 // indirect
+	github.com/faustbrian/go-clock v1.0.0 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect

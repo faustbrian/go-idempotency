@@ -1,55 +1,55 @@
 # Contributing
 
-## Development requirements
+## Before Editing
 
-- Go 1.26.5 or later
-- Docker for PostgreSQL and Valkey integration tests
-- `actionlint` for workflow validation
+1. Read [`AGENTS.md`](AGENTS.md) and the affected module's goals and docs.
+2. Run `make inventory` and the narrow baseline gate for the module.
+3. Identify owned dependencies and reverse dependants in `modules.json`.
+4. Preserve unrelated work and generated/corpus provenance.
 
-Create focused changes with tests that prove state-machine behavior, failure
-boundaries, or compatibility. New production statements must have meaningful
-coverage; executing a line without asserting its contract is insufficient.
+## Changes
 
-## Local checks
+Keep commits focused and conventional. Update every affected changelog with
+the behavior and migration impact. Public API changes require compatibility
+evidence and documentation. Specification behavior requires a decision record,
+fixture coverage, and interoperability evidence.
 
-Start PostgreSQL 17 and Valkey 9 with `noeviction`, then export:
+New direct dependencies and dependency updates must follow the
+[dependency governance policy](docs/dependency-governance.md). Package-local
+update bots are forbidden; the root policy owns every module and action update.
 
-```sh
-export POSTGRES_URL='postgres://postgres:postgres@127.0.0.1:5432/idempotency?sslmode=disable'
-export VALKEY_ADDR='127.0.0.1:6379'
+Specification-backed changes must follow the
+[specification governance contract](docs/specification-governance.md), update
+the affected stable decision entries, and complete the Specification Decisions
+section of the pull request template. An unresolved interpretation or stale
+source pin is release-blocking; peer behavior cannot silently select policy.
+
+Do not add package-local workflows, permanent replacements, machine-specific
+paths, bypass flags, broad mutation exclusions, or aggregate quality metrics
+that hide a failing package.
+
+## Verification
+
+Run during development:
+
+```bash
+make inventory
+make specification-decisions
+make check MODULES=pkg/<library>
 ```
 
-Run:
+Before submitting a repository-wide change:
 
-```sh
-test -z "$(gofmt -l .)"
-actionlint .github/workflows/*.yml
-go test -race ./...
-go vet ./...
-go run honnef.co/go/tools/cmd/staticcheck@latest ./...
-go run golang.org/x/vuln/cmd/govulncheck@latest ./...
-(cd compatibility/ecosystem && go test ./...)
-
-packages=$(go list ./... | grep -v '/idempotencytest$' | paste -sd, -)
-go test -coverpkg="$packages" -coverprofile=coverage.out ./...
-go tool cover -func=coverage.out
+```bash
+make ci-changed BASE=origin/main
 ```
 
-The total production statement coverage must be exactly 100%. Run the Valkey
-cluster job from CI for changes to physical keys, scripts, or routing. The root
-module and the isolated ecosystem compatibility module support Go 1.26.5 or
-later, matching the current named ecosystem contracts.
+The full scheduled and release gate is `make ci`. Report every unavailable or
+failing command; do not describe partial results as release-ready.
 
-## Compatibility and migrations
+## Adding A Module
 
-Persisted format changes require a new schema version, old-version decode tests,
-rolling-upgrade guidance, and a changelog entry. Never reinterpret an existing
-field or silently accept malformed records. PostgreSQL schema changes must be
-reversible and safe for rolling deployments.
-
-## Commits and pull requests
-
-Use conventional commits with a body explaining why the change exists and its
-side effects. Pull requests should state the semantic contract affected, failure
-and crash boundaries tested, exact verification commands, migration impact, and
-documentation changes.
+Follow [module lifecycle procedures](docs/module-lifecycle.md). New modules
+require an explicit purpose, ownership boundary, dependency review, package
+catalog entry, full quality gates, documentation, changelog, license, security
+policy, compatibility plan, and release dry-run.

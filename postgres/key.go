@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"hash"
 
-	"github.com/faustbrian/golib/pkg/idempotency"
+	"github.com/faustbrian/go-idempotency"
 )
 
 func recordDigest(key idempotency.Key) []byte {

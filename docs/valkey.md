@@ -16,8 +16,8 @@ import (
 	"encoding/hex"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/idempotency"
-	idempotencyvalkey "github.com/faustbrian/golib/pkg/idempotency/valkey"
+	"github.com/faustbrian/go-idempotency"
+	idempotencyvalkey "github.com/faustbrian/go-idempotency/valkey"
 	valkeygo "github.com/valkey-io/valkey-go"
 )
 

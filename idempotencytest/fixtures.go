@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/clock/manual"
+	"github.com/faustbrian/go-clock/manual"
 )
 
 // Clock is a concurrency-safe deterministic clock for store tests.

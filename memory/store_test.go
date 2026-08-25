@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/idempotency"
-	"github.com/faustbrian/golib/pkg/idempotency/memory"
+	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/memory"
 )
 
 func TestConcurrentAcquireElectsOneOwner(t *testing.T) {

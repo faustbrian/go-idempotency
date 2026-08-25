@@ -8,12 +8,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/faustbrian/golib/pkg/idempotency"
+	"github.com/faustbrian/go-idempotency"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
 )
 
-const instrumentationScope = "github.com/faustbrian/golib/pkg/idempotency"
+const instrumentationScope = "github.com/faustbrian/go-idempotency"
 
 // ErrNilMeterProvider reports an unusable telemetry configuration.
 var ErrNilMeterProvider = errors.New("idempotencytelemetry: nil meter provider")

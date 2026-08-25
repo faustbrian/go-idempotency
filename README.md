@@ -1,5 +1,15 @@
 # idempotency
 
+[![CI](https://github.com/faustbrian/go-idempotency/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/faustbrian/go-idempotency/actions/workflows/ci.yml)
+[![CodeQL](https://img.shields.io/badge/CodeQL-required-blue)](https://github.com/faustbrian/go-idempotency/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/badge/coverage-100%25_required-blue)](CONTRIBUTING.md#verification)
+[![Mutation](https://img.shields.io/badge/mutation-100%25_required-blue)](CONTRIBUTING.md#verification)
+[![Documentation](https://img.shields.io/badge/docs-checked_in_CI-blue)](docs/)
+[![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-idempotency.svg)](https://pkg.go.dev/github.com/faustbrian/go-idempotency)
+[![Release](https://img.shields.io/github/v/release/faustbrian/go-idempotency?sort=semver)](https://github.com/faustbrian/go-idempotency/releases)
+[![Go](https://img.shields.io/badge/go-1.26.6-00ADD8?logo=go)](https://go.dev/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 `idempotency` provides durable ownership, fencing, and bounded result replay
 for retried Go operations. It is being built for HTTP, JSON-RPC, webhook,
 queue, import, and command workloads.
@@ -15,7 +25,7 @@ The public contract, deterministic memory adapter, bounded JSON
 canonicalization, PostgreSQL and Valkey adapters, buffered HTTP middleware,
 method-aware JSON-RPC middleware, queue and webhook deduplication, named command
 and import helpers, transactional `outbox` coordination, and bounded logging
-and telemetry observers are implemented. The API remains pre-v1 and is not yet
+and telemetry observers are implemented. The API is stable at v1 and is
 released as stable.
 
 ## Core acquisition outcomes
@@ -33,7 +43,7 @@ released as stable.
 ## Start in five minutes
 
 ```sh
-go get github.com/faustbrian/golib/pkg/idempotency
+go get github.com/faustbrian/go-idempotency
 ```
 
 The [quickstart](docs/quickstart.md) demonstrates acquisition, completion, and

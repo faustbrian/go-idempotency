@@ -1,8 +1,7 @@
 # Migrations and compatibility
 
-The module is pre-v1. Source compatibility may change between minor releases
-until a stable API is declared, but persisted records and rolling deployments
-still require explicit compatibility discipline.
+The module follows stable v1 source compatibility. Persisted records and
+rolling deployments still require explicit compatibility discipline.
 
 ## Supported runtime matrix
 
@@ -17,7 +16,7 @@ of truth for the versions tested by each commit.
 
 ## Public Go API policy
 
-Before v1, minor releases may remove or change exported identifiers. Patch
+Major releases may remove or change exported identifiers. Patch
 releases should remain source-compatible unless a security or correctness flaw
 makes that unsafe. Once v1 is released, incompatible public API changes require
 a new major version under Go module semantic import versioning.

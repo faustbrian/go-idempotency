@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/idempotency"
-	"github.com/faustbrian/golib/pkg/idempotency/idempotencyrpc"
-	"github.com/faustbrian/golib/pkg/idempotency/idempotencytest"
-	"github.com/faustbrian/golib/pkg/idempotency/memory"
+	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/idempotencyrpc"
+	"github.com/faustbrian/go-idempotency/idempotencytest"
+	"github.com/faustbrian/go-idempotency/memory"
 )
 
 func TestMiddlewareExecutesOnceAndReplaysResult(t *testing.T) {

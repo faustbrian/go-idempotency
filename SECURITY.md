@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-The project is pre-v1. Only the latest released version receives security
+Only the latest stable v1 release receives security
 fixes. Unreleased commits on `main` are development snapshots and are not a
 supported production channel.
 

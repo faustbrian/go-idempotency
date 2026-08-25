@@ -34,5 +34,5 @@
 - [Contribution guide](../CONTRIBUTING.md)
 - [Changelog](../CHANGELOG.md)
 
-The API is pre-v1. Read the state machine and crash semantics before adopting an
+The API is stable at v1. Read the state machine and crash semantics before adopting an
 adapter or integration; a quickstart alone is not a correctness specification.

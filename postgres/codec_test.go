@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/idempotency"
+	"github.com/faustbrian/go-idempotency"
 )
 
 const postgresRecordV1Fixture = `{"schema":1,"namespace":"postgres","tenant":"tenant","operation":"operation","caller":"caller","key_value":"key","fingerprint_version":"v1","fingerprint_sum":"H1i5FFsk0QjXrDiIcziz6jIpgzucHkGCUDQ/kHv9EEc=","state":"completed","owner_token":"owner","fencing_token":3,"lease_expires_at":"2023-11-14T22:14:20.123Z","heartbeat_at":"2023-11-14T22:13:20.123Z","attempt":2,"created_at":"2023-11-14T21:13:20.123Z","updated_at":"2023-11-14T22:13:20.123Z","completed_at":"2023-11-14T22:13:20.123Z","failed_at":"0001-01-01T00:00:00Z","abandoned_at":"0001-01-01T00:00:00Z","expired_at":"0001-01-01T00:00:00Z","result":"eyJvayI6dHJ1ZX0=","metadata":{"content-type":"application/json"}}`

@@ -6,6 +6,8 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-08-25
+
 ### Documentation
 
 - Replace obsolete standalone-repository links and workflow claims with
@@ -20,6 +22,7 @@ public API reaches its first stable version.
 
 ### Changed
 
+- Publish the module from its standalone `github.com/faustbrian/go-idempotency` identity while preserving its documented API and behavior.
 - Refresh local `v0.0.0` owned-module checksums after dependency manifests and
   release notes were normalized; runtime behavior and public APIs are
   unchanged.
@@ -94,6 +97,7 @@ public API reaches its first stable version.
 
 ### Known limitations
 
-- The public API is pre-v1 and may change before the first stable release.
+- The public API follows stable v1 semantic-versioning compatibility.
 
-[Unreleased]: https://github.com/faustbrian/golib/commits/main/pkg/idempotency
+[Unreleased]: https://github.com/faustbrian/go-idempotency/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/faustbrian/go-idempotency/releases/tag/v1.0.0

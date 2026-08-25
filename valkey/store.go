@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/faustbrian/golib/pkg/idempotency"
+	"github.com/faustbrian/go-idempotency"
 )
 
 const (

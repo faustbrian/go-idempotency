@@ -1,11 +1,11 @@
-module github.com/faustbrian/golib/pkg/idempotency
+module github.com/faustbrian/go-idempotency
 
 go 1.26.6
 
 require (
 	github.com/deszhou/jcs v1.0.0
-	github.com/faustbrian/golib/pkg/clock v0.0.0
-	github.com/faustbrian/golib/pkg/migrations v0.0.0
+	github.com/faustbrian/go-clock v1.0.0
+	github.com/faustbrian/go-migrations v1.0.0
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/valkey-io/valkey-go v1.0.76
 	github.com/valkey-io/valkey-go/mock v1.0.76

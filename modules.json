@@ -1,0 +1,362 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-idempotency",
+  "go_version": "1.26.6",
+  "modules": [
+    {
+      "directory": ".",
+      "module_path": "github.com/faustbrian/go-idempotency",
+      "go_version": "1.26.6",
+      "packages": [
+        {
+          "module_directory": ".",
+          "directory": ".",
+          "name": "idempotency",
+          "import_path": "github.com/faustbrian/go-idempotency",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "canonical",
+          "name": "canonical",
+          "import_path": "github.com/faustbrian/go-idempotency/canonical",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "idempotencycommand",
+          "name": "idempotencycommand",
+          "import_path": "github.com/faustbrian/go-idempotency/idempotencycommand",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "idempotencyhttp",
+          "name": "idempotencyhttp",
+          "import_path": "github.com/faustbrian/go-idempotency/idempotencyhttp",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "idempotencylog",
+          "name": "idempotencylog",
+          "import_path": "github.com/faustbrian/go-idempotency/idempotencylog",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "idempotencyoutbox",
+          "name": "idempotencyoutbox",
+          "import_path": "github.com/faustbrian/go-idempotency/idempotencyoutbox",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "idempotencyqueue",
+          "name": "idempotencyqueue",
+          "import_path": "github.com/faustbrian/go-idempotency/idempotencyqueue",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "idempotencyrpc",
+          "name": "idempotencyrpc",
+          "import_path": "github.com/faustbrian/go-idempotency/idempotencyrpc",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "idempotencytelemetry",
+          "name": "idempotencytelemetry",
+          "import_path": "github.com/faustbrian/go-idempotency/idempotencytelemetry",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "idempotencytest",
+          "name": "idempotencytest",
+          "import_path": "github.com/faustbrian/go-idempotency/idempotencytest",
+          "kind": "test support",
+          "production": false,
+          "executable": true,
+          "coverage_required": false,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "idempotencywebhook",
+          "name": "idempotencywebhook",
+          "import_path": "github.com/faustbrian/go-idempotency/idempotencywebhook",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "memory",
+          "name": "memory",
+          "import_path": "github.com/faustbrian/go-idempotency/memory",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "postgres",
+          "name": "postgres",
+          "import_path": "github.com/faustbrian/go-idempotency/postgres",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        },
+        {
+          "module_directory": ".",
+          "directory": "valkey",
+          "name": "valkey",
+          "import_path": "github.com/faustbrian/go-idempotency/valkey",
+          "kind": "public",
+          "production": true,
+          "executable": true,
+          "coverage_required": true,
+          "build_required": true,
+          "build_tags": []
+        }
+      ],
+      "purpose": "`idempotency` provides durable ownership, fencing, and bounded result replay for retried Go operations. It is being built for HTTP, JSON-RPC, webhook, queue, import, and command workloads.",
+      "lifecycle": "stable",
+      "kind": "public library",
+      "releasable": true,
+      "family": "persistence-and-durability",
+      "family_label": "Persistence And Durability",
+      "family_description": "Durable state, delivery, coordination, recovery, and operational lifecycle.",
+      "family_order": 4,
+      "version": "v1.0.0",
+      "tag_prefix": "v",
+      "owned_dependencies": [
+        "github.com/faustbrian/go-clock",
+        "github.com/faustbrian/go-migrations"
+      ],
+      "reverse_owned_dependencies": [
+        "github.com/faustbrian/go-idempotency/compatibility/ecosystem",
+        "github.com/faustbrian/go-scheduler",
+        "github.com/faustbrian/go-service/integration/reference-durability",
+        "github.com/faustbrian/go-webhook"
+      ],
+      "external_runtime_dependencies": [
+        "github.com/deszhou/jcs",
+        "github.com/jackc/pgx/v5",
+        "github.com/valkey-io/valkey-go",
+        "github.com/valkey-io/valkey-go/mock",
+        "go.opentelemetry.io/otel",
+        "go.opentelemetry.io/otel/metric",
+        "go.opentelemetry.io/otel/sdk/metric",
+        "go.uber.org/mock"
+      ],
+      "required_services": [
+        "postgresql",
+        "valkey"
+      ],
+      "build_tags": [],
+      "test_tags": [],
+      "interoperability_tools": [],
+      "specifications": [],
+      "conformance_corpora": [],
+      "provenance": [],
+      "goal_files": [
+        ".ai/GOAL.md",
+        ".ai/GOAL_HARDEN.md"
+      ],
+      "goal_status": "implementation-evidence-inventoried",
+      "goal_evidence": [
+        {
+          "file": ".ai/GOAL.md",
+          "requirements_sha256": "1e33d8e069db8df61a61920b2d0c4998d700c118d49933dd03642a726fd67d11",
+          "implementation_evidence": [
+            "CHANGELOG.md",
+            "README.md",
+            "docs/README.md",
+            "docs/hardening-report.md",
+            "docs/threat-model.md"
+          ],
+          "verification_gates": [
+            "format-check",
+            "tidy-check",
+            "safety",
+            "vet",
+            "test",
+            "race",
+            "coverage",
+            "lint",
+            "staticcheck",
+            "vulnerability",
+            "secrets",
+            "licenses",
+            "sbom",
+            "fuzz",
+            "mutation",
+            "nilaway",
+            "docs",
+            "api",
+            "conformance",
+            "interoperability",
+            "benchmark"
+          ],
+          "implementation_status": "implemented-requires-fresh-verification"
+        },
+        {
+          "file": ".ai/GOAL_HARDEN.md",
+          "requirements_sha256": "e9c9f29d4beee2eb805669cdd1f086f51f00f4f5f09da009931d93e5aab21306",
+          "implementation_evidence": [
+            "CHANGELOG.md",
+            "README.md",
+            "docs/README.md",
+            "docs/hardening-report.md",
+            "docs/threat-model.md"
+          ],
+          "verification_gates": [
+            "format-check",
+            "tidy-check",
+            "safety",
+            "vet",
+            "test",
+            "race",
+            "coverage",
+            "lint",
+            "staticcheck",
+            "vulnerability",
+            "secrets",
+            "licenses",
+            "sbom",
+            "fuzz",
+            "mutation",
+            "nilaway",
+            "docs",
+            "api",
+            "conformance",
+            "interoperability",
+            "benchmark"
+          ],
+          "implementation_status": "implemented-requires-fresh-verification"
+        }
+      ],
+      "gates": {
+        "api_compatibility": true,
+        "benchmarks": true,
+        "conformance": false,
+        "coverage": true,
+        "documentation": true,
+        "fuzz": true,
+        "lint": true,
+        "mutation": true,
+        "race": true,
+        "security": true,
+        "tests": true
+      }
+    },
+    {
+      "directory": "compatibility/ecosystem",
+      "module_path": "github.com/faustbrian/go-idempotency/compatibility/ecosystem",
+      "go_version": "1.26.6",
+      "packages": [],
+      "purpose": "See the module README and goal files.",
+      "lifecycle": "internal",
+      "kind": "interoperability harness",
+      "releasable": false,
+      "version": "unreleased",
+      "tag_prefix": "compatibility/ecosystem/v",
+      "owned_dependencies": [
+        "github.com/faustbrian/go-clock",
+        "github.com/faustbrian/go-idempotency",
+        "github.com/faustbrian/go-log",
+        "github.com/faustbrian/go-migrations",
+        "github.com/faustbrian/go-transactional-outbox",
+        "github.com/faustbrian/go-queue",
+        "github.com/faustbrian/go-telemetry",
+        "github.com/faustbrian/go-webhook"
+      ],
+      "reverse_owned_dependencies": [],
+      "external_runtime_dependencies": [],
+      "required_services": [
+        "postgresql",
+        "valkey"
+      ],
+      "build_tags": [],
+      "test_tags": [],
+      "interoperability_tools": [],
+      "specifications": [],
+      "conformance_corpora": [],
+      "provenance": [],
+      "goal_files": [],
+      "goal_status": "not-applicable",
+      "goal_evidence": [],
+      "gates": {
+        "api_compatibility": false,
+        "benchmarks": false,
+        "conformance": false,
+        "coverage": false,
+        "documentation": true,
+        "fuzz": false,
+        "lint": true,
+        "mutation": false,
+        "race": false,
+        "security": true,
+        "tests": true
+      }
+    }
+  ]
+}

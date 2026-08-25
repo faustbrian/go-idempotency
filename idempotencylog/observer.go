@@ -1,5 +1,5 @@
 // Package idempotencylog adapts bounded idempotency observations to log/slog.
-// Loggers constructed by github.com/faustbrian/golib/pkg/log use this standard type.
+// Loggers constructed by github.com/faustbrian/go-log use this standard type.
 package idempotencylog
 
 import (
@@ -7,7 +7,7 @@ import (
 	"errors"
 	"log/slog"
 
-	"github.com/faustbrian/golib/pkg/idempotency"
+	"github.com/faustbrian/go-idempotency"
 )
 
 // ErrNilLogger reports an unusable logger configuration.
@@ -19,7 +19,7 @@ type Observer struct {
 }
 
 // New constructs an observer for a standard slog logger, including loggers
-// returned by github.com/faustbrian/golib/pkg/log.
+// returned by github.com/faustbrian/go-log.
 func New(logger *slog.Logger) (*Observer, error) {
 	if logger == nil {
 		return nil, ErrNilLogger

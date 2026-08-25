@@ -3,7 +3,7 @@
 Install the module:
 
 ```sh
-go get github.com/faustbrian/golib/pkg/idempotency
+go get github.com/faustbrian/go-idempotency
 ```
 
 The in-memory adapter is useful for learning the contract and deterministic
@@ -19,9 +19,9 @@ import (
 	"fmt"
 	"time"
 
-	clock "github.com/faustbrian/golib/pkg/clock"
-	"github.com/faustbrian/golib/pkg/idempotency"
-	"github.com/faustbrian/golib/pkg/idempotency/memory"
+	clock "github.com/faustbrian/go-clock"
+	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/memory"
 )
 
 func ownerToken() (string, error) {
