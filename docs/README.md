@@ -26,7 +26,7 @@
 - [Troubleshooting](troubleshooting.md)
 - [Migrations and compatibility](migrations-and-compatibility.md)
 - [Threat model](threat-model.md)
-- [Hardening findings and evidence](hardening-report.md)
+- [Assurance review](assurance.md)
 - [Resource budgets](resource-budgets.md)
 - [Benchmark baselines](benchmark-baselines.md)
 - [Frequently asked questions](faq.md)

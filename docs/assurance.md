@@ -1,6 +1,7 @@
-# Durable-idempotency hardening report
+# Durable idempotency assurance
 
-This report records the evidence gathered for the 2026-07-15 hardening audit.
+This document records the package's security, durability, and failure-mode
+assurance evidence.
 The tests named below are executable release evidence, not claims inferred from
 documentation.
 
