@@ -39,13 +39,13 @@ github.com/faustbrian/go-log v1.0.0 h1:u/MlvkLTzud3xaXk1rTrfgCQcpyUvlPEwL7ruAq+r
 github.com/faustbrian/go-log v1.0.0/go.mod h1:hwFD9uvNXWat2MF855ncxF4opNWHjhsErO/mE6SUN6E=
 github.com/faustbrian/go-migrations v1.0.0 h1:KEkL6J/PVIeIdcOtZ9guB2mE+Szu92Inz3LsFGZJutQ=
 github.com/faustbrian/go-migrations v1.0.0/go.mod h1:9+6xpROUsEAOd6vP2hx0yDw3JdIujDh192d6Mp9TAtw=
-github.com/faustbrian/go-queue v1.0.0 h1:rwB9yEK6QhGAHN03/7oAf2vOmnwnqzLvtTmQTVvJjik=
+github.com/faustbrian/go-queue v1.0.0 h1:aHvkX1W1nxEXiDryaQY3R6SfI28YFcCbNhYiMAo+OoI=
 github.com/faustbrian/go-queue v1.0.0/go.mod h1:XQY6QpHS87WeYYt1Xs3lWiak1v099mZlC+TPPU7kB1M=
 github.com/faustbrian/go-telemetry v1.0.0 h1:vDQzfdv4sqttcthdJQGiIDkDIMr4wORijXyk/kQtQHU=
 github.com/faustbrian/go-telemetry v1.0.0/go.mod h1:3bs4hcIGr0FS11ZLPmnPc+Hy56zHGCJjhxtUxp/sozU=
 github.com/faustbrian/go-transactional-outbox v1.0.0 h1:FEsWt38eewedxXNzDCjFTiJp6nIn6MqyKltbxPc5NmA=
 github.com/faustbrian/go-transactional-outbox v1.0.0/go.mod h1:xfUyb0Wxg9+fN2RttzFgoAHZdHhG64WJRfpoDrKIJ58=
-github.com/faustbrian/go-webhook v1.0.0 h1:R+I5HZcX5ORwXUPhELMGhUI+A47PBAuPwtmJ3RTacLk=
+github.com/faustbrian/go-webhook v1.0.0 h1:mPXbOoX+dvBkb/Hc5LZIjsVao9n3Yw+4pHqRmJHmLQk=
 github.com/faustbrian/go-webhook v1.0.0/go.mod h1:2+Q3h8CW+ZW2v6cb50kCRiA1POHllMvDgbOEIDsjfFA=
 github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=
 github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
