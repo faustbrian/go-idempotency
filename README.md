@@ -67,7 +67,7 @@ The [webhook guide](docs/webhooks.md) covers signature ordering, provider
 delivery identities, and response mapping.
 The [operations guide](docs/operations.md) covers health, observability,
 retention, cleanup, capacity, and incident recovery. The [threat
-model](docs/threat-model.md), [hardening report](docs/hardening-report.md), and
+model](docs/threat-model.md), [assurance review](docs/assurance.md), and
 [resource budgets](docs/resource-budgets.md) define the verified security and
 operational envelope. See
 [bounded logging and telemetry integration](docs/observability.md),
@@ -78,8 +78,3 @@ production adoption.
 Licensed under the [MIT License](LICENSE). Release history is maintained in the
 [changelog](CHANGELOG.md), and the complete guide index is in
 [docs/README.md](docs/README.md).
-
-## Ecosystem
-
-Use the [Golib documentation portal](https://github.com/faustbrian/golib/blob/main/docs/index.md)
-to choose companion packages, supported stacks, recipes, and operations guidance.

@@ -6,6 +6,17 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+### Changed
+
+- Replace copied repository verification tooling with the pinned
+  `go-library-tools` v1.0.4 contract while preserving the API baseline,
+  mutation checkpoints, fuzz targets, benchmarks, and package fixtures.
+
+### Documentation
+
+- Remove completed implementation plans from the release tree and retain
+  package-owned documentation as the maintained reference.
+
 ## [1.0.0] - 2026-08-25
 
 ### Compatibility
@@ -34,8 +45,6 @@ public API reaches its first stable version.
 
 - Replace obsolete standalone-repository links and workflow claims with
   monorepo-canonical targets and current release guidance.
-
-- Link the package README to the repository-wide Golib documentation portal.
 
 ### Compatibility
 

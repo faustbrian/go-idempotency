@@ -66,5 +66,5 @@ The middleware panic tests exercise release with a fresh bounded context.
 backend mutation, then recover through inspection. PostgreSQL transaction,
 deadlock, and serializable-abort tests prove that completion and business data
 roll back together. Cleanup contention and Valkey promotion tests cover the
-remaining backend crash boundaries. See the [hardening
-report](hardening-report.md) for exact test names.
+remaining backend crash boundaries. See the [assurance
+review](assurance.md) for exact test names.

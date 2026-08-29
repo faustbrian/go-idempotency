@@ -98,4 +98,4 @@ expiry; permits only one of 32 concurrent completions; and proves conflict
 precedence when a policy version changes. `memory.TestCrashPointMatrix` adds a
 fenced business-resource model in which an expired owner continues after a
 takeover but cannot overwrite the newer fence. The full evidence map is in the
-[hardening report](hardening-report.md).
+[assurance review](assurance.md).
