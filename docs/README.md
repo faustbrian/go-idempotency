@@ -1,5 +1,8 @@
 # Documentation
 
+- [Specification decisions](specification-decisions.md): authoritative source,
+  conformance, compatibility, and reconsideration choices.
+
 ## Start here
 
 - [Five-minute quickstart](quickstart.md)

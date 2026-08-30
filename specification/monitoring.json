@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-08-30",
+  "review_interval_days": 90,
+  "authorities": [
+    {"id":"rfc8785-source","kind":"specification","version":"RFC 8785","url":"https://www.rfc-editor.org/rfc/rfc8785.txt","sha256":"63d52294eb0e3f0014174288186d388b4ddbf2c67d1ce8af1d9726eb0c3ab240","specifications":["RFC 8785 JSON Canonicalization Scheme"]},
+    {"id":"rfc8785-errata","kind":"errata","url":"https://errata.rfc-editor.org/rfc8785","sha256":"a6b93b847a0c74ffb89760521d574150e6ec65cfa5fcd3c1551cccc91e4acbfa","specifications":["RFC 8785 JSON Canonicalization Scheme"]},
+    {"id":"jsonrpc20-source","kind":"specification","version":"2.0 updated 2013-01-04","url":"https://www.jsonrpc.org/specification","sha256":"8fe1edfdca511d309e712e47447457ea5159b728ec02071a84593aed692aefeb","specifications":["JSON-RPC 2.0 Specification"]},
+    {"id":"jsonrpc20-releases","kind":"releases","url":"https://www.jsonrpc.org/","sha256":"825dda6f303a0fa37a6c00a1997d38fe5d21c900aedcc6272090474d1cf115cd","specifications":["JSON-RPC 2.0 Specification"]},
+    {"id":"idempotency-key-07-source","kind":"specification","version":"draft-07 2025-10-15","url":"https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.txt","sha256":"956a446923d6b6cd0ab72b0dbc552937c5b0fcf443da6b47c055d17dcdfa542f","specifications":["draft-ietf-httpapi-idempotency-key-header-07"]},
+    {"id":"idempotency-key-releases","kind":"releases","url":"https://datatracker.ietf.org/api/v1/doc/document/?name=draft-ietf-httpapi-idempotency-key-header","sha256":"eea1c769757b6badb8553b61cd5ff5034c23b7b17e6d2f77748eec22cb0757aa","specifications":["draft-ietf-httpapi-idempotency-key-header-07"]},
+    {"id":"rfc9110-source","kind":"specification","version":"RFC 9110","url":"https://www.rfc-editor.org/rfc/rfc9110.txt","sha256":"21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a","specifications":["RFC 9110 HTTP Semantics"]},
+    {"id":"rfc9110-errata","kind":"errata","url":"https://errata.rfc-editor.org/rfc9110","sha256":"38bd006c96f8963d58573f704c5313a5f81968b90738c03ade0b036ec7bbdf4b","specifications":["RFC 9110 HTTP Semantics"]},
+    {"id":"rfc8259-source","kind":"specification","version":"RFC 8259","url":"https://www.rfc-editor.org/rfc/rfc8259.txt","sha256":"61a5378f4255c720beb2a4b4a63b29540147c140f36988bf086291989b4cd2d7","specifications":["RFC 8259 JSON"]},
+    {"id":"rfc8259-errata","kind":"errata","url":"https://errata.rfc-editor.org/rfc8259","sha256":"5819db2e0233addf17ed540db88cf92cbefda5a60c38877e0d4cbf6b876b7cf4","specifications":["RFC 8259 JSON"]},
+    {"id":"rfc6234-source","kind":"specification","version":"RFC 6234","url":"https://www.rfc-editor.org/rfc/rfc6234.txt","sha256":"8f39f02a57bfd1da15634706724a585766e6223f77ecdaf243cad16cd3a1aa1b","specifications":["RFC 6234 SHA Algorithms"]},
+    {"id":"rfc6234-errata","kind":"errata","url":"https://errata.rfc-editor.org/rfc6234","sha256":"7d60012adb40c81831a75b5312a466876b1fce2c958524fa0e9a8eb6be8f5646","specifications":["RFC 6234 SHA Algorithms"]},
+    {"id":"rfc2104-source","kind":"specification","version":"RFC 2104","url":"https://www.rfc-editor.org/rfc/rfc2104.txt","sha256":"64d5245a9101929025336e470e3737f118704001249d503c85a86e19fe9fbb01","specifications":["RFC 2104 HMAC"]},
+    {"id":"rfc2104-errata","kind":"errata","url":"https://errata.rfc-editor.org/rfc2104","sha256":"9b54641c8435bbaeb9b45d1f53e213946d2fe1dc76214c4f72fd67ed07f17cd9","specifications":["RFC 2104 HMAC"]}
+  ]
+}
