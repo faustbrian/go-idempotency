@@ -9,7 +9,7 @@ public API reaches its first stable version.
 ### Changed
 
 - Upgrade the repository verification contract to the pinned
-  `go-library-tools` v1.0.6 release while preserving the API baseline,
+  `go-library-tools` v1.0.13 release while preserving the API baseline,
   mutation checkpoints, fuzz targets, benchmarks, and package fixtures.
 
 ### Documentation
