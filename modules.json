@@ -213,17 +213,33 @@
       ],
       "build_tags": [],
       "test_tags": [],
-      "interoperability_tools": [],
-      "specifications": [],
-      "conformance_corpora": [],
-      "provenance": [],
+      "interoperability_tools": [
+        "canonicalize npm 4.0.0"
+      ],
+      "specifications": [
+        "RFC 8785 JSON Canonicalization Scheme",
+        "JSON-RPC 2.0 Specification",
+        "draft-ietf-httpapi-idempotency-key-header-07",
+        "RFC 9110 HTTP Semantics",
+        "RFC 8259 JSON",
+        "RFC 6234 SHA Algorithms",
+        "RFC 2104 HMAC"
+      ],
+      "conformance_corpora": [
+        "RFC 8785 sections 3.2.2 and 3.2.3",
+        "JSON-RPC 2.0 response and error projection evidence",
+        "Idempotency-Key draft comparison matrix"
+      ],
+      "provenance": [
+        "specification/manifest.tsv"
+      ],
       "goal_files": [],
       "goal_status": "not-applicable",
       "goal_evidence": [],
       "gates": {
         "api_compatibility": true,
         "benchmarks": true,
-        "conformance": false,
+        "conformance": true,
         "coverage": true,
         "documentation": true,
         "fuzz": true,

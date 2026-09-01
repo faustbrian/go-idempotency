@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {"id":"IDEMPOTENCY-DEC-001","digests":["f70e8d1c3f8b42a0fd7a3e0f8f953105b872d902878f5d5238b445a475675b03"]},
+    {"id":"IDEMPOTENCY-DEC-002","digests":["038eaa1aab6c56e254724aa55b38ca11043d2d58093e764557af4def3d1ebf4f"]},
+    {"id":"IDEMPOTENCY-DEC-003","digests":["9da3530377f546b5894f6165940839dd83cc2b6421db3513c1f36c5a8352a4db"]},
+    {"id":"IDEMPOTENCY-DEC-004","digests":["752969969e6a47878bf97da1ed660f85c485671a86f5ed362020fa719bbd0d39"]},
+    {"id":"IDEMPOTENCY-DEC-005","digests":["84157c145b9b72c4c6d705883440ee3cf564e765aa1b8a45d47702af33c72a2a"]},
+    {"id":"IDEMPOTENCY-DEC-006","digests":["98a9dc305c8123885195d3084636a4da4e81618ee65def81e933586c6dae9d2e"]},
+    {"id":"IDEMPOTENCY-DEC-007","digests":["c194ad1a0de1bb5ae63dd1fd9b4f49569c62a846f1acb1251fb44030a61f37b3"]},
+    {"id":"IDEMPOTENCY-DEC-008","digests":["9430fa7e72a4e9ddb8372a8bf5a78d17575087f869ae1c42a016963f746405f6"]},
+    {"id":"IDEMPOTENCY-DEC-009","digests":["1ea582419cf1aba0c888d5ceb6162629ae3fc9dec6faf05bb9f52d07beb7e5d2"]},
+    {"id":"IDEMPOTENCY-DEC-010","digests":["c024926fbfbf6a656561ea01ece8d707703f509ec7b187e627b2aebe8b771e24"]},
+    {"id":"IDEMPOTENCY-DEC-011","digests":["b1a3b56cf9ca5a1691b33fa253ed4b9f447782ae7f773bd1991c870efa92071b"]},
+    {"id":"IDEMPOTENCY-DEC-012","digests":["1dce641d54df5f9bf861e23e9c6a2bf8216bb0edaa207c72198fb4f720d4f5c9"]},
+    {"id":"IDEMPOTENCY-DEC-013","digests":["31493a3a629b4f4679cb9d2275fbe2d7f84e81c0ad95ad42a535ea00e1fc359b"]}
+  ]
+}

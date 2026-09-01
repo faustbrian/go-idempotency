@@ -1,5 +1,9 @@
 # Fingerprint policy
 
+The [specification decision register](specification-decisions.md) records the
+exact RFC 8785, SHA-256, HMAC, resource-bound, and raw-byte choices behind this
+policy, including the deliberate negative-zero rejection.
+
 An idempotency key identifies the caller's intended operation. A fingerprint
 identifies the stable business request associated with that key. Reusing a key
 with a different fingerprint is always a conflict, including after completion
