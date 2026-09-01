@@ -8,9 +8,10 @@ public API reaches its first stable version.
 
 ### Changed
 
-- Upgrade the repository verification contract to the pinned
-  `go-library-tools` v1.0.13 release while preserving the API baseline,
-  mutation checkpoints, fuzz targets, benchmarks, and package fixtures.
+- Adopt the checksum-verified `go-library-tools` v1.2.0 CLI and immutable
+  shared workflow so local and hosted gates enforce specification governance
+  while preserving the API baseline, mutation checkpoints, fuzz targets,
+  benchmarks, and package fixtures.
 
 ### Documentation
 
