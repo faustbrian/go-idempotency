@@ -78,3 +78,6 @@ production adoption.
 Licensed under the [MIT License](LICENSE). Release history is maintained in the
 [changelog](CHANGELOG.md), and the complete guide index is in
 [docs/README.md](docs/README.md).
+
+Material canonicalization, JSON-RPC, HTTP, and durable-enforcement choices are
+recorded in the [specification decision register](docs/specification-decisions.md).

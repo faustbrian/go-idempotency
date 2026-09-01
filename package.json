@@ -5,6 +5,7 @@
     "node": ">=22.18.0"
   },
   "devDependencies": {
+    "canonicalize": "4.0.0",
     "cspell": "10.0.0"
   }
 }

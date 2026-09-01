@@ -1,0 +1,8 @@
+id	version	role	status	sha256	bytes	url
+rfc8785	RFC 8785	normative-jcs-profile	pinned	63d52294eb0e3f0014174288186d388b4ddbf2c67d1ce8af1d9726eb0c3ab240	41879	https://www.rfc-editor.org/rfc/rfc8785.txt
+jsonrpc20	2.0 updated 2013-01-04	json-rpc-protocol	pinned	8fe1edfdca511d309e712e47447457ea5159b728ec02071a84593aed692aefeb	24512	https://www.jsonrpc.org/specification
+idempotency-key-07	draft-07 2025-10-15	http-idempotency-key-work-in-progress	pinned	956a446923d6b6cd0ab72b0dbc552937c5b0fcf443da6b47c055d17dcdfa542f	25499	https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-07.txt
+rfc9110	RFC 9110	http-semantics	pinned	21c1cdce6ab0e5509b04d84a28000836c7a087cf786efe6f04877ebfff47232a	502941	https://www.rfc-editor.org/rfc/rfc9110.txt
+rfc8259	RFC 8259	json-data-model	pinned	61a5378f4255c720beb2a4b4a63b29540147c140f36988bf086291989b4cd2d7	28360	https://www.rfc-editor.org/rfc/rfc8259.txt
+rfc6234	RFC 6234	sha-256-algorithm	pinned	8f39f02a57bfd1da15634706724a585766e6223f77ecdaf243cad16cd3a1aa1b	236573	https://www.rfc-editor.org/rfc/rfc6234.txt
+rfc2104	RFC 2104	hmac-construction	pinned	64d5245a9101929025336e470e3737f118704001249d503c85a86e19fe9fbb01	22297	https://www.rfc-editor.org/rfc/rfc2104.txt

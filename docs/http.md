@@ -1,5 +1,10 @@
 # HTTP middleware
 
+The stable v1 profile is compared with the Idempotency-Key draft but does not
+claim full draft conformance. See the [specification decision
+register](specification-decisions.md) for structured-field and status-mapping
+differences.
+
 `idempotencyhttp` requires `Idempotency-Key`, elects one durable handler owner,
 and stores a bounded, versioned response. A completed response is replayed only
 when the application-supplied fingerprint matches.
