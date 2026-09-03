@@ -24,6 +24,9 @@ public API reaches its first stable version.
 
 ### Documentation
 
+- Record RFC 9110 Erratum 9162 as behavior-neutral for the HTTP adapter, with
+  no decision or conformance-binding changes.
+
 - Add the [specification decision register](docs/specification-decisions.md),
   pinned source authorities, drift monitoring, and executable conformance
   records for the package's JCS, JSON-RPC, HTTP, digest, and durable-ownership

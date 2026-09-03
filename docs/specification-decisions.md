@@ -476,6 +476,12 @@ evidence, and history review.
 - **Documentation:** docs/state-machine.md
 - **Documentation:** docs/crash-semantics.md
 
+## Authority review history
+
+| Reviewed | Authority | Disposition | Decision impact |
+| --- | --- | --- | --- |
+| 2026-09-03 | RFC 9110 Erratum 9162 | Behavior-neutral. The proposed comma-space spelling concerns combining repeated HTTP field lines. The HTTP adapter preserves each configured response-header field value as a separate value and delegates wire serialization to Go's `net/http`; it does not define a combined-field-value syntax. | `IDEMPOTENCY-DEC-011` and `IDEMPOTENCY-DEC-012` remain unchanged, as do their conformance bindings. |
+
 ## Unresolved decisions
 
 None for the currently supported v1 surfaces. New canonicalization policies,
