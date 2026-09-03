@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "repository": "github.com/faustbrian/go-idempotency",
   "go_version": "1.26.6",
   "modules": [
@@ -177,7 +177,7 @@
           "build_tags": []
         }
       ],
-      "purpose": "`idempotency` provides durable ownership, fencing, and bounded result replay for retried Go operations. It is being built for HTTP, JSON-RPC, webhook, queue, import, and command workloads.",
+      "purpose": "Provide durable ownership, fencing, and bounded result replay for retried HTTP, JSON-RPC, webhook, queue, import, and command workloads.",
       "lifecycle": "stable",
       "kind": "public library",
       "releasable": true,
@@ -185,6 +185,117 @@
       "family_label": "Persistence And Durability",
       "family_description": "Durable state, delivery, coordination, recovery, and operational lifecycle.",
       "family_order": 4,
+      "cohesion": {
+        "family": "persistence-and-durability",
+        "secondary_capabilities": [
+          "database-and-storage",
+          "http-and-service-edge",
+          "observability",
+          "protocols-and-schemas"
+        ],
+        "responsibility": "Provide durable operation ownership, fencing, bounded result replay, canonical fingerprints, and explicit transport and workload adapters.",
+        "non_goals": [
+          "Claim exactly-once execution or own an application's stale-owner side-effect invariant.",
+          "Own caller resources, application transactions, transport servers, worker lifecycles, or retry policy."
+        ],
+        "public_package_identifier": "idempotency",
+        "primary_entry_packages": [
+          "github.com/faustbrian/go-idempotency"
+        ],
+        "package_selection": {
+          "github.com/faustbrian/go-idempotency": "Use for durable ownership, fencing, typed outcomes, bounded result replay, and the backend-neutral service contract.",
+          "github.com/faustbrian/go-idempotency/canonical": "Use for bounded canonical JSON and byte fingerprint construction.",
+          "github.com/faustbrian/go-idempotency/idempotencycommand": "Use to apply durable ownership and replay to command and import handlers.",
+          "github.com/faustbrian/go-idempotency/idempotencyhttp": "Use to apply Idempotency-Key policy and bounded response replay to HTTP handlers.",
+          "github.com/faustbrian/go-idempotency/idempotencylog": "Use for secret-safe structured transition logging through log/slog.",
+          "github.com/faustbrian/go-idempotency/idempotencyoutbox": "Use to stage an outbox envelope and idempotency completion in one caller-owned transaction.",
+          "github.com/faustbrian/go-idempotency/idempotencyqueue": "Use to apply durable ownership and redelivery deduplication to queue messages.",
+          "github.com/faustbrian/go-idempotency/idempotencyrpc": "Use to apply method-aware request ownership and response replay to JSON-RPC handlers.",
+          "github.com/faustbrian/go-idempotency/idempotencytelemetry": "Use for bounded OpenTelemetry transition metrics.",
+          "github.com/faustbrian/go-idempotency/idempotencytest": "Use in tests for deterministic clocks, tokens, fixtures, and backend conformance.",
+          "github.com/faustbrian/go-idempotency/idempotencywebhook": "Use for provider-delivery deduplication after signature verification.",
+          "github.com/faustbrian/go-idempotency/memory": "Use for deterministic in-process storage where restart loss is acceptable.",
+          "github.com/faustbrian/go-idempotency/postgres": "Use for durable PostgreSQL storage and caller-owned transactional completion.",
+          "github.com/faustbrian/go-idempotency/valkey": "Use for durable low-latency ownership in a dedicated Valkey noeviction deployment."
+        },
+        "lifecycle_status": "active",
+        "maturity": "stable",
+        "construction_styles": [
+          "new-options",
+          "open",
+          "plain-function",
+          "validated-value"
+        ],
+        "lifecycle_styles": [
+          "stateless"
+        ],
+        "ownership": {
+          "configuration": "caller",
+          "mutable_inputs": [
+            "borrow",
+            "copy"
+          ],
+          "runtime_resources": "caller",
+          "background_work": "none"
+        },
+        "optional_owned_dependencies": [],
+        "adapters": [
+          "github.com/faustbrian/go-idempotency/idempotencycommand",
+          "github.com/faustbrian/go-idempotency/idempotencyhttp",
+          "github.com/faustbrian/go-idempotency/idempotencylog",
+          "github.com/faustbrian/go-idempotency/idempotencyoutbox",
+          "github.com/faustbrian/go-idempotency/idempotencyqueue",
+          "github.com/faustbrian/go-idempotency/idempotencyrpc",
+          "github.com/faustbrian/go-idempotency/idempotencytelemetry",
+          "github.com/faustbrian/go-idempotency/idempotencywebhook",
+          "github.com/faustbrian/go-idempotency/memory",
+          "github.com/faustbrian/go-idempotency/postgres",
+          "github.com/faustbrian/go-idempotency/valkey"
+        ],
+        "companions": [
+          "github.com/faustbrian/go-idempotency/canonical",
+          "github.com/faustbrian/go-idempotency/idempotencytest"
+        ],
+        "supported_go": {
+          "minimum": "1.26.6",
+          "tested": [
+            "1.26.6"
+          ]
+        },
+        "supported_platforms": [
+          "portable-go"
+        ],
+        "supported_backends": [
+          "memory",
+          "postgresql",
+          "valkey"
+        ],
+        "supported_protocols": [
+          "hmac-sha-2",
+          "http-idempotency-key-draft-07",
+          "json-rpc-2-0",
+          "rfc-8785-jcs"
+        ],
+        "documentation": {
+          "readme": "README.md",
+          "api": "https://pkg.go.dev/github.com/faustbrian/go-idempotency",
+          "adoption": "docs/quickstart.md",
+          "security": "SECURITY.md",
+          "compatibility": "docs/migrations-and-compatibility.md",
+          "performance": "docs/benchmark-baselines.md",
+          "examples": "docs/quickstart.md",
+          "faq": "docs/faq.md",
+          "changelog": "CHANGELOG.md",
+          "pkg_go_dev": "https://pkg.go.dev/github.com/faustbrian/go-idempotency",
+          "ecosystem_index": "https://github.com/faustbrian/go-library-tools/blob/v1.3.0/docs/ecosystem/README.md"
+        },
+        "known_good_compatibility_sets": [],
+        "delivery": {
+          "implementation": "not-started",
+          "hardening": "not-started",
+          "release": "not-started"
+        }
+      },
       "version": "1.0.0",
       "tag_prefix": "v",
       "owned_dependencies": [
@@ -255,10 +366,14 @@
       "module_path": "github.com/faustbrian/go-idempotency/compatibility/ecosystem",
       "go_version": "1.26.6",
       "packages": [],
-      "purpose": "See the module README and goal files.",
+      "purpose": "Compile and exercise the published idempotency, logging, migrations, outbox, queue, telemetry, and webhook contracts as one independent consumer.",
       "lifecycle": "internal",
       "kind": "interoperability harness",
       "releasable": false,
+      "family": "persistence-and-durability",
+      "family_label": "Persistence And Durability",
+      "family_description": "Durable state, delivery, coordination, recovery, and operational lifecycle.",
+      "family_order": 4,
       "version": "unreleased",
       "tag_prefix": "compatibility/ecosystem/v",
       "owned_dependencies": [

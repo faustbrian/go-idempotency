@@ -8,12 +8,24 @@ public API reaches its first stable version.
 
 ### Changed
 
+- Publish complete schema-v2 cohesion metadata and versioned ecosystem
+  navigation for the stable idempotency module and its interoperability
+  harness.
+- Adopt the checksum-verified `go-library-tools` v1.3.0 CLI, add the local
+  cohesion gate, and pin hosted cohesion enforcement to its immutable source
+  revision.
+- Replace the stale development-state summary with the module's released,
+  stable workload coverage.
+
 - Adopt the checksum-verified `go-library-tools` v1.2.0 CLI and immutable
   shared workflow so local and hosted gates enforce specification governance
   while preserving the API baseline, mutation checkpoints, fuzz targets,
   benchmarks, and package fixtures.
 
 ### Documentation
+
+- Record RFC 9110 Erratum 9162 as behavior-neutral for the HTTP adapter, with
+  no decision or conformance-binding changes.
 
 - Add the [specification decision register](docs/specification-decisions.md),
   pinned source authorities, drift monitoring, and executable conformance
