@@ -82,4 +82,5 @@ Licensed under the [MIT License](LICENSE). Release history is maintained in the
 Material canonicalization, JSON-RPC, HTTP, and durable-enforcement choices are
 recorded in the [specification decision register](docs/specification-decisions.md).
 Shared construction, ownership, lifecycle, and composition expectations are in
-the versioned [Golib ecosystem index](https://github.com/faustbrian/go-library-tools/blob/v1.3.0/docs/ecosystem/README.md).
+the versioned [Golib ecosystem index](https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/README.md)
+and its [Persistence and durability family](https://github.com/faustbrian/go-library-tools/blob/v1.4.0/docs/ecosystem/design-language.md#package-families-and-selection).
