@@ -14,6 +14,8 @@ public API reaches its first stable version.
   SumDB identities in the root and ecosystem compatibility modules.
 - Adopt checksum-verified `go-library-tools` v1.4.0 enforcement so dependency
   resolution rejects bootstrap-only checksums before repository gates run.
+- Advance consumer navigation to the v1.4.0 ecosystem index and its
+  persistence-and-durability family guidance.
 
 - Publish complete schema-v2 cohesion metadata and versioned ecosystem
   navigation for the stable idempotency module and its interoperability
