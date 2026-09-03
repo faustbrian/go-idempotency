@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-idempotency",
+  "module": ".",
+  "package": "idempotencycommand",
+  "gate": "mutation",
+  "input_digest": "sha256:20ae7dcebef35732e8eb0cb42c9f223f3ad92277aa3cd05c04a1dafcac7f4c46",
+  "verifier_digest": "sha256:9a9499ff68a8dfd49a0be7995590297a8ee563a1aa226bfd8b9361dc53058108",
+  "result": "passed",
+  "report_digest": "sha256:551d5c338c0eeccf3740a60031712821eb81bb25a9c2b5c477696e748178061d",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOARCH": "arm64",
+    "GOOS": "darwin",
+    "GOVERSION": "go1.27.0",
+    "gremlins_binary_sha256": "sha256:6a2beddc477eb410f8a670b6c9049558563d3c4327498fe31604d31c773a959e"
+  },
+  "completed_at": "2026-09-03T09:08:31.106164Z"
+}

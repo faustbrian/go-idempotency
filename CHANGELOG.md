@@ -8,6 +8,13 @@ public API reaches its first stable version.
 
 ### Changed
 
+- Adopt `go-telemetry` v1.1.1 in the ecosystem compatibility harness so its
+  OTLP graph selects the patched gRPC v1.83.1 release.
+- Replace bootstrap-only Golib module hashes with their immutable public
+  SumDB identities in the root and ecosystem compatibility modules.
+- Adopt checksum-verified `go-library-tools` v1.4.0 enforcement so dependency
+  resolution rejects bootstrap-only checksums before repository gates run.
+
 - Publish complete schema-v2 cohesion metadata and versioned ecosystem
   navigation for the stable idempotency module and its interoperability
   harness.
