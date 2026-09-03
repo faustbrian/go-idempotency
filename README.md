@@ -11,8 +11,8 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 `idempotency` provides durable ownership, fencing, and bounded result replay
-for retried Go operations. It is being built for HTTP, JSON-RPC, webhook,
-queue, import, and command workloads.
+for retried Go operations across HTTP, JSON-RPC, webhook, queue, import, and
+command workloads.
 
 The package deliberately does **not** claim exactly-once execution. A lease can
 expire while an old process is still performing a side effect. Correct callers
@@ -81,3 +81,5 @@ Licensed under the [MIT License](LICENSE). Release history is maintained in the
 
 Material canonicalization, JSON-RPC, HTTP, and durable-enforcement choices are
 recorded in the [specification decision register](docs/specification-decisions.md).
+Shared construction, ownership, lifecycle, and composition expectations are in
+the versioned [Golib ecosystem index](https://github.com/faustbrian/go-library-tools/blob/v1.3.0/docs/ecosystem/README.md).
