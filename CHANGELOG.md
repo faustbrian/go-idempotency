@@ -8,6 +8,9 @@ public API reaches its first stable version.
 
 ### Changed
 
+- Add a compile-checked PostgreSQL transactional-service composition recipe
+  covering pool ownership, migrations, idempotency completion, and outbox
+  atomicity without adding runtime service dependencies.
 - Adopt `go-telemetry` v1.1.1 in the ecosystem compatibility harness so its
   OTLP graph selects the patched gRPC v1.83.1 release.
 - Replace bootstrap-only Golib module hashes with their immutable public
