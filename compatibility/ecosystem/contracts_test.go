@@ -53,11 +53,14 @@ func TestPublishedEcosystemContractsCompile(t *testing.T) {
 func runTransactionalService(
 	ctx context.Context,
 	database *postgres.Pool,
+	migration migrations.Migration,
 	writer *outboxpostgres.Writer,
 	completer idempotencyoutbox.Completer,
 	envelope outbox.Envelope,
 	completion idempotency.CompleteRequest,
 ) error {
+	// Apply migration before serving requests; the caller owns the migrator.
+	_ = migration
 	return postgres.RunTransaction(ctx, database.Raw(), postgres.TransactionOptions{}, func(ctx context.Context, tx pgx.Tx) error {
 		if _, err := tx.Exec(ctx, "UPDATE application_records SET updated_at = now() WHERE id = $1", completion.Ownership.Key.Value()); err != nil {
 			return err
