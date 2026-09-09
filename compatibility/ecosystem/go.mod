@@ -3,7 +3,7 @@ module github.com/faustbrian/go-idempotency/compatibility/ecosystem
 go 1.26.6
 
 require (
-	github.com/faustbrian/go-idempotency v1.0.0
+	github.com/faustbrian/go-idempotency v1.1.0
 	github.com/faustbrian/go-log v1.0.0
 	github.com/faustbrian/go-migrations v1.0.0
 	github.com/faustbrian/go-postgres v1.0.0

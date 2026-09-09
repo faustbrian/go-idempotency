@@ -33,8 +33,8 @@ github.com/ebitengine/purego v0.10.0 h1:QIw4xfpWT6GWTzaW5XEKy3HXoqrJGx1ijYHzTF0/
 github.com/ebitengine/purego v0.10.0/go.mod h1:iIjxzd6CiRiOG0UyXP+V1+jWqUXVjPKLAI0mRfJZTmQ=
 github.com/faustbrian/go-clock v1.1.0 h1:QL1k/Xm+YvoeUs/c2d2grsp6XxxwPRlLUmg792kJAEs=
 github.com/faustbrian/go-clock v1.1.0/go.mod h1:WKZ5p79IKGNTZGDp2L81cYjbsEjv3+9U0be7uwS8t6Y=
-github.com/faustbrian/go-idempotency v1.0.0 h1:oUWdYX5RtIBssQV85qx9ambN55CAuMtv6xbBAJ6HXgI=
-github.com/faustbrian/go-idempotency v1.0.0/go.mod h1:RjwDJ8Dj5/eKIBV/eIeXwuZHYE1C5WSCLSIuHZLKiN8=
+github.com/faustbrian/go-idempotency v1.1.0 h1:UDKUdk1wA/AkCC0M9asuKhzyueXWXJdpKeWQgyKO0Jw=
+github.com/faustbrian/go-idempotency v1.1.0/go.mod h1:TxUH3bK6caqafSjkvJkBzJ07jp29nhl6YRViA/4UJyM=
 github.com/faustbrian/go-log v1.0.0 h1:OFH4CgQyIB+WGlKxXlWuJgK178sAmVUKVQBl3FwJgSY=
 github.com/faustbrian/go-log v1.0.0/go.mod h1:hwFD9uvNXWat2MF855ncxF4opNWHjhsErO/mE6SUN6E=
 github.com/faustbrian/go-migrations v1.0.0 h1:rVxTxID5tFdvK0GCcZarrCl4JDNCYx2HkYqoNZfQUVg=
