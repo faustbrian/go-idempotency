@@ -1,3 +1,4 @@
+//lint:file-ignore SA1019 Compatibility tests intentionally import deprecated APIs.
 package idempotency_test
 
 import (
