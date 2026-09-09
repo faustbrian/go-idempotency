@@ -37,3 +37,5 @@ observable evidence; the machine-complete bindings are in
 
 Run `make conformance` for focused Go evidence and maintained-peer JCS
 comparison. CI additionally runs the canonical online source and errata check.
+Reviewed monitoring changes and their decision applicability are preserved in
+the append-only [upstream authority review history](upstream-reviews.md).

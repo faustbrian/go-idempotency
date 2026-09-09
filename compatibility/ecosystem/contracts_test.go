@@ -17,12 +17,14 @@ import (
 	idempotencypostgres "github.com/faustbrian/go-idempotency/postgres"
 	log "github.com/faustbrian/go-log"
 	migrations "github.com/faustbrian/go-migrations"
+	postgres "github.com/faustbrian/go-postgres"
 	queuecore "github.com/faustbrian/go-queue/core"
 	telemetry "github.com/faustbrian/go-telemetry"
 	"github.com/faustbrian/go-transactional-outbox"
 	outboxpostgres "github.com/faustbrian/go-transactional-outbox/postgres"
 	webhook "github.com/faustbrian/go-webhook"
 	webhookidempotency "github.com/faustbrian/go-webhook/adapters/idempotency"
+	"github.com/jackc/pgx/v5"
 )
 
 func TestPublishedEcosystemContractsCompile(t *testing.T) {
@@ -42,6 +44,30 @@ func TestPublishedEcosystemContractsCompile(t *testing.T) {
 
 	_ = bindTelemetry
 	_ = bindMigration
+	_ = runTransactionalService
+}
+
+// runTransactionalService is a compile-checked composition recipe. Runtime
+// tests for PostgreSQL remain in the owning modules and use their ephemeral
+// database gates; this harness deliberately performs no external I/O.
+func runTransactionalService(
+	ctx context.Context,
+	database *postgres.Pool,
+	migration migrations.Migration,
+	writer *outboxpostgres.Writer,
+	completer idempotencyoutbox.Completer,
+	envelope outbox.Envelope,
+	completion idempotency.CompleteRequest,
+) error {
+	// Apply migration before serving requests; the caller owns the migrator.
+	_ = migration
+	return postgres.RunTransaction(ctx, database.Raw(), postgres.TransactionOptions{}, func(ctx context.Context, tx pgx.Tx) error {
+		if _, err := tx.Exec(ctx, "UPDATE application_records SET updated_at = now() WHERE id = $1", completion.Ownership.Key.Value()); err != nil {
+			return err
+		}
+		_, err := idempotencyoutbox.InsertAndComplete(ctx, tx, writer, envelope, completer, completion)
+		return err
+	})
 }
 
 func TestWebhookReplayStoreUsesDurableIdempotency(t *testing.T) {

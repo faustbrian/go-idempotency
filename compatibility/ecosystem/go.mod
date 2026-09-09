@@ -6,10 +6,12 @@ require (
 	github.com/faustbrian/go-idempotency v1.0.0
 	github.com/faustbrian/go-log v1.0.0
 	github.com/faustbrian/go-migrations v1.0.0
+	github.com/faustbrian/go-postgres v1.0.0
 	github.com/faustbrian/go-queue v1.0.0
 	github.com/faustbrian/go-telemetry v1.1.1
 	github.com/faustbrian/go-transactional-outbox v1.0.0
 	github.com/faustbrian/go-webhook v1.0.0
+	github.com/jackc/pgx/v5 v5.10.0
 )
 
 require (
@@ -22,7 +24,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.29.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
-	github.com/jackc/pgx/v5 v5.10.0 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel v1.44.0 // indirect
