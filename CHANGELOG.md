@@ -6,8 +6,25 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-09
+
+### Added
+
+- Add canonical command, HTTP, JSON-RPC, OpenTelemetry, outbox, queue, slog,
+  and webhook integrations under `adapters/*` with unchanged observable
+  contracts.
+
+### Deprecated
+
+- Deprecate the eight released `idempotency*` integration paths in favor of
+  their target-oriented `adapters/*` successors. Compatibility facades retain
+  existing source, named type, error, ownership, cancellation, bounds, and
+  replay behavior throughout the documented migration interval.
+
 ### Changed
 
+- Adopt `go-clock` v1.1.0 so clean consumers resolve the immutable public
+  module instead of the checksum-divergent historical v1.0.0 tag.
 - Add a compile-checked PostgreSQL transactional-service composition recipe
   covering pool ownership, migrations, idempotency completion, and outbox
   atomicity without adding runtime service dependencies.
@@ -174,5 +191,6 @@ public API reaches its first stable version.
 
 - The public API follows stable v1 semantic-versioning compatibility.
 
-[Unreleased]: https://github.com/faustbrian/go-idempotency/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/faustbrian/go-idempotency/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/faustbrian/go-idempotency/releases/tag/v1.1.0
 [1.0.0]: https://github.com/faustbrian/go-idempotency/releases/tag/v1.0.0

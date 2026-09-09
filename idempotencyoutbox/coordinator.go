@@ -1,34 +1,30 @@
-// Package idempotencyoutbox coordinates a transactional outbox insert with
-// PostgreSQL idempotency completion in one caller-owned transaction.
+// Package idempotencyoutbox is the legacy transactional outbox adapter.
+//
+// Deprecated: use github.com/faustbrian/go-idempotency/adapters/outbox. This
+// package remains supported for the longer of 180 days after successor
+// availability and two subsequently published stable root-module minor
+// releases.
 package idempotencyoutbox
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/faustbrian/go-idempotency"
+	canonical "github.com/faustbrian/go-idempotency/adapters/outbox"
 	"github.com/jackc/pgx/v5"
 )
 
-// Writer inserts an envelope through a caller-owned transaction. The
-// outbox postgres.Writer satisfies Writer[outbox.Envelope].
+// Writer inserts an envelope through a caller-owned transaction.
 type Writer[E any] interface {
 	Insert(context.Context, pgx.Tx, E) error
 }
 
-// Completer conditionally persists idempotency completion in a caller-owned
-// transaction. The idempotency postgres.Store satisfies this contract.
+// Completer conditionally persists completion in a caller-owned transaction.
 type Completer interface {
-	CompleteTx(
-		context.Context,
-		pgx.Tx,
-		idempotency.CompleteRequest,
-	) (idempotency.Record, error)
+	CompleteTx(context.Context, pgx.Tx, idempotency.CompleteRequest) (idempotency.Record, error)
 }
 
-// InsertAndComplete inserts envelope and then conditionally completes the
-// idempotency record using tx. The caller must roll back on any returned error
-// and remains responsible for committing a successful transaction.
+// InsertAndComplete inserts an envelope and conditionally completes its record.
 func InsertAndComplete[E any](
 	ctx context.Context,
 	tx pgx.Tx,
@@ -37,14 +33,5 @@ func InsertAndComplete[E any](
 	completer Completer,
 	request idempotency.CompleteRequest,
 ) (idempotency.Record, error) {
-	if err := writer.Insert(ctx, tx, envelope); err != nil {
-		return idempotency.Record{}, fmt.Errorf("insert outbox envelope: %w", err)
-	}
-
-	record, err := completer.CompleteTx(ctx, tx, request)
-	if err != nil {
-		return idempotency.Record{}, fmt.Errorf("complete idempotency record: %w", err)
-	}
-
-	return record, nil
+	return canonical.InsertAndComplete(ctx, tx, writer, envelope, completer, request)
 }

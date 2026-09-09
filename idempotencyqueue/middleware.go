@@ -1,22 +1,26 @@
-// Package idempotencyqueue provides durable consumer ownership and
-// redelivery deduplication for messages exposing a Payload method.
+// Package idempotencyqueue is the legacy durable queue adapter.
+//
+// Deprecated: use github.com/faustbrian/go-idempotency/adapters/queue. This
+// package remains supported for the longer of 180 days after successor
+// availability and two subsequently published stable root-module minor
+// releases.
 package idempotencyqueue
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/faustbrian/go-idempotency"
+	canonical "github.com/faustbrian/go-idempotency/adapters/queue"
 )
 
 var (
 	// ErrInProgress tells a broker to retry after another owner's lease.
-	ErrInProgress = errors.New("idempotencyqueue: delivery in progress")
+	ErrInProgress = canonical.ErrInProgress
 	// ErrConflict identifies reuse of a delivery key for a different payload.
-	ErrConflict = errors.New("idempotencyqueue: delivery fingerprint conflict")
+	ErrConflict = canonical.ErrConflict
 	// ErrTerminalFailure identifies a previously recorded permanent failure.
-	ErrTerminalFailure = errors.New("idempotencyqueue: delivery terminally failed")
+	ErrTerminalFailure = canonical.ErrTerminalFailure
 )
 
 // Message is satisfied by queue core.TaskMessage and similar deliveries.
@@ -42,96 +46,49 @@ type Options struct {
 	Fingerprint       FingerprintFunc
 }
 
-// Middleware deduplicates completed deliveries and owns retry transitions.
-type Middleware struct {
-	service           *idempotency.Service
-	lease             time.Duration
-	transitionTimeout time.Duration
-	key               KeyFunc
-	fingerprint       FingerprintFunc
-}
+// Middleware preserves the legacy queue adapter type identity.
+type Middleware struct{ inner *canonical.Middleware }
 
 // New validates options and constructs queue middleware.
 func New(options Options) (*Middleware, error) {
-	if options.Service == nil {
-		return nil, configurationError("service")
+	var key canonical.KeyFunc
+	if options.Key != nil {
+		key = func(ctx context.Context, message canonical.Message) (idempotency.Key, error) {
+			return options.Key(ctx, message)
+		}
 	}
-	if options.Lease <= 0 || options.Lease > idempotency.MaxLease {
-		return nil, configurationError("lease")
+	var fingerprint canonical.FingerprintFunc
+	if options.Fingerprint != nil {
+		fingerprint = func(message canonical.Message) (idempotency.Fingerprint, error) {
+			return options.Fingerprint(message)
+		}
 	}
-	if options.Key == nil {
-		return nil, configurationError("key")
+	inner, err := canonical.New(canonical.Options{
+		Service: options.Service, Lease: options.Lease,
+		TransitionTimeout: options.TransitionTimeout,
+		Key:               key, Fingerprint: fingerprint,
+	})
+	if err != nil {
+		return nil, err
 	}
-	if options.Fingerprint == nil {
-		return nil, configurationError("fingerprint")
-	}
-	if options.TransitionTimeout < 0 {
-		return nil, configurationError("transition_timeout")
-	}
-	if options.TransitionTimeout == 0 {
-		options.TransitionTimeout = 5 * time.Second
-	}
-	return &Middleware{
-		service: options.Service, lease: options.Lease,
-		transitionTimeout: options.TransitionTimeout,
-		key:               options.Key, fingerprint: options.Fingerprint,
-	}, nil
+
+	return &Middleware{inner: inner}, nil
 }
 
 // Handle executes handler for an acquired delivery and completes it on success.
-func (m *Middleware) Handle(ctx context.Context, message Message, handler Handler) error {
-	if message == nil {
-		return configurationError("message")
-	}
-	if handler == nil {
-		return configurationError("handler")
-	}
-	key, err := m.key(ctx, message)
-	if err != nil {
-		return err
-	}
-	fingerprint, err := m.fingerprint(message)
-	if err != nil {
-		return err
-	}
-	begin, err := m.service.Begin(ctx, idempotency.BeginRequest{
-		Acquire: idempotency.AcquireRequest{Key: key, Fingerprint: fingerprint, Lease: m.lease},
-	})
-	if err != nil {
-		return err
-	}
-	switch begin.Outcome {
-	case idempotency.OutcomeReplayed:
-		return nil
-	case idempotency.OutcomeInProgress:
-		return ErrInProgress
-	case idempotency.OutcomeConflict:
-		return ErrConflict
-	case idempotency.OutcomeTerminalFailure:
-		return ErrTerminalFailure
-	}
-
-	defer func() {
-		if recovered := recover(); recovered != nil {
-			_ = m.release(ctx, begin.Record.Ownership())
-			panic(recovered)
+func (middleware *Middleware) Handle(
+	ctx context.Context,
+	message Message,
+	handler Handler,
+) error {
+	var next canonical.Handler
+	if handler != nil {
+		next = func(ctx context.Context, message canonical.Message) error {
+			return handler(ctx, message)
 		}
-	}()
-	handlerCtx := idempotency.WithOwnership(ctx, begin.Record.Ownership())
-	if err := handler(handlerCtx, message); err != nil {
-		return errors.Join(err, m.release(ctx, begin.Record.Ownership()))
 	}
-	_, err = m.service.Complete(ctx, idempotency.CompleteRequest{
-		Ownership: begin.Record.Ownership(),
-	})
-	return err
-}
 
-func (m *Middleware) release(ctx context.Context, ownership idempotency.Ownership) error {
-	transitionCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), m.transitionTimeout)
-	defer cancel()
-	_, err := m.service.Release(transitionCtx, ownership)
-	return err
+	return middleware.inner.Handle(ctx, message, next)
 }
 
 // Wrap preserves the concrete message type expected by queue WithFn.
@@ -144,8 +101,4 @@ func Wrap[M Message](
 			return next(ctx, message)
 		})
 	}
-}
-
-func configurationError(field string) error {
-	return &idempotency.Error{Reason: idempotency.ReasonInvalidConfiguration, Field: field}
 }

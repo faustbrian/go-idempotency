@@ -6,7 +6,7 @@ client. Applications adapt the signal to their own observability stack.
 
 The optional ecosystem adapters accept the standard types exposed by
 `log` and `telemetry`, so they do not require global logger or telemetry
-registration:
+registration. Import them from `adapters/slog` and `adapters/otel`:
 
 ```go
 logger, err := log.New(slog.NewJSONHandler(logWriter, nil))

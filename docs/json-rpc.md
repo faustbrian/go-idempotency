@@ -4,8 +4,10 @@ This is a durable per-invocation projection, not a complete JSON-RPC server.
 The [specification decision register](specification-decisions.md) records the
 request, response, error, notification, and batch ownership boundaries.
 
-`idempotencyrpc` durably elects one handler for a method-scoped key and replays
-both successful results and JSON-RPC protocol errors.
+Import `idempotencyrpc` from
+`github.com/faustbrian/go-idempotency/adapters/jsonrpc`. It durably elects one
+handler for a method-scoped key and replays both successful results and
+JSON-RPC protocol errors.
 
 ```go
 middleware, err := idempotencyrpc.New(idempotencyrpc.Options{

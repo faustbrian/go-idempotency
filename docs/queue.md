@@ -1,8 +1,10 @@
 # Queue consumer middleware
 
-`idempotencyqueue` deduplicates completed redeliveries and preserves retry
-behavior for failed handlers. Its structural `Message` interface is satisfied
-by `queue/core.TaskMessage` without coupling the semantic core to a broker.
+Import `idempotencyqueue` from
+`github.com/faustbrian/go-idempotency/adapters/queue`. It deduplicates completed
+redeliveries and preserves retry behavior for failed handlers. Its structural
+`Message` interface is satisfied by `queue/core.TaskMessage` without coupling
+the semantic core to a broker.
 
 ```go
 deduplicator, err := idempotencyqueue.New(idempotencyqueue.Options{
