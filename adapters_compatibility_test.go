@@ -16,14 +16,14 @@ import (
 	queue "github.com/faustbrian/go-idempotency/adapters/queue"
 	slogadapter "github.com/faustbrian/go-idempotency/adapters/slog"
 	webhook "github.com/faustbrian/go-idempotency/adapters/webhook"
-	legacycommand "github.com/faustbrian/go-idempotency/idempotencycommand"
-	legacyhttp "github.com/faustbrian/go-idempotency/idempotencyhttp"
-	legacylog "github.com/faustbrian/go-idempotency/idempotencylog"
-	legacyoutbox "github.com/faustbrian/go-idempotency/idempotencyoutbox"
-	legacyqueue "github.com/faustbrian/go-idempotency/idempotencyqueue"
-	legacyrpc "github.com/faustbrian/go-idempotency/idempotencyrpc"
-	legacytelemetry "github.com/faustbrian/go-idempotency/idempotencytelemetry"
-	legacywebhook "github.com/faustbrian/go-idempotency/idempotencywebhook"
+	legacycommand "github.com/faustbrian/go-idempotency/idempotencycommand"     //nolint:staticcheck // Legacy facade coverage.
+	legacyhttp "github.com/faustbrian/go-idempotency/idempotencyhttp"           //nolint:staticcheck // Legacy facade coverage.
+	legacylog "github.com/faustbrian/go-idempotency/idempotencylog"             //nolint:staticcheck // Legacy facade coverage.
+	legacyoutbox "github.com/faustbrian/go-idempotency/idempotencyoutbox"       //nolint:staticcheck // Legacy facade coverage.
+	legacyqueue "github.com/faustbrian/go-idempotency/idempotencyqueue"         //nolint:staticcheck // Legacy facade coverage.
+	legacyrpc "github.com/faustbrian/go-idempotency/idempotencyrpc"             //nolint:staticcheck // Legacy facade coverage.
+	legacytelemetry "github.com/faustbrian/go-idempotency/idempotencytelemetry" //nolint:staticcheck // Legacy facade coverage.
+	legacywebhook "github.com/faustbrian/go-idempotency/idempotencywebhook"     //nolint:staticcheck // Legacy facade coverage.
 	"github.com/faustbrian/go-idempotency/memory"
 )
 
