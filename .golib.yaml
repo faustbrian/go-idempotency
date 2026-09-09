@@ -56,12 +56,12 @@ operations:
         budget: 10000x
         timeout: 20m
       - type: go-test
-        packages: [./idempotencyhttp]
+        packages: [./adapters/http]
         fuzz: '^FuzzMalformedReplayFailsClosed$'
         budget: 10000x
         timeout: 20m
       - type: go-test
-        packages: [./idempotencyrpc]
+        packages: [./adapters/jsonrpc]
         fuzz: '^FuzzMalformedReplayFailsClosed$'
         budget: 10000x
         timeout: 20m

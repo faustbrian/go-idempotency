@@ -4,7 +4,7 @@ go 1.26.6
 
 require (
 	github.com/deszhou/jcs v1.0.0
-	github.com/faustbrian/go-clock v1.0.0
+	github.com/faustbrian/go-clock v1.1.0
 	github.com/faustbrian/go-migrations v1.0.0
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/valkey-io/valkey-go v1.0.76

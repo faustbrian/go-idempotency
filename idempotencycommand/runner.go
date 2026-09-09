@@ -1,22 +1,26 @@
-// Package idempotencycommand provides durable named command and source-record
-// import execution with bounded result replay.
+// Package idempotencycommand is the legacy command and import adapter.
+//
+// Deprecated: use github.com/faustbrian/go-idempotency/adapters/command. This
+// package remains supported for the longer of 180 days after successor
+// availability and two subsequently published stable root-module minor
+// releases.
 package idempotencycommand
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/faustbrian/go-idempotency"
+	canonical "github.com/faustbrian/go-idempotency/adapters/command"
 )
 
 var (
 	// ErrInProgress reports an unexpired owner for the source record.
-	ErrInProgress = errors.New("idempotencycommand: operation in progress")
+	ErrInProgress = canonical.ErrInProgress
 	// ErrConflict reports reuse of a source identity for different input.
-	ErrConflict = errors.New("idempotencycommand: source fingerprint conflict")
+	ErrConflict = canonical.ErrConflict
 	// ErrTerminalFailure reports a deliberately persisted permanent failure.
-	ErrTerminalFailure = errors.New("idempotencycommand: operation terminally failed")
+	ErrTerminalFailure = canonical.ErrTerminalFailure
 )
 
 // Request identifies a named command or one record in an import source.
@@ -47,108 +51,29 @@ type Result struct {
 	Replayed bool
 }
 
-// Runner durably executes named commands and source-record imports.
-type Runner struct {
-	service           *idempotency.Service
-	lease             time.Duration
-	transitionTimeout time.Duration
-}
+// Runner preserves the legacy command adapter type identity.
+type Runner struct{ inner *canonical.Runner }
 
 // New validates options and constructs a command runner.
 func New(options Options) (*Runner, error) {
-	if options.Service == nil {
-		return nil, configurationError("service")
+	inner, err := canonical.New(canonical.Options{
+		Service: options.Service, Lease: options.Lease,
+		TransitionTimeout: options.TransitionTimeout,
+	})
+	if err != nil {
+		return nil, err
 	}
-	if options.Lease <= 0 || options.Lease > idempotency.MaxLease {
-		return nil, configurationError("lease")
-	}
-	if options.TransitionTimeout < 0 {
-		return nil, configurationError("transition_timeout")
-	}
-	if options.TransitionTimeout == 0 {
-		options.TransitionTimeout = 5 * time.Second
-	}
-	return &Runner{
-		service: options.Service, lease: options.Lease,
-		transitionTimeout: options.TransitionTimeout,
-	}, nil
+
+	return &Runner{inner: inner}, nil
 }
 
 // Run executes handler only for a newly acquired or taken-over source record.
-func (r *Runner) Run(ctx context.Context, request Request, handler Handler) (Result, error) {
-	if handler == nil {
-		return Result{}, configurationError("handler")
-	}
-	key, err := idempotency.NewKey(
-		request.Namespace, request.Tenant, request.Name, request.Caller, request.SourceID,
-	)
-	if err != nil {
-		return Result{}, err
-	}
-	begin, err := r.service.Begin(ctx, idempotency.BeginRequest{
-		Acquire: idempotency.AcquireRequest{
-			Key: key, Fingerprint: request.Fingerprint, Lease: r.lease,
-		},
-	})
-	if err != nil {
-		return Result{}, err
-	}
-	switch begin.Outcome {
-	case idempotency.OutcomeReplayed:
-		return resultFromRecord(begin.Outcome, begin.Record, true), nil
-	case idempotency.OutcomeInProgress:
-		return Result{Outcome: begin.Outcome}, ErrInProgress
-	case idempotency.OutcomeConflict:
-		return Result{Outcome: begin.Outcome}, ErrConflict
-	case idempotency.OutcomeTerminalFailure:
-		return resultFromRecord(begin.Outcome, begin.Record, true), ErrTerminalFailure
-	}
+func (runner *Runner) Run(
+	ctx context.Context,
+	request Request,
+	handler Handler,
+) (Result, error) {
+	result, err := runner.inner.Run(ctx, canonical.Request(request), canonical.Handler(handler))
 
-	defer func() {
-		if recovered := recover(); recovered != nil {
-			_ = r.release(ctx, begin.Record.Ownership())
-			panic(recovered)
-		}
-	}()
-	handlerCtx := idempotency.WithOwnership(ctx, begin.Record.Ownership())
-	value, metadata, err := handler(handlerCtx)
-	if err != nil {
-		return Result{}, errors.Join(err, r.release(ctx, begin.Record.Ownership()))
-	}
-	record, err := r.service.Complete(ctx, idempotency.CompleteRequest{
-		Ownership: begin.Record.Ownership(), Result: value, Metadata: metadata,
-	})
-	if err != nil {
-		return Result{}, err
-	}
-	return resultFromRecord(begin.Outcome, record, false), nil
-}
-
-func (r *Runner) release(ctx context.Context, ownership idempotency.Ownership) error {
-	transitionCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), r.transitionTimeout)
-	defer cancel()
-	_, err := r.service.Release(transitionCtx, ownership)
-	return err
-}
-
-func resultFromRecord(outcome idempotency.Outcome, record idempotency.Record, replayed bool) Result {
-	return Result{
-		Outcome: outcome, Result: append([]byte(nil), record.Result...),
-		Metadata: cloneMetadata(record.Metadata), Replayed: replayed,
-	}
-}
-
-func cloneMetadata(metadata map[string]string) map[string]string {
-	if metadata == nil {
-		return nil
-	}
-	cloned := make(map[string]string, len(metadata))
-	for key, value := range metadata {
-		cloned[key] = value
-	}
-	return cloned
-}
-
-func configurationError(field string) error {
-	return &idempotency.Error{Reason: idempotency.ReasonInvalidConfiguration, Field: field}
+	return Result(result), err
 }

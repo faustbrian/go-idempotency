@@ -28,6 +28,25 @@ and import helpers, transactional `outbox` coordination, and bounded logging
 and telemetry observers are implemented. The API is stable at v1 and is
 released as stable.
 
+New integrations use target-oriented packages under `adapters/`:
+
+| Concern | Canonical package |
+| --- | --- |
+| Commands and imports | `github.com/faustbrian/go-idempotency/adapters/command` |
+| HTTP | `github.com/faustbrian/go-idempotency/adapters/http` |
+| JSON-RPC | `github.com/faustbrian/go-idempotency/adapters/jsonrpc` |
+| OpenTelemetry | `github.com/faustbrian/go-idempotency/adapters/otel` |
+| Transactional outbox | `github.com/faustbrian/go-idempotency/adapters/outbox` |
+| Queue consumers | `github.com/faustbrian/go-idempotency/adapters/queue` |
+| Structured logging | `github.com/faustbrian/go-idempotency/adapters/slog` |
+| Webhooks | `github.com/faustbrian/go-idempotency/adapters/webhook` |
+
+The released `idempotencycommand`, `idempotencyhttp`, `idempotencylog`,
+`idempotencyoutbox`, `idempotencyqueue`, `idempotencyrpc`,
+`idempotencytelemetry`, and `idempotencywebhook` paths remain compatibility
+facades. Existing callers can migrate imports independently without changing
+their observable contracts.
+
 ## Core acquisition outcomes
 
 - `acquired`: this caller owns the first or a deliberately released attempt.
@@ -62,7 +81,7 @@ record identities.
 The [PostgreSQL guide](docs/postgres.md) covers transactional locking, cleanup,
 permissions, and persisted-record privacy.
 The [transaction and outbox guide](docs/outbox.md) shows atomic business,
-`outbox` envelope, and completion commits with `idempotencyoutbox`.
+`outbox` envelope, and completion commits with `adapters/outbox`.
 The [webhook guide](docs/webhooks.md) covers signature ordering, provider
 delivery identities, and response mapping.
 The [operations guide](docs/operations.md) covers health, observability,

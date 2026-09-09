@@ -4,6 +4,9 @@
 application-owned pgx transaction. Use it when the business effect or an outbox
 row lives in the same PostgreSQL database.
 
+Import `idempotencyoutbox` from
+`github.com/faustbrian/go-idempotency/adapters/outbox`.
+
 ```go
 begin, err := service.Begin(ctx, idempotency.BeginRequest{
 	Acquire: idempotency.AcquireRequest{
