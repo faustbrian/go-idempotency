@@ -32,9 +32,9 @@ public API reaches its first stable version.
   OTLP graph selects the patched gRPC v1.83.1 release.
 - Replace bootstrap-only Golib module hashes with their immutable public
   SumDB identities in the root and ecosystem compatibility modules.
-- Adopt checksum-verified `go-library-tools` v1.4.0 enforcement so dependency
+- Adopt checksum-verified `go-library-tools` v1.6.1 enforcement so dependency
   resolution rejects bootstrap-only checksums before repository gates run.
-- Advance consumer navigation to the v1.4.0 ecosystem index and its
+- Advance consumer navigation to the v1.6.1 ecosystem index and its
   persistence-and-durability family guidance.
 
 - Publish complete schema-v2 cohesion metadata and versioned ecosystem
