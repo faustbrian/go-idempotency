@@ -1,9 +1,5 @@
-// Package idempotencywebhook is the legacy durable webhook adapter.
-//
-// Deprecated: use github.com/faustbrian/go-idempotency/adapters/webhook. This
-// package remains supported for the longer of 180 days after successor
-// availability and two subsequently published stable root-module minor
-// releases.
+// Package idempotencywebhook provides provider-delivery deduplication for
+// webhook messages with bounded payload fingerprints and durable ownership.
 package idempotencywebhook
 
 import (
@@ -11,16 +7,16 @@ import (
 	"time"
 
 	"github.com/faustbrian/go-idempotency"
-	canonical "github.com/faustbrian/go-idempotency/adapters/webhook"
+	"github.com/faustbrian/go-idempotency/adapters/queue"
 )
 
 var (
 	// ErrInProgress reports another active delivery owner.
-	ErrInProgress = canonical.ErrInProgress
+	ErrInProgress = idempotencyqueue.ErrInProgress
 	// ErrConflict reports reuse of a provider delivery ID for another payload.
-	ErrConflict = canonical.ErrConflict
+	ErrConflict = idempotencyqueue.ErrConflict
 	// ErrTerminalFailure reports a deliberately persisted permanent failure.
-	ErrTerminalFailure = canonical.ErrTerminalFailure
+	ErrTerminalFailure = idempotencyqueue.ErrTerminalFailure
 )
 
 // Delivery is the structural payload contract expected from webhook messages.
@@ -46,24 +42,26 @@ type Options struct {
 	Fingerprint       FingerprintFunc
 }
 
-// Processor preserves the legacy webhook adapter type identity.
-type Processor struct{ inner *canonical.Processor }
+// Processor deduplicates completed provider deliveries.
+type Processor struct {
+	middleware *idempotencyqueue.Middleware
+}
 
 // New validates options and constructs a webhook processor.
 func New(options Options) (*Processor, error) {
-	var key canonical.KeyFunc
+	var key idempotencyqueue.KeyFunc
 	if options.Key != nil {
-		key = func(ctx context.Context, delivery canonical.Delivery) (idempotency.Key, error) {
-			return options.Key(ctx, delivery)
+		key = func(ctx context.Context, message idempotencyqueue.Message) (idempotency.Key, error) {
+			return options.Key(ctx, message.(Delivery))
 		}
 	}
-	var fingerprint canonical.FingerprintFunc
+	var fingerprint idempotencyqueue.FingerprintFunc
 	if options.Fingerprint != nil {
-		fingerprint = func(delivery canonical.Delivery) (idempotency.Fingerprint, error) {
-			return options.Fingerprint(delivery)
+		fingerprint = func(message idempotencyqueue.Message) (idempotency.Fingerprint, error) {
+			return options.Fingerprint(message.(Delivery))
 		}
 	}
-	inner, err := canonical.New(canonical.Options{
+	middleware, err := idempotencyqueue.New(idempotencyqueue.Options{
 		Service: options.Service, Lease: options.Lease,
 		TransitionTimeout: options.TransitionTimeout,
 		Key:               key, Fingerprint: fingerprint,
@@ -71,24 +69,17 @@ func New(options Options) (*Processor, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	return &Processor{inner: inner}, nil
+	return &Processor{middleware: middleware}, nil
 }
 
 // Handle executes handler once and deduplicates completed redelivery.
-func (processor *Processor) Handle(
-	ctx context.Context,
-	delivery Delivery,
-	handler Handler,
-) error {
-	var next canonical.Handler
-	if handler != nil {
-		next = func(ctx context.Context, delivery canonical.Delivery) error {
-			return handler(ctx, delivery)
-		}
+func (p *Processor) Handle(ctx context.Context, delivery Delivery, handler Handler) error {
+	if handler == nil {
+		return configurationError("handler")
 	}
-
-	return processor.inner.Handle(ctx, delivery, next)
+	return p.middleware.Handle(ctx, delivery, func(ctx context.Context, _ idempotencyqueue.Message) error {
+		return handler(ctx, delivery)
+	})
 }
 
 // Wrap preserves the provider-specific delivery type used by a webhook router.
@@ -99,7 +90,6 @@ func Wrap[D Delivery](
 	if next == nil {
 		return func(context.Context, D) error { return configurationError("handler") }
 	}
-
 	return func(ctx context.Context, delivery D) error {
 		return processor.Handle(ctx, delivery, func(ctx context.Context, _ Delivery) error {
 			return next(ctx, delivery)

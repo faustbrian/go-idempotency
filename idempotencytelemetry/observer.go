@@ -1,56 +1,38 @@
-// Package idempotencytelemetry adapts bounded observations to OpenTelemetry
-// metrics. The telemetry runtime exposes the standard MeterProvider used by
-// New, so the integration does not require global provider registration.
+// Package idempotencytelemetry is the legacy OpenTelemetry adapter.
+//
+// Deprecated: use github.com/faustbrian/go-idempotency/adapters/otel. This
+// package remains supported for the longer of 180 days after successor
+// availability and two subsequently published stable root-module minor
+// releases.
 package idempotencytelemetry
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
 	"github.com/faustbrian/go-idempotency"
-	"go.opentelemetry.io/otel/attribute"
+	canonical "github.com/faustbrian/go-idempotency/adapters/otel"
 	"go.opentelemetry.io/otel/metric"
 )
 
-const instrumentationScope = "github.com/faustbrian/go-idempotency"
-
 // ErrNilMeterProvider reports an unusable telemetry configuration.
-var ErrNilMeterProvider = errors.New("idempotencytelemetry: nil meter provider")
+var ErrNilMeterProvider = canonical.ErrNilMeterProvider
 
-// Observer counts semantic transitions using bounded attributes.
-type Observer struct {
-	transitions metric.Int64Counter
-}
+// Observer preserves the legacy OpenTelemetry adapter type identity.
+type Observer struct{ inner *canonical.Observer }
 
 // New constructs an observer from a standard OpenTelemetry meter provider.
-// Pass telemetry Runtime.MeterProvider() to bind an application runtime.
 func New(provider metric.MeterProvider) (*Observer, error) {
-	if provider == nil {
-		return nil, ErrNilMeterProvider
-	}
-
-	transitions, err := provider.Meter(instrumentationScope).Int64Counter(
-		"idempotency.transitions",
-		metric.WithDescription("Idempotency semantic service transitions"),
-		metric.WithUnit("{transition}"),
-	)
+	inner, err := canonical.New(provider)
 	if err != nil {
-		return nil, fmt.Errorf("create transition counter: %w", err)
+		return nil, err
 	}
 
-	return &Observer{transitions: transitions}, nil
+	return &Observer{inner: inner}, nil
 }
 
-// Observe increments the transition counter. Correlation is deliberately
-// excluded because keyed digests remain high-cardinality metric attributes.
+// Observe increments the transition counter.
 func (observer *Observer) Observe(ctx context.Context, event idempotency.Observation) {
-	observer.transitions.Add(ctx, 1, metric.WithAttributes(
-		attribute.String("transition", string(event.Transition)),
-		attribute.String("outcome", string(event.Outcome)),
-		attribute.String("reason", string(event.Reason)),
-		attribute.Bool("durable", event.Durable),
-	))
+	observer.inner.Observe(ctx, event)
 }
 
 var _ idempotency.Observer = (*Observer)(nil)

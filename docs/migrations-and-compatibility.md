@@ -25,6 +25,30 @@ Applications should pin a tagged version, review `CHANGELOG.md`, compile all
 integration packages they use, and run their own crash and retry tests before
 upgrading. Do not deploy an unreviewed `main` snapshot as a production upgrade.
 
+## Adapter path migration
+
+Version 1.1 adds target-oriented adapter paths while retaining every released
+v1 integration path as a compatibility facade:
+
+| Released compatibility path | Canonical path |
+| --- | --- |
+| `idempotencycommand` | `adapters/command` |
+| `idempotencyhttp` | `adapters/http` |
+| `idempotencylog` | `adapters/slog` |
+| `idempotencyoutbox` | `adapters/outbox` |
+| `idempotencyqueue` | `adapters/queue` |
+| `idempotencyrpc` | `adapters/jsonrpc` |
+| `idempotencytelemetry` | `adapters/otel` |
+| `idempotencywebhook` | `adapters/webhook` |
+
+Migrate by changing one import path at a time. Public signatures, stable error
+sentinels, durable state transitions, payload bounds, ownership, cancellation,
+and replay behavior remain compatible. Legacy concrete and named types retain
+their original package identity while delegating to the canonical
+implementation. The compatibility paths remain supported for the longer of
+180 days after v1.1.0 and two subsequently published stable root-module minor
+releases, following `DEPRECATION.md`.
+
 ## Persisted record policy
 
 PostgreSQL JSONB records and Valkey hashes contain an explicit schema version.
@@ -116,10 +140,10 @@ Changing any of them creates a distinct record and fencing domain.
 ## Ecosystem bindings
 
 `log` exposes `*slog.Logger`, and `telemetry.Runtime` exposes standard
-OpenTelemetry providers. The `idempotencylog` and `idempotencytelemetry`
-packages bind those contracts without depending on unreleased upstream commit
-identities. `queue/core.TaskMessage` satisfies the structural queue message
-contract. `idempotencyoutbox.InsertAndComplete` accepts the published
+OpenTelemetry providers. The `adapters/slog` and `adapters/otel` packages bind
+those contracts without depending on unreleased upstream commit identities.
+`queue/core.TaskMessage` satisfies the structural queue message contract.
+`adapters/outbox.InsertAndComplete` accepts the published
 `outbox/postgres.Writer` and the idempotency PostgreSQL store through their
 exact transaction method contracts.
 

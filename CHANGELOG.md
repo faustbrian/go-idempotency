@@ -6,8 +6,25 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-09
+
+### Added
+
+- Add canonical command, HTTP, JSON-RPC, OpenTelemetry, outbox, queue, slog,
+  and webhook integrations under `adapters/*` with unchanged observable
+  contracts.
+
+### Deprecated
+
+- Deprecate the eight released `idempotency*` integration paths in favor of
+  their target-oriented `adapters/*` successors. Compatibility facades retain
+  existing source, named type, error, ownership, cancellation, bounds, and
+  replay behavior throughout the documented migration interval.
+
 ### Changed
 
+- Adopt `go-clock` v1.1.0 so clean consumers resolve the immutable public
+  module instead of the checksum-divergent historical v1.0.0 tag.
 - Add a compile-checked PostgreSQL transactional-service composition recipe
   covering pool ownership, migrations, idempotency completion, and outbox
   atomicity without adding runtime service dependencies.
@@ -15,9 +32,9 @@ public API reaches its first stable version.
   OTLP graph selects the patched gRPC v1.83.1 release.
 - Replace bootstrap-only Golib module hashes with their immutable public
   SumDB identities in the root and ecosystem compatibility modules.
-- Adopt checksum-verified `go-library-tools` v1.4.0 enforcement so dependency
+- Adopt checksum-verified `go-library-tools` v1.6.1 enforcement so dependency
   resolution rejects bootstrap-only checksums before repository gates run.
-- Advance consumer navigation to the v1.4.0 ecosystem index and its
+- Advance consumer navigation to the v1.6.1 ecosystem index and its
   persistence-and-durability family guidance.
 
 - Publish complete schema-v2 cohesion metadata and versioned ecosystem
@@ -174,5 +191,6 @@ public API reaches its first stable version.
 
 - The public API follows stable v1 semantic-versioning compatibility.
 
-[Unreleased]: https://github.com/faustbrian/go-idempotency/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/faustbrian/go-idempotency/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/faustbrian/go-idempotency/releases/tag/v1.1.0
 [1.0.0]: https://github.com/faustbrian/go-idempotency/releases/tag/v1.0.0

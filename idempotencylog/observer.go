@@ -1,43 +1,38 @@
-// Package idempotencylog adapts bounded idempotency observations to log/slog.
-// Loggers constructed by github.com/faustbrian/go-log use this standard type.
+// Package idempotencylog is the legacy structured-log adapter.
+//
+// Deprecated: use github.com/faustbrian/go-idempotency/adapters/slog. This
+// package remains supported for the longer of 180 days after successor
+// availability and two subsequently published stable root-module minor
+// releases.
 package idempotencylog
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"github.com/faustbrian/go-idempotency"
+	canonical "github.com/faustbrian/go-idempotency/adapters/slog"
 )
 
 // ErrNilLogger reports an unusable logger configuration.
-var ErrNilLogger = errors.New("idempotencylog: nil logger")
+var ErrNilLogger = canonical.ErrNilLogger
 
-// Observer writes bounded semantic transition fields to a slog logger.
-type Observer struct {
-	logger *slog.Logger
-}
+// Observer preserves the legacy slog adapter type identity.
+type Observer struct{ inner *canonical.Observer }
 
-// New constructs an observer for a standard slog logger, including loggers
-// returned by github.com/faustbrian/go-log.
+// New constructs an observer for a standard slog logger.
 func New(logger *slog.Logger) (*Observer, error) {
-	if logger == nil {
-		return nil, ErrNilLogger
+	inner, err := canonical.New(logger)
+	if err != nil {
+		return nil, err
 	}
 
-	return &Observer{logger: logger}, nil
+	return &Observer{inner: inner}, nil
 }
 
-// Observe writes one bounded transition record. Correlation is intended only
-// for restricted logs and is never an unhashed logical idempotency key.
+// Observe writes one bounded transition record.
 func (observer *Observer) Observe(ctx context.Context, event idempotency.Observation) {
-	observer.logger.InfoContext(ctx, "idempotency transition",
-		slog.String("transition", string(event.Transition)),
-		slog.String("outcome", string(event.Outcome)),
-		slog.String("reason", string(event.Reason)),
-		slog.Bool("durable", event.Durable),
-		slog.String("correlation", event.Correlation),
-	)
+	observer.inner.Observe(ctx, event)
 }
 
 var _ idempotency.Observer = (*Observer)(nil)

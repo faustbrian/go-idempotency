@@ -1,24 +1,25 @@
-// Package idempotencyrpc provides method-aware durable JSON-RPC invocation
-// ownership and bounded response or protocol-error replay.
+// Package idempotencyrpc is the legacy durable JSON-RPC adapter.
+//
+// Deprecated: use github.com/faustbrian/go-idempotency/adapters/jsonrpc. This
+// package remains supported for the longer of 180 days after successor
+// availability and two subsequently published stable root-module minor
+// releases.
 package idempotencyrpc
 
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"time"
 
 	"github.com/faustbrian/go-idempotency"
+	canonical "github.com/faustbrian/go-idempotency/adapters/jsonrpc"
 )
 
 const (
 	// MaxResponseBytes is the largest persisted JSON-RPC response envelope.
-	MaxResponseBytes = 900 * 1024
+	MaxResponseBytes = canonical.MaxResponseBytes
 	// MinResponseBytes leaves room for a durable internal-error response.
-	MinResponseBytes         = 256
-	defaultMaxBytes          = 64 * 1024
-	replaySchema             = 1
-	defaultTransitionTimeout = 5 * time.Second
+	MinResponseBytes = canonical.MinResponseBytes
 )
 
 // Request contains the business fields used for method-aware idempotency.
@@ -66,178 +67,82 @@ type CallResult struct {
 	Replayed bool
 }
 
-// Middleware durably elects handlers and replays bounded responses.
-type Middleware struct {
-	service           *idempotency.Service
-	lease             time.Duration
-	maxResponseBytes  int
-	transitionTimeout time.Duration
-	key               KeyFunc
-	fingerprint       FingerprintFunc
-}
+// Middleware preserves the legacy JSON-RPC adapter type identity.
+type Middleware struct{ inner *canonical.Middleware }
 
 // New validates options and constructs JSON-RPC middleware.
 func New(options Options) (*Middleware, error) {
-	if options.Service == nil {
-		return nil, configurationError("service")
+	var key canonical.KeyFunc
+	if options.Key != nil {
+		key = func(ctx context.Context, request canonical.Request) (idempotency.Key, error) {
+			return options.Key(ctx, Request(request))
+		}
 	}
-	if options.Lease <= 0 || options.Lease > idempotency.MaxLease {
-		return nil, configurationError("lease")
+	var fingerprint canonical.FingerprintFunc
+	if options.Fingerprint != nil {
+		fingerprint = func(request canonical.Request) (idempotency.Fingerprint, error) {
+			return options.Fingerprint(Request(request))
+		}
 	}
-	if options.Key == nil {
-		return nil, configurationError("key")
+	inner, err := canonical.New(canonical.Options{
+		Service: options.Service, Lease: options.Lease,
+		MaxResponseBytes:  options.MaxResponseBytes,
+		TransitionTimeout: options.TransitionTimeout,
+		Key:               key, Fingerprint: fingerprint,
+	})
+	if err != nil {
+		return nil, err
 	}
-	if options.Fingerprint == nil {
-		return nil, configurationError("fingerprint")
-	}
-	if options.MaxResponseBytes == 0 {
-		options.MaxResponseBytes = defaultMaxBytes
-	}
-	if options.MaxResponseBytes < MinResponseBytes {
-		return nil, configurationError("max_response_bytes")
-	}
-	if options.MaxResponseBytes > MaxResponseBytes {
-		return nil, configurationError("max_response_bytes")
-	}
-	if options.TransitionTimeout < 0 {
-		return nil, configurationError("transition_timeout")
-	}
-	if options.TransitionTimeout == 0 {
-		options.TransitionTimeout = defaultTransitionTimeout
-	}
-	return &Middleware{
-		service: options.Service, lease: options.Lease,
-		maxResponseBytes:  options.MaxResponseBytes,
-		transitionTimeout: options.TransitionTimeout,
-		key:               options.Key, fingerprint: options.Fingerprint,
-	}, nil
+
+	return &Middleware{inner: inner}, nil
 }
 
 // Call invokes handler only for a newly acquired or taken-over request.
-func (m *Middleware) Call(
+func (middleware *Middleware) Call(
 	ctx context.Context,
 	request Request,
 	handler Handler,
-) (result CallResult, err error) {
-	if request.Method == "" {
-		return CallResult{}, payloadError("method", nil)
-	}
-	if handler == nil {
-		return CallResult{}, configurationError("handler")
-	}
-	key, err := m.key(ctx, request)
-	if err != nil {
-		return CallResult{}, err
-	}
-	if key.Operation() != request.Method {
-		return CallResult{}, payloadError("method_namespace", nil)
-	}
-	fingerprint, err := m.fingerprint(request)
-	if err != nil {
-		return CallResult{}, err
-	}
-	begin, err := m.service.Begin(ctx, idempotency.BeginRequest{
-		Acquire: idempotency.AcquireRequest{Key: key, Fingerprint: fingerprint, Lease: m.lease},
-	})
-	if err != nil {
-		return CallResult{}, err
-	}
-	if begin.Outcome == idempotency.OutcomeConflict || begin.Outcome == idempotency.OutcomeInProgress {
-		return CallResult{Outcome: begin.Outcome}, nil
-	}
-	if begin.Outcome == idempotency.OutcomeReplayed ||
-		begin.Outcome == idempotency.OutcomeTerminalFailure {
-		response, err := decodeResponse(begin.Record.Result, m.maxResponseBytes)
-		if err != nil {
-			return CallResult{}, err
+) (CallResult, error) {
+	var next canonical.Handler
+	var fresh Response
+	handlerCalled := false
+	if handler != nil {
+		next = func(ctx context.Context, request canonical.Request) canonical.Response {
+			handlerCalled = true
+			fresh = handler(ctx, Request(request))
+
+			return canonicalResponse(fresh)
 		}
-		return CallResult{Outcome: begin.Outcome, Response: response, Replayed: true}, nil
 	}
-	defer func() {
-		if recovered := recover(); recovered != nil {
-			_ = m.release(ctx, begin.Record.Ownership())
-			panic(recovered)
+	result, err := middleware.inner.Call(ctx, canonical.Request(request), next)
+	response := legacyResponse(result.Response)
+	if err == nil && handlerCalled && result.Outcome != idempotency.OutcomeTerminalFailure {
+		response = fresh
+	}
+
+	return CallResult{
+		Outcome: result.Outcome, Response: response, Replayed: result.Replayed,
+	}, err
+}
+
+func canonicalResponse(response Response) canonical.Response {
+	var protocolError *canonical.Error
+	if response.Error != nil {
+		protocolError = &canonical.Error{
+			Code: response.Error.Code, Message: response.Error.Message, Data: response.Error.Data,
 		}
-	}()
-	handlerCtx := idempotency.WithOwnership(ctx, begin.Record.Ownership())
-	response := handler(handlerCtx, request)
-	encoded, encodeErr := encodeResponse(response, m.maxResponseBytes)
-	if encodeErr != nil {
-		return m.fail(ctx, begin.Record.Ownership())
 	}
-	if _, err := m.service.Complete(ctx, idempotency.CompleteRequest{
-		Ownership: begin.Record.Ownership(), Result: encoded,
-	}); err != nil {
-		return CallResult{}, err
-	}
-	return CallResult{Outcome: begin.Outcome, Response: response}, nil
+
+	return canonical.Response{Result: response.Result, Error: protocolError}
 }
 
-func (m *Middleware) release(ctx context.Context, ownership idempotency.Ownership) error {
-	transitionCtx, cancel := context.WithTimeout(
-		context.WithoutCancel(ctx), m.transitionTimeout,
-	)
-	defer cancel()
-	_, err := m.service.Release(transitionCtx, ownership)
-	return err
-}
+func legacyResponse(response canonical.Response) Response {
+	var protocolError *Error
+	if response.Error != nil {
+		protocolError = &Error{
+			Code: response.Error.Code, Message: response.Error.Message, Data: response.Error.Data,
+		}
+	}
 
-func (m *Middleware) fail(ctx context.Context, ownership idempotency.Ownership) (CallResult, error) {
-	response := Response{Error: &Error{Code: -32603, Message: "internal error"}}
-	encoded, _ := encodeResponse(response, m.maxResponseBytes)
-	if _, err := m.service.Fail(ctx, idempotency.FailRequest{
-		Ownership: ownership, Result: encoded,
-	}); err != nil {
-		return CallResult{}, err
-	}
-	return CallResult{Outcome: idempotency.OutcomeTerminalFailure, Response: response}, nil
-}
-
-type persistedResponse struct {
-	Schema   int      `json:"schema"`
-	Response Response `json:"response"`
-}
-
-func encodeResponse(response Response, limit int) ([]byte, error) {
-	if !response.valid() {
-		return nil, payloadError("response", nil)
-	}
-	encoded, _ := json.Marshal(persistedResponse{Schema: replaySchema, Response: response})
-	if len(encoded) > limit {
-		return nil, &idempotency.Error{Reason: idempotency.ReasonLimitExceeded, Field: "response"}
-	}
-	return encoded, nil
-}
-
-func decodeResponse(encoded []byte, limit int) (Response, error) {
-	if len(encoded) > limit {
-		return Response{}, &idempotency.Error{Reason: idempotency.ReasonLimitExceeded, Field: "response"}
-	}
-	var persisted persistedResponse
-	if err := json.Unmarshal(encoded, &persisted); err != nil ||
-		persisted.Schema != replaySchema || !persisted.Response.valid() {
-		return Response{}, payloadError("persisted_response", err)
-	}
-	return persisted.Response, nil
-}
-
-func (r Response) valid() bool {
-	if (len(r.Result) == 0) == (r.Error == nil) {
-		return false
-	}
-	if len(r.Result) > 0 {
-		return json.Valid(r.Result)
-	}
-	return r.Error.Message != "" && (len(r.Error.Data) == 0 || json.Valid(r.Error.Data))
-}
-
-func configurationError(field string) error {
-	return &idempotency.Error{Reason: idempotency.ReasonInvalidConfiguration, Field: field}
-}
-
-func payloadError(field string, cause error) error {
-	if cause == nil {
-		cause = errors.New("invalid JSON-RPC payload")
-	}
-	return &idempotency.Error{Reason: idempotency.ReasonInvalidPayload, Field: field, Cause: cause}
+	return Response{Result: response.Result, Error: protocolError}
 }
