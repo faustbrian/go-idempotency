@@ -6,7 +6,7 @@
     {
       "directory": ".",
       "module_path": "github.com/faustbrian/go-idempotency",
-      "go_version": "1.26.6",
+      "go_version": "1.27.0",
       "packages": [
         {
           "module_directory": ".",
@@ -369,7 +369,7 @@
           "github.com/faustbrian/go-idempotency/idempotencytest"
         ],
         "supported_go": {
-          "minimum": "1.26.6",
+          "minimum": "1.27.0",
           "tested": [
             "1.27.0"
           ]
@@ -476,7 +476,7 @@
     {
       "directory": "compatibility/ecosystem",
       "module_path": "github.com/faustbrian/go-idempotency/compatibility/ecosystem",
-      "go_version": "1.26.6",
+      "go_version": "1.27.0",
       "packages": [],
       "purpose": "Compile and exercise the published idempotency, logging, migrations, outbox, queue, telemetry, and webhook contracts as one independent consumer.",
       "lifecycle": "internal",
