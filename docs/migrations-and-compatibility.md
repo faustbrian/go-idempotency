@@ -5,7 +5,7 @@ rolling deployments still require explicit compatibility discipline.
 
 ## Supported runtime matrix
 
-The current development line requires Go 1.26.6 or later, PostgreSQL 16 or 17
+The current development line requires Go 1.27.0 or later, PostgreSQL 16 or 17
 for the PostgreSQL adapter, and Valkey 9 or later for the Valkey adapter.
 Standalone and three-primary Valkey Cluster topologies are tested. A topology
 claim covers only the adapter's one-key scripts; it does not make application

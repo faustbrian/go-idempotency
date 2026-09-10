@@ -1,6 +1,6 @@
 module github.com/faustbrian/go-idempotency
 
-go 1.26.6
+go 1.27.0
 
 require (
 	github.com/deszhou/jcs v1.0.0
