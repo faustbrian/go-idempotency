@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -117,15 +118,24 @@ func TestNewValidatesConfiguration(t *testing.T) {
 		Service: service, Lease: time.Minute, Key: key, Fingerprint: fingerprint,
 	}
 	tests := map[string]idempotencyhttp.Options{
-		"service":             {Lease: time.Minute, Key: key, Fingerprint: fingerprint},
-		"lease zero":          {Service: service, Key: key, Fingerprint: fingerprint},
-		"lease too long":      {Service: service, Lease: idempotency.MaxLease + 1, Key: key, Fingerprint: fingerprint},
-		"key":                 {Service: service, Lease: time.Minute, Fingerprint: fingerprint},
-		"fingerprint":         {Service: service, Lease: time.Minute, Key: key},
-		"negative limit":      withLimit(valid, -1),
-		"oversized limit":     withLimit(valid, idempotencyhttp.MaxReplayResponseBytes+1),
-		"empty replay header": withHeaders(valid, []string{" "}),
-		"transition timeout":  withTransitionTimeout(valid, -1),
+		"service":               {Lease: time.Minute, Key: key, Fingerprint: fingerprint},
+		"lease zero":            {Service: service, Key: key, Fingerprint: fingerprint},
+		"lease too long":        {Service: service, Lease: idempotency.MaxLease + 1, Key: key, Fingerprint: fingerprint},
+		"key":                   {Service: service, Lease: time.Minute, Fingerprint: fingerprint},
+		"fingerprint":           {Service: service, Lease: time.Minute, Key: key},
+		"negative limit":        withLimit(valid, -1),
+		"oversized limit":       withLimit(valid, idempotencyhttp.MaxReplayResponseBytes+1),
+		"empty replay header":   withHeaders(valid, []string{" "}),
+		"invalid replay header": withHeaders(valid, []string{"Bad Header"}),
+		"transition timeout":    withTransitionTimeout(valid, -1),
+		"too many replay headers": withHeaders(valid, func() []string {
+			headers := make([]string, 33)
+			for index := range headers {
+				headers[index] = fmt.Sprintf("X-Replay-%d", index)
+			}
+			return headers
+		}()),
+		"replay header name too long": withHeaders(valid, []string{"X-" + strings.Repeat("a", 127)}),
 	}
 	for name, options := range tests {
 		t.Run(name, func(t *testing.T) {
@@ -141,8 +151,57 @@ func TestNewValidatesConfiguration(t *testing.T) {
 	}
 	valid.Lease = idempotency.MaxLease
 	valid.MaxResponseBytes = idempotencyhttp.MaxReplayResponseBytes
+	valid.ReplayHeaders = make([]string, idempotencyhttp.MaxReplayHeaderNames)
+	for index := range valid.ReplayHeaders {
+		valid.ReplayHeaders[index] = fmt.Sprintf("X-Replay-%d", index)
+	}
+	valid.ReplayHeaders[0] = "X-" + strings.Repeat("a", idempotencyhttp.MaxReplayHeaderNameBytes-2)
 	if _, err := idempotencyhttp.New(valid); err != nil {
 		t.Fatalf("New() exact limits error = %v", err)
+	}
+}
+
+func TestMiddlewareRejectsHostileReplayHeaderResourcesBeforePersistence(t *testing.T) {
+	tests := map[string]func(http.Header){
+		"too many values": func(header http.Header) {
+			header["X-Replay"] = make([]string, 65)
+		},
+		"value too large": func(header http.Header) {
+			header.Set("X-Replay", strings.Repeat("x", 8*1024+1))
+		},
+		"aggregate too large": func(header http.Header) {
+			header["X-Replay"] = make([]string, 9)
+			for index := range header["X-Replay"] {
+				header["X-Replay"][index] = strings.Repeat("x", 8*1024)
+			}
+		},
+	}
+
+	for name, populate := range tests {
+		t.Run(name, func(t *testing.T) {
+			service := serviceForStore(t, mustMemoryStore(t))
+			middleware, err := idempotencyhttp.New(idempotencyhttp.Options{
+				Service: service, Lease: time.Minute, MaxResponseBytes: 1024,
+				ReplayHeaders: []string{"X-Replay"},
+				Key:           validKey(t), Fingerprint: validFingerprint(t),
+			})
+			if err != nil {
+				t.Fatalf("New() error = %v", err)
+			}
+			var calls atomic.Int64
+			handler := middleware.Handler(http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
+				calls.Add(1)
+				populate(response.Header())
+			}))
+
+			first := perform(handler, "hostile-"+strings.ReplaceAll(name, " ", "-"), "payload")
+			second := perform(handler, "hostile-"+strings.ReplaceAll(name, " ", "-"), "payload")
+			if calls.Load() != 1 || first.Code != http.StatusInternalServerError ||
+				second.Code != http.StatusInternalServerError ||
+				second.Header().Get(idempotencyhttp.HeaderReplayed) != "true" {
+				t.Fatalf("calls = %d, responses = (%d, %#v), (%d, %#v)", calls.Load(), first.Code, first.Header(), second.Code, second.Header())
+			}
+		})
 	}
 }
 
@@ -345,29 +404,90 @@ func TestMiddlewareHandlesEmptyAndOversizedEncodedResponses(t *testing.T) {
 		t.Fatalf("empty response = %d, %q", empty.Code, empty.Body)
 	}
 
-	largeHeader := strings.Repeat("x", idempotency.MaxResultBytes)
-	large := perform(middleware.Handler(http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
-		response.Header().Set("Location", largeHeader)
-	})), "header-key", "payload")
-	if large.Code != http.StatusInternalServerError {
-		t.Fatalf("large header response = %d", large.Code)
+	largeMiddleware, _ := fixture(t, idempotencyhttp.MaxReplayResponseBytes)
+	values := make([]string, 8)
+	remaining := idempotencyhttp.MaxReplayHeaderBytes - len("Location")
+	for index := range values {
+		size := min(remaining, idempotencyhttp.MaxReplayHeaderValueBytes)
+		values[index] = strings.Repeat("\x00", size)
+		remaining -= size
+	}
+	var calls atomic.Int64
+	largeHandler := largeMiddleware.Handler(http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
+		calls.Add(1)
+		response.Header()["Location"] = values
+		_, _ = response.Write(bytes.Repeat([]byte{'x'}, idempotencyhttp.MaxReplayResponseBytes))
+	}))
+	first := perform(largeHandler, "encoded-envelope-key", "payload")
+	second := perform(largeHandler, "encoded-envelope-key", "payload")
+	if calls.Load() != 1 || first.Code != http.StatusInternalServerError ||
+		second.Code != http.StatusInternalServerError ||
+		second.Header().Get(idempotencyhttp.HeaderReplayed) != "true" {
+		t.Fatalf("calls = %d, responses = (%d, %#v), (%d, %#v)", calls.Load(), first.Code, first.Header(), second.Code, second.Header())
 	}
 }
 
-func TestMiddlewareAcceptsExactEncodedResultLimit(t *testing.T) {
-	middleware, _ := fixture(t, 1024)
-	const prefix = `{"schema":1,"status":200,"header":{"Location":["`
-	const suffix = `"]}}`
-	header := strings.Repeat("x", idempotency.MaxResultBytes-len(prefix)-len(suffix))
+func TestMiddlewareAcceptsExactEncodedSnapshotLimit(t *testing.T) {
+	body := bytes.Repeat([]byte{'x'}, idempotencyhttp.MaxReplayResponseBytes)
+	values := []string{"", ""}
+	snapshot := struct {
+		Schema int         `json:"schema"`
+		Status int         `json:"status"`
+		Header http.Header `json:"header,omitempty"`
+		Body   []byte      `json:"body,omitempty"`
+	}{Schema: 1, Status: http.StatusOK, Header: http.Header{"Location": values}, Body: body}
+	encoded, err := json.Marshal(snapshot)
+	if err != nil {
+		t.Fatalf("json.Marshal() error = %v", err)
+	}
+	deficit := idempotency.MaxResultBytes - len(encoded)
+	content := strings.Repeat("\x00", deficit/6) + strings.Repeat("x", deficit%6)
+	if len(content) > 2*idempotencyhttp.MaxReplayHeaderValueBytes {
+		t.Fatalf("exact snapshot requires %d raw header bytes", len(content))
+	}
+	cut := min(len(content), idempotencyhttp.MaxReplayHeaderValueBytes)
+	values[0], values[1] = content[:cut], content[cut:]
+	encoded, err = json.Marshal(snapshot)
+	if err != nil || len(encoded) != idempotency.MaxResultBytes {
+		t.Fatalf("exact snapshot encoding = %d bytes, %v", len(encoded), err)
+	}
+
+	middleware, _ := fixture(t, idempotencyhttp.MaxReplayResponseBytes)
 	handler := middleware.Handler(http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
-		response.Header().Set("Location", header)
+		response.Header()["Location"] = values
+		_, _ = response.Write(body)
+	}))
+	first := perform(handler, "exact-envelope-key", "payload")
+	second := perform(handler, "exact-envelope-key", "payload")
+	if first.Code != http.StatusOK || second.Code != http.StatusOK ||
+		second.Header().Get(idempotencyhttp.HeaderReplayed) != "true" {
+		t.Fatalf("responses = (%d, %#v), (%d, %#v)", first.Code, first.Header(), second.Code, second.Header())
+	}
+}
+
+func TestMiddlewareAcceptsExactReplayHeaderResourceLimits(t *testing.T) {
+	middleware, _ := fixture(t, 1024)
+	values := make([]string, 8)
+	remaining := idempotencyhttp.MaxReplayHeaderBytes - len("Location")
+	for index := range values {
+		size := min(remaining, idempotencyhttp.MaxReplayHeaderValueBytes)
+		values[index] = strings.Repeat("x", size)
+		remaining -= size
+	}
+	handler := middleware.Handler(http.HandlerFunc(func(response http.ResponseWriter, _ *http.Request) {
+		response.Header()["Location"] = values
 	}))
 
-	first := perform(handler, "exact-encoded", "payload")
-	second := perform(handler, "exact-encoded", "payload")
+	first := perform(handler, "exact-headers", "payload")
+	second := perform(handler, "exact-headers", "payload")
 	if first.Code != http.StatusOK || second.Code != http.StatusOK ||
-		second.Header().Get("Location") != header {
-		t.Fatalf("responses = %d, %d; replayed header bytes = %d", first.Code, second.Code, len(second.Header().Get("Location")))
+		len(second.Header().Values("Location")) != len(values) {
+		t.Fatalf("responses = %d, %d; replayed header values = %d", first.Code, second.Code, len(second.Header().Values("Location")))
+	}
+	for index, value := range second.Header().Values("Location") {
+		if value != values[index] {
+			t.Fatalf("replayed header value %d differs", index)
+		}
 	}
 }
 
@@ -375,6 +495,7 @@ func TestMiddlewareValidatesEachReplayBoundary(t *testing.T) {
 	tests := map[string]struct {
 		schema int
 		status int
+		header http.Header
 		body   []byte
 		valid  bool
 	}{
@@ -385,16 +506,39 @@ func TestMiddlewareValidatesEachReplayBoundary(t *testing.T) {
 		"status below range": {schema: 1, status: 99},
 		"status above range": {schema: 1, status: 1000},
 		"body above limit":   {schema: 1, status: 200, body: bytes.Repeat([]byte{'x'}, idempotencyhttp.MaxReplayResponseBytes+1)},
+		"too many header names": {schema: 1, status: 200, header: func() http.Header {
+			header := make(http.Header, idempotencyhttp.MaxReplayHeaderNames+1)
+			for index := 0; index <= idempotencyhttp.MaxReplayHeaderNames; index++ {
+				header[fmt.Sprintf("X-Replay-%d", index)] = []string{"x"}
+			}
+			return header
+		}()},
+		"header name too large": {schema: 1, status: 200, header: http.Header{
+			"X-" + strings.Repeat("a", idempotencyhttp.MaxReplayHeaderNameBytes-1): []string{"x"},
+		}},
+		"too many header values": {schema: 1, status: 200, header: http.Header{
+			"X-Replay": make([]string, idempotencyhttp.MaxReplayHeaderValues+1),
+		}},
+		"header value too large": {schema: 1, status: 200, header: http.Header{
+			"X-Replay": []string{strings.Repeat("x", idempotencyhttp.MaxReplayHeaderValueBytes+1)},
+		}},
+		"noncanonical header value too large": {schema: 1, status: 200, header: http.Header{
+			"x-replay": []string{strings.Repeat("x", idempotencyhttp.MaxReplayHeaderValueBytes+1)},
+		}},
+		"header aggregate too large": {schema: 1, status: 200, header: http.Header{
+			"X-Replay": []string{strings.Repeat("x", idempotencyhttp.MaxReplayHeaderBytes)},
+		}},
 	}
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			key := requestKey(t, name)
 			fingerprint := requestFingerprint(t, "payload")
 			encoded, err := json.Marshal(struct {
-				Schema int    `json:"schema"`
-				Status int    `json:"status"`
-				Body   []byte `json:"body,omitempty"`
-			}{Schema: test.schema, Status: test.status, Body: test.body})
+				Schema int         `json:"schema"`
+				Status int         `json:"status"`
+				Header http.Header `json:"header,omitempty"`
+				Body   []byte      `json:"body,omitempty"`
+			}{Schema: test.schema, Status: test.status, Header: test.header, Body: test.body})
 			if err != nil {
 				t.Fatalf("Marshal() error = %v", err)
 			}

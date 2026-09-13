@@ -6,6 +6,18 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+### Security
+
+- Bound configured and persisted HTTP replay-header names and values before
+  copying or encoding them. Responses outside those limits now persist and
+  replay the existing terminal HTTP 500 instead of amplifying storage work.
+- Reject oversized HTTP replay envelopes, Valkey metadata JSON, and PostgreSQL
+  record envelopes before JSON decoding backend-controlled data.
+
+### Documentation
+
+- IDEMPOTENCY-DEC-012 sha256:c6bdb70eab7f6434d3f704f96f4b48d190a71d8a6ddc3e00dbf7ec2f8f9f9440
+
 ## [1.1.0] - 2026-09-09
 
 ### Added

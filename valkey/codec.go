@@ -14,6 +14,13 @@ import (
 
 const (
 	schemaVersion = "1"
+	// JSON string escaping can expand each metadata byte to six bytes. The
+	// remaining terms account for quotes, separators, and the object braces.
+	maxEncodedMetadataBytes = 1 + idempotency.MaxMetadataEntries*
+		(6*(idempotency.MaxMetadataKeyBytes+idempotency.MaxMetadataValueBytes)+6)
+	recordFieldCount     = 22
+	maxRecordFieldPairs  = 2 * recordFieldCount
+	maxRecordReplyValues = 1 + maxRecordFieldPairs
 
 	fieldSchema             = "schema"
 	fieldNamespace          = "namespace"
@@ -158,14 +165,17 @@ func decodeRecord(fields map[string]string) (idempotency.Record, error) {
 	if err != nil {
 		return idempotency.Record{}, recordError(err)
 	}
-	result := []byte(fields[fieldResult])
-	switch min(len(result), idempotency.MaxResultBytes) {
-	case len(result):
-	default:
+	encodedResult := fields[fieldResult]
+	if len(encodedResult) > idempotency.MaxResultBytes {
 		return idempotency.Record{}, recordError(errors.New("oversized result"))
 	}
+	result := []byte(encodedResult)
+	encodedMetadata := fields[fieldMetadata]
+	if len(encodedMetadata) > maxEncodedMetadataBytes {
+		return idempotency.Record{}, limitError(fieldMetadata)
+	}
 	metadata := make(map[string]string)
-	if err := json.Unmarshal([]byte(fields[fieldMetadata]), &metadata); err != nil {
+	if err := json.Unmarshal([]byte(encodedMetadata), &metadata); err != nil {
 		return idempotency.Record{}, recordError(err)
 	}
 	if err := validateMetadata(metadata); err != nil {
@@ -213,6 +223,9 @@ func decodeAcquireReply(reply []string) (idempotency.AcquireResult, error) {
 }
 
 func decodeFieldPairs(values []string) (map[string]string, error) {
+	if len(values) > maxRecordFieldPairs {
+		return nil, limitError("record_fields")
+	}
 	fields := make(map[string]string)
 	wantKey := true
 	key := ""

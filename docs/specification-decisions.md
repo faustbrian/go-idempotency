@@ -416,10 +416,10 @@ evidence, and history review.
 - **Requirement strength:** not specified
 - **Issue:** HTTP and the Idempotency-Key draft do not define which response metadata is safe to persist or what to do after a handler produces an unreplayable response.
 - **Peer behavior:** Provider idempotency profiles differ on cached failures, header replay, retention, and response size.
-- **Selected behavior:** Middleware buffers one bounded response, persists only configured canonical header names, replays completed and terminal responses, and records terminal HTTP 500 after oversized output.
+- **Selected behavior:** Middleware buffers one bounded response, persists only configured canonical header names within fixed count, name, value, and aggregate-byte limits, replays completed and terminal responses, and records terminal HTTP 500 after oversized output.
 - **Rationale:** A handler that may have caused a side effect must not be rerun solely because replay encoding failed.
-- **Security consequences:** Secret, hop-by-hop, and unbounded headers are excluded unless callers explicitly misconfigure ReplayHeaders.
-- **Resource consequences:** Buffered and persisted response bytes have explicit maxima.
+- **Security consequences:** Secret and hop-by-hop headers remain caller-excluded; configured and persisted replay headers are always resource-bounded.
+- **Resource consequences:** Buffered body bytes, replay-header count and bytes, and the final persisted result have explicit maxima enforced before copying and encoding.
 - **Compatibility consequences:** Streaming, flushing, hijacking, and full-duplex response interfaces are unsupported.
 - **Wire consequences:** Replayed status, selected headers, and body match the stored bounded projection.
 - **Upstream status:** This is a package transport profile constrained by RFC 9110, not an HTTP-wide requirement.
@@ -431,6 +431,8 @@ evidence, and history review.
 - **Executable evidence:** TestMiddlewareExecutesOnceAndReplaysResponse
 - **Executable evidence:** TestMiddlewareBoundsHandlerResponseAndRecordsTerminalFailure
 - **Executable evidence:** TestMiddlewareDeduplicatesReplayHeaders
+- **Executable evidence:** TestMiddlewareRejectsHostileReplayHeaderResourcesBeforePersistence
+- **Executable evidence:** TestMiddlewareAcceptsExactReplayHeaderResourceLimits
 - **Fuzz evidence:** FuzzMalformedReplayFailsClosed
 - **Public API:** idempotencyhttp.Options
 - **Public API:** idempotencyhttp.ErrResponseTooLarge

@@ -18,7 +18,7 @@ observable evidence; the machine-complete bindings are in
 | IDEMPOTENCY-DEC-009 | Notification and batch transport semantics remain outside middleware. | `TestMiddlewareValidatesInvocationIdentity`, `TestMiddlewareReturnsConflictAndInProgressWithoutExecuting` |
 | IDEMPOTENCY-DEC-010 | The application validates and scopes one nonempty trimmed key value. | `TestMiddlewareRequiresIdempotencyKey`, `TestMiddlewareRejectsKeyAndFingerprintFailures`, `TestNewKeyRequiresEveryIdentityPart` |
 | IDEMPOTENCY-DEC-011 | Distinct conflict outcomes share stable HTTP 409 in the v1 profile. | `TestMiddlewareReturnsExplicitProtocolOutcomes`, `TestMiddlewareRejectsKeyAndFingerprintFailures`, `TestBeginFailsClosedWhenStorageIsUnavailable` |
-| IDEMPOTENCY-DEC-012 | Bounded response projections replay and unreplayable output becomes terminal. | `TestMiddlewareExecutesOnceAndReplaysResponse`, `TestMiddlewareBoundsHandlerResponseAndRecordsTerminalFailure`, `TestMiddlewareDeduplicatesReplayHeaders`, `FuzzMalformedReplayFailsClosed` |
+| IDEMPOTENCY-DEC-012 | Bounded response projections replay and unreplayable output becomes terminal. | `TestMiddlewareExecutesOnceAndReplaysResponse`, `TestMiddlewareBoundsHandlerResponseAndRecordsTerminalFailure`, `TestMiddlewareDeduplicatesReplayHeaders`, `TestMiddlewareRejectsHostileReplayHeaderResourcesBeforePersistence`, `TestMiddlewareAcceptsExactReplayHeaderResourceLimits`, `FuzzMalformedReplayFailsClosed` |
 | IDEMPOTENCY-DEC-013 | Durable ownership and fencing prevent leases from implying exactly-once execution. | `TestBeginMapsDurableOutcomesToExecutionDecisions`, `TestStoreConformance`, `TestBeginFailsClosedWhenStorageIsUnavailable` |
 
 ## Claim boundaries

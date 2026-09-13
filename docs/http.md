@@ -87,5 +87,14 @@ from request cancellation and bounded by `TransitionTimeout`. This prevents a
 canceled handler context from leaving an avoidable active lease. Process death
 cannot run this cleanup; recovery still waits for lease expiry.
 
-Only headers listed in `ReplayHeaders` are emitted and persisted. Never include
-hop-by-hop, connection-specific, unbounded, or secret-bearing headers.
+`ReplayHeaders` accepts at most 32 configured entries, each no longer
+than 128 bytes. Before copying or encoding the handler response, the middleware
+rejects a selected projection with more than 64 field values, a value over 8
+KiB, or more than 64 KiB across present names and values. It records and replays
+the same terminal HTTP 500 used for an oversized body, so a retry does not rerun
+a handler that may already have caused a side effect. Persisted projections are
+rejected above the 1 MiB stored-result bound before JSON decoding and validated
+against the same field limits before replay.
+
+Only configured headers are emitted and persisted. Never include hop-by-hop,
+connection-specific, or secret-bearing headers.
