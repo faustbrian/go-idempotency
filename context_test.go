@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/v2"
 )
 
 func TestOwnershipContextRoundTrip(t *testing.T) {

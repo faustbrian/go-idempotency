@@ -1,7 +1,7 @@
 # Webhook delivery deduplication
 
 Import `idempotencywebhook` from
-`github.com/faustbrian/go-idempotency/adapters/webhook`. It executes a verified
+`github.com/faustbrian/go-idempotency/v2/adapters/webhook`. It executes a verified
 provider delivery once and treats a completed redelivery as successfully
 handled.
 

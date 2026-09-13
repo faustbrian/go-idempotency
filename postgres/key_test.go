@@ -5,8 +5,8 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency"
-	idempotencypostgres "github.com/faustbrian/go-idempotency/postgres"
+	"github.com/faustbrian/go-idempotency/v2"
+	idempotencypostgres "github.com/faustbrian/go-idempotency/v2/postgres"
 )
 
 func TestRecordKeyDigestIsStableOpaqueAndIndependent(t *testing.T) {

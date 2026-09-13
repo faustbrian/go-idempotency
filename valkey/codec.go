@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/v2"
 )
 
 const (

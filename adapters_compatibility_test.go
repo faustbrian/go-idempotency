@@ -8,24 +8,24 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency"
-	command "github.com/faustbrian/go-idempotency/adapters/command"
-	httpadapter "github.com/faustbrian/go-idempotency/adapters/http"
-	jsonrpc "github.com/faustbrian/go-idempotency/adapters/jsonrpc"
-	otel "github.com/faustbrian/go-idempotency/adapters/otel"
-	outbox "github.com/faustbrian/go-idempotency/adapters/outbox"
-	queue "github.com/faustbrian/go-idempotency/adapters/queue"
-	slogadapter "github.com/faustbrian/go-idempotency/adapters/slog"
-	webhook "github.com/faustbrian/go-idempotency/adapters/webhook"
-	legacycommand "github.com/faustbrian/go-idempotency/idempotencycommand"     //nolint:staticcheck // Legacy facade coverage.
-	legacyhttp "github.com/faustbrian/go-idempotency/idempotencyhttp"           //nolint:staticcheck // Legacy facade coverage.
-	legacylog "github.com/faustbrian/go-idempotency/idempotencylog"             //nolint:staticcheck // Legacy facade coverage.
-	legacyoutbox "github.com/faustbrian/go-idempotency/idempotencyoutbox"       //nolint:staticcheck // Legacy facade coverage.
-	legacyqueue "github.com/faustbrian/go-idempotency/idempotencyqueue"         //nolint:staticcheck // Legacy facade coverage.
-	legacyrpc "github.com/faustbrian/go-idempotency/idempotencyrpc"             //nolint:staticcheck // Legacy facade coverage.
-	legacytelemetry "github.com/faustbrian/go-idempotency/idempotencytelemetry" //nolint:staticcheck // Legacy facade coverage.
-	legacywebhook "github.com/faustbrian/go-idempotency/idempotencywebhook"     //nolint:staticcheck // Legacy facade coverage.
-	"github.com/faustbrian/go-idempotency/memory"
+	"github.com/faustbrian/go-idempotency/v2"
+	command "github.com/faustbrian/go-idempotency/v2/adapters/command"
+	httpadapter "github.com/faustbrian/go-idempotency/v2/adapters/http"
+	jsonrpc "github.com/faustbrian/go-idempotency/v2/adapters/jsonrpc"
+	otel "github.com/faustbrian/go-idempotency/v2/adapters/otel"
+	outbox "github.com/faustbrian/go-idempotency/v2/adapters/outbox"
+	queue "github.com/faustbrian/go-idempotency/v2/adapters/queue"
+	slogadapter "github.com/faustbrian/go-idempotency/v2/adapters/slog"
+	webhook "github.com/faustbrian/go-idempotency/v2/adapters/webhook"
+	legacycommand "github.com/faustbrian/go-idempotency/v2/idempotencycommand"     //nolint:staticcheck // Legacy facade coverage.
+	legacyhttp "github.com/faustbrian/go-idempotency/v2/idempotencyhttp"           //nolint:staticcheck // Legacy facade coverage.
+	legacylog "github.com/faustbrian/go-idempotency/v2/idempotencylog"             //nolint:staticcheck // Legacy facade coverage.
+	legacyoutbox "github.com/faustbrian/go-idempotency/v2/idempotencyoutbox"       //nolint:staticcheck // Legacy facade coverage.
+	legacyqueue "github.com/faustbrian/go-idempotency/v2/idempotencyqueue"         //nolint:staticcheck // Legacy facade coverage.
+	legacyrpc "github.com/faustbrian/go-idempotency/v2/idempotencyrpc"             //nolint:staticcheck // Legacy facade coverage.
+	legacytelemetry "github.com/faustbrian/go-idempotency/v2/idempotencytelemetry" //nolint:staticcheck // Legacy facade coverage.
+	legacywebhook "github.com/faustbrian/go-idempotency/v2/idempotencywebhook"     //nolint:staticcheck // Legacy facade coverage.
+	"github.com/faustbrian/go-idempotency/v2/memory"
 )
 
 type adapterMessage struct{ payload []byte }
@@ -73,13 +73,13 @@ func TestCanonicalAdaptersAndLegacyFacadesRetainDistinctTypeIdentities(t *testin
 		legacy        reflect.Type
 		legacyPath    string
 	}{
-		{"command", reflect.TypeOf((*command.Runner)(nil)).Elem(), "github.com/faustbrian/go-idempotency/adapters/command", reflect.TypeOf((*legacycommand.Runner)(nil)).Elem(), "github.com/faustbrian/go-idempotency/idempotencycommand"},
-		{"http", reflect.TypeOf((*httpadapter.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/adapters/http", reflect.TypeOf((*legacyhttp.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/idempotencyhttp"},
-		{"jsonrpc", reflect.TypeOf((*jsonrpc.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/adapters/jsonrpc", reflect.TypeOf((*legacyrpc.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/idempotencyrpc"},
-		{"otel", reflect.TypeOf((*otel.Observer)(nil)).Elem(), "github.com/faustbrian/go-idempotency/adapters/otel", reflect.TypeOf((*legacytelemetry.Observer)(nil)).Elem(), "github.com/faustbrian/go-idempotency/idempotencytelemetry"},
-		{"queue", reflect.TypeOf((*queue.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/adapters/queue", reflect.TypeOf((*legacyqueue.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/idempotencyqueue"},
-		{"slog", reflect.TypeOf((*slogadapter.Observer)(nil)).Elem(), "github.com/faustbrian/go-idempotency/adapters/slog", reflect.TypeOf((*legacylog.Observer)(nil)).Elem(), "github.com/faustbrian/go-idempotency/idempotencylog"},
-		{"webhook", reflect.TypeOf((*webhook.Processor)(nil)).Elem(), "github.com/faustbrian/go-idempotency/adapters/webhook", reflect.TypeOf((*legacywebhook.Processor)(nil)).Elem(), "github.com/faustbrian/go-idempotency/idempotencywebhook"},
+		{"command", reflect.TypeOf((*command.Runner)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/adapters/command", reflect.TypeOf((*legacycommand.Runner)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/idempotencycommand"},
+		{"http", reflect.TypeOf((*httpadapter.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/adapters/http", reflect.TypeOf((*legacyhttp.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/idempotencyhttp"},
+		{"jsonrpc", reflect.TypeOf((*jsonrpc.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/adapters/jsonrpc", reflect.TypeOf((*legacyrpc.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/idempotencyrpc"},
+		{"otel", reflect.TypeOf((*otel.Observer)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/adapters/otel", reflect.TypeOf((*legacytelemetry.Observer)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/idempotencytelemetry"},
+		{"queue", reflect.TypeOf((*queue.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/adapters/queue", reflect.TypeOf((*legacyqueue.Middleware)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/idempotencyqueue"},
+		{"slog", reflect.TypeOf((*slogadapter.Observer)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/adapters/slog", reflect.TypeOf((*legacylog.Observer)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/idempotencylog"},
+		{"webhook", reflect.TypeOf((*webhook.Processor)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/adapters/webhook", reflect.TypeOf((*legacywebhook.Processor)(nil)).Elem(), "github.com/faustbrian/go-idempotency/v2/idempotencywebhook"},
 	}
 
 	for _, test := range tests {

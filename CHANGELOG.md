@@ -6,6 +6,12 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+### Changed
+
+- Prepare the security-hardened source as the planned, unpublished `/v2`
+  module. V1.1.0 remains the latest stable release, and owned consumers stay on
+  v1 until a v2 release is published.
+
 ### Security
 
 - Bound configured and persisted HTTP replay-header names and values before

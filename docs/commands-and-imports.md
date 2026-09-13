@@ -1,7 +1,7 @@
 # Commands and imports
 
 Import `idempotencycommand` from
-`github.com/faustbrian/go-idempotency/adapters/command`. Its `Runner` executes
+`github.com/faustbrian/go-idempotency/v2/adapters/command`. Its `Runner` executes
 a named operation once per stable source identity and replays its bounded
 result and metadata.
 

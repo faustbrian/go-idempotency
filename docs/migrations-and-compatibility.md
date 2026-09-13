@@ -1,7 +1,19 @@
 # Migrations and compatibility
 
-The module follows stable v1 source compatibility. Persisted records and
-rolling deployments still require explicit compatibility discipline.
+V1.1.0 remains the latest published stable module. The active source tree is a
+planned v2 preview because the replay resource limits intentionally change the
+released v1 configuration and persisted-record acceptance boundary. It is not
+releasable until the v2 release gates pass. Persisted records and rolling
+deployments still require explicit compatibility discipline.
+
+## Unpublished v2 boundary
+
+The repository's compatibility ecosystem module and the owned scheduler,
+service reference-durability, and webhook consumers remain on published v1.
+Their migration to `github.com/faustbrian/go-idempotency/v2` is blocked until an
+actual v2 release exists. The root module likewise keeps its published
+`github.com/faustbrian/go-migrations` v1 dependency until migrations v2 is
+published. Local `replace` directives must not bypass either release boundary.
 
 ## Supported runtime matrix
 

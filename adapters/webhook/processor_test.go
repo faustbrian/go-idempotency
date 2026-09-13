@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency"
-	"github.com/faustbrian/go-idempotency/adapters/webhook"
-	"github.com/faustbrian/go-idempotency/idempotencytest"
-	"github.com/faustbrian/go-idempotency/memory"
+	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency/v2/adapters/webhook"
+	"github.com/faustbrian/go-idempotency/v2/idempotencytest"
+	"github.com/faustbrian/go-idempotency/v2/memory"
 )
 
 func TestProcessorDeduplicatesProviderDelivery(t *testing.T) {

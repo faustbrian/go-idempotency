@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/v2"
 )
 
 func TestNewKeyRequiresEveryIdentityPart(t *testing.T) {

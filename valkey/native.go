@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/v2"
 	valkeygo "github.com/valkey-io/valkey-go"
 )
 

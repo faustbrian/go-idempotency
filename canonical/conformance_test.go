@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency/canonical"
+	"github.com/faustbrian/go-idempotency/v2/canonical"
 )
 
 func TestJSONMatchesPinnedRFC8785Fixtures(t *testing.T) {

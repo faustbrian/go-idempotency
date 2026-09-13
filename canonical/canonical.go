@@ -11,7 +11,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/deszhou/jcs"
-	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/v2"
 )
 
 // Limits bounds JSON canonicalization before parsing, encoding, and hashing.
