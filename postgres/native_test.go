@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency"
 	"github.com/jackc/pgx/v5"
 )
 

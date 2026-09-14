@@ -25,24 +25,21 @@ The public contract, deterministic memory adapter, bounded JSON
 canonicalization, PostgreSQL and Valkey adapters, buffered HTTP middleware,
 method-aware JSON-RPC middleware, queue and webhook deduplication, named command
 and import helpers, transactional `outbox` coordination, and bounded logging
-and telemetry observers are implemented. V1.1.0 remains the latest published
-stable release. This source tree now prepares the planned, unpublished
-`github.com/faustbrian/go-idempotency/v2` module; it is a non-releasable preview
-until its release gates pass and direct consumers can migrate.
+and telemetry observers are implemented. The API is stable at v1 and is
+released as stable.
 
-The active source tree uses planned v2 target-oriented packages under
-`adapters/`. These paths are not installable until v2 is published:
+New integrations use target-oriented packages under `adapters/`:
 
 | Concern | Canonical package |
 | --- | --- |
-| Commands and imports | `github.com/faustbrian/go-idempotency/v2/adapters/command` |
-| HTTP | `github.com/faustbrian/go-idempotency/v2/adapters/http` |
-| JSON-RPC | `github.com/faustbrian/go-idempotency/v2/adapters/jsonrpc` |
-| OpenTelemetry | `github.com/faustbrian/go-idempotency/v2/adapters/otel` |
-| Transactional outbox | `github.com/faustbrian/go-idempotency/v2/adapters/outbox` |
-| Queue consumers | `github.com/faustbrian/go-idempotency/v2/adapters/queue` |
-| Structured logging | `github.com/faustbrian/go-idempotency/v2/adapters/slog` |
-| Webhooks | `github.com/faustbrian/go-idempotency/v2/adapters/webhook` |
+| Commands and imports | `github.com/faustbrian/go-idempotency/adapters/command` |
+| HTTP | `github.com/faustbrian/go-idempotency/adapters/http` |
+| JSON-RPC | `github.com/faustbrian/go-idempotency/adapters/jsonrpc` |
+| OpenTelemetry | `github.com/faustbrian/go-idempotency/adapters/otel` |
+| Transactional outbox | `github.com/faustbrian/go-idempotency/adapters/outbox` |
+| Queue consumers | `github.com/faustbrian/go-idempotency/adapters/queue` |
+| Structured logging | `github.com/faustbrian/go-idempotency/adapters/slog` |
+| Webhooks | `github.com/faustbrian/go-idempotency/adapters/webhook` |
 
 The released `idempotencycommand`, `idempotencyhttp`, `idempotencylog`,
 `idempotencyoutbox`, `idempotencyqueue`, `idempotencyrpc`,
@@ -65,12 +62,8 @@ their observable contracts.
 ## Start in five minutes
 
 ```sh
-go get github.com/faustbrian/go-idempotency@v1.1.0
+go get github.com/faustbrian/go-idempotency
 ```
-
-Existing consumers must remain on released v1; do not use local `replace`
-directives to consume this checkout as v1. After v2 is published, upgrading
-requires adding `/v2` to every idempotency import path.
 
 The [quickstart](docs/quickstart.md) demonstrates acquisition, completion, and
 replay with the deterministic API, then routes production deployments to the

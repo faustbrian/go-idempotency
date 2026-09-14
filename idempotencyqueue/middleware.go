@@ -1,6 +1,6 @@
 // Package idempotencyqueue is the legacy durable queue adapter.
 //
-// Deprecated: use github.com/faustbrian/go-idempotency/v2/adapters/queue. This
+// Deprecated: use github.com/faustbrian/go-idempotency/adapters/queue. This
 // package remains supported for the longer of 180 days after successor
 // availability and two subsequently published stable root-module minor
 // releases.
@@ -10,8 +10,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	canonical "github.com/faustbrian/go-idempotency/v2/adapters/queue"
+	"github.com/faustbrian/go-idempotency"
+	canonical "github.com/faustbrian/go-idempotency/adapters/queue"
 )
 
 var (

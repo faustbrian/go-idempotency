@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/idempotencyqueue"
-	"github.com/faustbrian/go-idempotency/v2/idempotencytest"
-	"github.com/faustbrian/go-idempotency/v2/memory"
+	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/idempotencyqueue"
+	"github.com/faustbrian/go-idempotency/idempotencytest"
+	"github.com/faustbrian/go-idempotency/memory"
 )
 
 func TestMiddlewareCompletesOnceAndDeduplicatesRedelivery(t *testing.T) {

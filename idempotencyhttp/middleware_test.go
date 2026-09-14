@@ -13,10 +13,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/idempotencyhttp"
-	"github.com/faustbrian/go-idempotency/v2/idempotencytest"
-	"github.com/faustbrian/go-idempotency/v2/memory"
+	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/idempotencyhttp"
+	"github.com/faustbrian/go-idempotency/idempotencytest"
+	"github.com/faustbrian/go-idempotency/memory"
 )
 
 func TestMiddlewareExecutesOnceAndReplaysResponse(t *testing.T) {

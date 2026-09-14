@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/idempotencyoutbox"
+	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/idempotencyoutbox"
 	"github.com/jackc/pgx/v5"
 )
 

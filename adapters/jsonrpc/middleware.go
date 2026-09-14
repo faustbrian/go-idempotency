@@ -8,7 +8,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency"
 )
 
 const (

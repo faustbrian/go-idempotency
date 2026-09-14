@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency"
 )
 
 func TestDecodeSnapshotRejectsOversizedRecordBeforeJSONDecode(t *testing.T) {

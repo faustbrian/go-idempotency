@@ -1,4 +1,4 @@
-module github.com/faustbrian/go-idempotency/v2
+module github.com/faustbrian/go-idempotency
 
 go 1.27.0
 

@@ -5,7 +5,7 @@ The [specification decision register](specification-decisions.md) records the
 request, response, error, notification, and batch ownership boundaries.
 
 Import `idempotencyrpc` from
-`github.com/faustbrian/go-idempotency/v2/adapters/jsonrpc`. It durably elects one
+`github.com/faustbrian/go-idempotency/adapters/jsonrpc`. It durably elects one
 handler for a method-scoped key and replays both successful results and
 JSON-RPC protocol errors.
 

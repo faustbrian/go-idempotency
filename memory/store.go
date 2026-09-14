@@ -8,7 +8,7 @@ import (
 	"time"
 
 	clockpkg "github.com/faustbrian/go-clock"
-	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency"
 )
 
 const (

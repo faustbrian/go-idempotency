@@ -3,12 +3,8 @@
 Install the module:
 
 ```sh
-go get github.com/faustbrian/go-idempotency/v2
+go get github.com/faustbrian/go-idempotency
 ```
-
-This planned path becomes installable only after v2 is published. Until then,
-production consumers must install the released v1 module shown in the root
-README and must not use a local `replace` to bypass the release boundary.
 
 The in-memory adapter is useful for learning the contract and deterministic
 tests. It is not durable and does not coordinate multiple processes.
@@ -24,8 +20,8 @@ import (
 	"time"
 
 	clock "github.com/faustbrian/go-clock"
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/memory"
+	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/memory"
 )
 
 func ownerToken() (string, error) {

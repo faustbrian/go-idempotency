@@ -1,6 +1,6 @@
 // Package idempotencylog is the legacy structured-log adapter.
 //
-// Deprecated: use github.com/faustbrian/go-idempotency/v2/adapters/slog. This
+// Deprecated: use github.com/faustbrian/go-idempotency/adapters/slog. This
 // package remains supported for the longer of 180 days after successor
 // availability and two subsequently published stable root-module minor
 // releases.
@@ -10,8 +10,8 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	canonical "github.com/faustbrian/go-idempotency/v2/adapters/slog"
+	"github.com/faustbrian/go-idempotency"
+	canonical "github.com/faustbrian/go-idempotency/adapters/slog"
 )
 
 // ErrNilLogger reports an unusable logger configuration.

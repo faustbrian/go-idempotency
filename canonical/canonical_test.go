@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/canonical"
+	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/canonical"
 )
 
 var testLimits = canonical.Limits{

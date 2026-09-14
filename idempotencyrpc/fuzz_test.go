@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/idempotencyrpc"
-	"github.com/faustbrian/go-idempotency/v2/idempotencytest"
-	"github.com/faustbrian/go-idempotency/v2/memory"
+	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/idempotencyrpc"
+	"github.com/faustbrian/go-idempotency/idempotencytest"
+	"github.com/faustbrian/go-idempotency/memory"
 )
 
 func FuzzMalformedReplayFailsClosed(f *testing.F) {

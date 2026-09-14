@@ -8,8 +8,8 @@ import (
 	"log/slog"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/adapters/slog"
+	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/adapters/slog"
 )
 
 func TestObserverWritesOnlyBoundedFields(t *testing.T) {
