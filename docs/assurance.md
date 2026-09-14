@@ -59,7 +59,7 @@ remaining recovery obligations are stated in the threat model and crash guide.
 | A fingerprint conflict replays as equivalent | Blocked before replay, including equal digests with different policy versions. |
 | Unbounded wait, lease, result, retry, cleanup, or memory | No package wait or retry loop exists; leases, results, metadata, cleanup batches, transition contexts, and memory records are bounded. Caller polling and retries remain caller-owned and must have deadlines. |
 | Unsupported exactly-once claim | Documentation consistently describes at-most-one current owner and deterministic replay, with explicit external-effect ambiguity. |
-| Missing meaningful 100% coverage or failing gate | Closed locally: exact production coverage is 100.0%, all release-equivalent commands pass, and `actionlint` validates both workflows. The configured hosted gates must still pass for the pushed commit or release tag. |
+| Missing meaningful 100% coverage or failing gate | Pending hosted CI: exact production coverage is 100.0%, every local stage before lint passed, and `actionlint` validates both workflows. Local lint was unavailable because the toolchain linker rejected the installed macOS SDK; the configured hosted gates must pass for the pushed commit or release tag. |
 
 ## Recovery obligations
 
