@@ -14,6 +14,9 @@ public API reaches its first stable version.
 
 ### Security
 
+- Update the compatibility harness to `google.golang.org/grpc` 1.83.2 so its
+  dependency graph no longer contains the affected xDS denial-of-service
+  version.
 - Bound configured and persisted HTTP replay-header names and values before
   copying or encoding them. Responses outside those limits now persist and
   replay the existing terminal HTTP 500 instead of amplifying storage work.
