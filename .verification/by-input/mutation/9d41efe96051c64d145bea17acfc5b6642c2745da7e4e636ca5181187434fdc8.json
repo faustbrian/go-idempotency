@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "repository": "github.com/faustbrian/go-idempotency",
+  "module": ".",
+  "package": "adapters/otel",
+  "gate": "mutation",
+  "input_digest": "sha256:9d41efe96051c64d145bea17acfc5b6642c2745da7e4e636ca5181187434fdc8",
+  "verifier_digest": "sha256:5eba124f842305aecef71fc439aea0f1056429b253fad3b2ed47468f614595a3",
+  "result": "passed",
+  "report_digest": "sha256:78c9644a33414523a6d760789526af3aedcc6920d26cd9a90b3779e93c70a42b",
+  "environment": {
+    "CGO_ENABLED": "1",
+    "GOARCH": "arm64",
+    "GOOS": "darwin",
+    "GOVERSION": "go1.27.1",
+    "gremlins_binary_sha256": "sha256:cee5ea75da3257a034d6c69c1f8134747e1d6f3c09a54a61f1d2c27648ae2c91"
+  },
+  "completed_at": "2026-09-14T10:37:02.958249Z"
+}

@@ -106,8 +106,8 @@ func TestResponseSnapshotAndHeaderNamesHonorExactLimits(t *testing.T) {
 		t.Fatal("responseSnapshot.valid() rejected exact body limit")
 	}
 
-	header := make(http.Header, MaxReplayHeaderNames+1)
-	for index := 0; index <= MaxReplayHeaderNames; index++ {
+	header := make(http.Header, 2*MaxReplayHeaderNames)
+	for index := range 2 * MaxReplayHeaderNames {
 		header["X"+strings.Repeat("a", index)] = nil
 	}
 	if names := headerNames(header); len(names) != MaxReplayHeaderNames+1 {
