@@ -25,7 +25,7 @@ public API reaches its first stable version.
 
 ### Documentation
 
-- IDEMPOTENCY-DEC-012 sha256:c6bdb70eab7f6434d3f704f96f4b48d190a71d8a6ddc3e00dbf7ec2f8f9f9440
+- IDEMPOTENCY-DEC-012 sha256:88a69536486056824824b3c980eb4e8d7ffe4fbd3d279939d86018046848f7e9
 
 ## [1.1.0] - 2026-09-09
 
