@@ -6,6 +6,21 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+### Security
+
+- Update the compatibility harness to `google.golang.org/grpc` 1.83.2 so its
+  dependency graph no longer contains the affected xDS denial-of-service
+  version.
+- Bound configured and persisted HTTP replay-header names and values before
+  copying or encoding them. Responses outside those limits now persist and
+  replay the existing terminal HTTP 500 instead of amplifying storage work.
+- Reject oversized HTTP replay envelopes, Valkey metadata JSON, and PostgreSQL
+  record envelopes before JSON decoding backend-controlled data.
+
+### Documentation
+
+- IDEMPOTENCY-DEC-012 sha256:88a69536486056824824b3c980eb4e8d7ffe4fbd3d279939d86018046848f7e9
+
 ## [1.1.0] - 2026-09-09
 
 ### Added

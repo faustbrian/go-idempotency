@@ -20,7 +20,17 @@ const (
 	// HeaderReplayed is true when the response came from a durable record.
 	HeaderReplayed = "Idempotency-Replayed"
 	// MaxReplayResponseBytes is the largest handler body accepted for replay.
-	MaxReplayResponseBytes   = 700 * 1024
+	MaxReplayResponseBytes = 700 * 1024
+	// MaxReplayHeaderNames bounds configured response-header names.
+	MaxReplayHeaderNames = 32
+	// MaxReplayHeaderValues bounds retained response-header field values.
+	MaxReplayHeaderValues = 64
+	// MaxReplayHeaderNameBytes bounds each configured response-header name.
+	MaxReplayHeaderNameBytes = 128
+	// MaxReplayHeaderValueBytes bounds each retained response-header value.
+	MaxReplayHeaderValueBytes = 8 * 1024
+	// MaxReplayHeaderBytes bounds all retained response-header names and values.
+	MaxReplayHeaderBytes     = 64 * 1024
 	replaySchema             = 1
 	defaultMaxBytes          = 64 * 1024
 	defaultTransitionTimeout = 5 * time.Second
@@ -93,13 +103,17 @@ func New(options Options) (*Middleware, error) {
 	if options.TransitionTimeout == 0 {
 		options.TransitionTimeout = defaultTransitionTimeout
 	}
+	if len(options.ReplayHeaders) > MaxReplayHeaderNames {
+		return nil, configurationError("replay_headers")
+	}
 	headers := make([]string, 0, len(options.ReplayHeaders))
 	seen := make(map[string]struct{}, len(options.ReplayHeaders))
 	for _, header := range options.ReplayHeaders {
-		header = http.CanonicalHeaderKey(strings.TrimSpace(header))
-		if header == "" {
+		header = strings.TrimSpace(header)
+		if len(header) == 0 || len(header) > MaxReplayHeaderNameBytes || !validHeaderName(header) {
 			return nil, configurationError("replay_headers")
 		}
+		header = http.CanonicalHeaderKey(header)
 		if _, exists := seen[header]; !exists {
 			seen[header] = struct{}{}
 			headers = append(headers, header)
@@ -181,6 +195,10 @@ func (m *Middleware) execute(
 		m.failOversized(response, request, begin)
 		return
 	}
+	if !replayHeadersFit(capture.header, m.replayHeaders) {
+		m.failOversized(response, request, begin)
+		return
+	}
 	snapshot := capture.snapshot(m.replayHeaders)
 	encoded, _ := json.Marshal(snapshot)
 	if len(encoded) > idempotency.MaxResultBytes {
@@ -227,12 +245,30 @@ func (m *Middleware) failOversized(
 }
 
 func (m *Middleware) replay(response http.ResponseWriter, begin idempotency.BeginResult) {
-	var snapshot responseSnapshot
-	if err := json.Unmarshal(begin.Record.Result, &snapshot); err != nil || !snapshot.valid() {
+	snapshot, err := decodeSnapshot(begin.Record.Result)
+	if err != nil {
 		writeOutcome(response, http.StatusServiceUnavailable, idempotency.OutcomeUnavailable)
 		return
 	}
 	writeSnapshot(response, snapshot, begin.Outcome, true)
+}
+
+func decodeSnapshot(encoded []byte) (responseSnapshot, error) {
+	if len(encoded) > idempotency.MaxResultBytes {
+		return responseSnapshot{}, &idempotency.Error{
+			Reason: idempotency.ReasonLimitExceeded,
+			Field:  "persisted_response",
+		}
+	}
+	var snapshot responseSnapshot
+	if err := json.Unmarshal(encoded, &snapshot); err != nil || !snapshot.valid() {
+		return responseSnapshot{}, &idempotency.Error{
+			Reason: idempotency.ReasonInvalidPayload,
+			Field:  "persisted_response",
+			Cause:  err,
+		}
+	}
+	return snapshot, nil
 }
 
 type responseCapture struct {
@@ -287,7 +323,63 @@ type responseSnapshot struct {
 
 func (s responseSnapshot) valid() bool {
 	return s.Schema == replaySchema && s.Status >= 100 && s.Status <= 999 &&
-		len(s.Body) <= MaxReplayResponseBytes
+		len(s.Body) <= MaxReplayResponseBytes && replayHeadersFit(s.Header, headerNames(s.Header))
+}
+
+func replayHeadersFit(header http.Header, names []string) bool {
+	if len(names) > MaxReplayHeaderNames {
+		return false
+	}
+	totalValues, totalBytes := 0, 0
+	for _, name := range names {
+		if len(name) == 0 || len(name) > MaxReplayHeaderNameBytes || !validHeaderName(name) {
+			return false
+		}
+		values, found := header[name]
+		if found {
+			if len(values) > MaxReplayHeaderValues {
+				return false
+			}
+			totalValues += len(values)
+			if totalValues > MaxReplayHeaderValues {
+				return false
+			}
+			totalBytes += len(name)
+			if totalBytes > MaxReplayHeaderBytes {
+				return false
+			}
+			for _, value := range values {
+				if len(value) > MaxReplayHeaderValueBytes {
+					return false
+				}
+				totalBytes += len(value)
+				if totalBytes > MaxReplayHeaderBytes {
+					return false
+				}
+			}
+		}
+	}
+	return true
+}
+
+func headerNames(header http.Header) []string {
+	names := make([]string, 0)
+	for name := range header {
+		names = append(names, name)
+		if len(names) > MaxReplayHeaderNames {
+			break
+		}
+	}
+	return names
+}
+
+func validHeaderName(name string) bool {
+	for index := range len(name) {
+		if !strings.ContainsRune("!#$%&'*+-.^_`|~0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", rune(name[index])) {
+			return false
+		}
+	}
+	return true
 }
 
 func writeSnapshot(

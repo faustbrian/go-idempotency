@@ -178,6 +178,19 @@ func TestRecordCodecRejectsOversizedMetadata(t *testing.T) {
 	assertCodecReason(t, err, idempotency.ReasonLimitExceeded)
 }
 
+func TestRecordCodecRejectsOversizedEncodedMetadataBeforeJSONDecode(t *testing.T) {
+	t.Parallel()
+
+	fields, err := encodeRecord(testRecord(t))
+	if err != nil {
+		t.Fatalf("encodeRecord() error = %v", err)
+	}
+	fields[fieldMetadata] = strings.Repeat(" ", maxEncodedMetadataBytes+1)
+
+	_, err = decodeRecord(fields)
+	assertCodecReason(t, err, idempotency.ReasonLimitExceeded)
+}
+
 func TestRecordEncoderRejectsInvalidAndOversizedValues(t *testing.T) {
 	t.Parallel()
 
@@ -247,15 +260,19 @@ func TestRecordCodecAcceptsExactPersistenceLimits(t *testing.T) {
 	record.OwnerToken = strings.Repeat("o", idempotency.MaxOwnerTokenBytes)
 	record.Result = make([]byte, idempotency.MaxResultBytes)
 	record.Metadata = make(map[string]string, idempotency.MaxMetadataEntries)
-	for index := range idempotency.MaxMetadataEntries - 1 {
-		record.Metadata[string(rune('a'+index))] = "value"
+	escapedKeyBytes := []byte{0, 1, 2, 3, 4, 5, 6, 7, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31}
+	for index := range idempotency.MaxMetadataEntries {
+		key := string([]byte{escapedKeyBytes[index/len(escapedKeyBytes)], escapedKeyBytes[index%len(escapedKeyBytes)]}) +
+			strings.Repeat("\x00", idempotency.MaxMetadataKeyBytes-2)
+		record.Metadata[key] = strings.Repeat("\x00", idempotency.MaxMetadataValueBytes)
 	}
-	record.Metadata[strings.Repeat("k", idempotency.MaxMetadataKeyBytes)] =
-		strings.Repeat("v", idempotency.MaxMetadataValueBytes)
 
 	fields, err := encodeRecord(record)
 	if err != nil {
 		t.Fatalf("encodeRecord() exact limits error = %v", err)
+	}
+	if len(fields[fieldMetadata]) != maxEncodedMetadataBytes {
+		t.Fatalf("encoded metadata = %d bytes, want %d", len(fields[fieldMetadata]), maxEncodedMetadataBytes)
 	}
 	decoded, err := decodeRecord(fields)
 	if err != nil {
@@ -304,6 +321,12 @@ func TestAcquireReplyIncludesAValidatedOutcomeAndRecord(t *testing.T) {
 			assertCodecReason(t, err, idempotency.ReasonInvalidPayload)
 		})
 	}
+}
+
+func TestDecodeFieldPairsRejectsOversizedReplyBeforeMapAllocation(t *testing.T) {
+	values := make([]string, maxRecordFieldPairs+2)
+	_, err := decodeFieldPairs(values)
+	assertCodecReason(t, err, idempotency.ReasonLimitExceeded)
 }
 
 func testKey(t testing.TB, value string) idempotency.Key {

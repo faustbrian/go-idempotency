@@ -44,6 +44,9 @@ func (e *nativeExecutor) Exec(ctx context.Context, operation operation, key stri
 	if err != nil {
 		return nil, err
 	}
+	if len(messages) > maxRecordReplyValues {
+		return nil, limitError("record_reply")
+	}
 	reply := make([]string, len(messages))
 	for index := range messages {
 		reply[index], err = messages[index].ToString()

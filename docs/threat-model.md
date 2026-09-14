@@ -57,7 +57,8 @@ may be visible to people who must not see tenant or request data.
 | Valkey primary is lost | One-key scripts remain atomic; a replicated record can survive promotion | Configure persistence and replication durability for the required loss window |
 | Valkey cluster routing | Every record uses one opaque hash-tagged key | Do not infer multi-key application atomicity from this property |
 | Eviction removes history | `Open` rejects policies other than `noeviction` | Monitor memory and rejected writes; never use eviction as cleanup |
-| Oversized or adversarial input | Explicit key, version, token, result, metadata, and canonicalization bounds | Bound transport bodies before handing them to the package |
+| Oversized or adversarial input | Explicit key, version, token, result, metadata, HTTP replay-header, serialized record, and canonicalization bounds | Bound transport bodies before handing them to the package |
+| Handler reflects attacker-controlled response headers | HTTP replay limits header count, name bytes, value count, per-value bytes, aggregate bytes, and serialized envelopes before copying, encoding, persistence, or JSON decode; invalid persisted projections fail closed | Configure only necessary replay headers and never include secret-bearing fields |
 | Memory exhaustion | Memory store has a bounded record capacity | Size `MaxRecords`; use a durable backend for multi-process workloads |
 | Rolling deployment changes format | Persisted schema and fingerprint policy versions fail closed | Follow the documented reader/writer rollout order |
 | Sensitive diagnostics | Stable reason codes, bounded attributes, optional keyed correlation digest | Never log raw identity, payload, response, token, or metadata |
@@ -88,8 +89,18 @@ to the application's privacy policy.
   key later creates a new record whose fence begins at one.
 - The package does not authenticate callers, authorize tenants, encrypt stored
   results, schedule heartbeats, or implement an unbounded retry or wait loop.
+- HTTP handlers may allocate attacker-controlled response headers before the
+  middleware sees them. The replay bounds prevent a second unbounded copy and
+  persistence, but handlers must still bound the work used to construct their
+  own response.
 - A compromised backend or application process can read stored data and can
   violate assumptions outside the package's checks.
+
+## Accepted risks
+
+| Risk | Owner | Rationale | Mitigation | Review condition |
+| --- | --- | --- | --- | --- |
+| A compromised PostgreSQL or Valkey server can make its client allocate an oversized wire reply before the package codec sees it. | Idempotency maintainers and deploying operators | The stores are correctness-critical trusted infrastructure, and their current client APIs materialize replies before codec validation. | Isolate and authenticate backends, restrict write access, cap backend and client resources, monitor record size, and fail codec parsing closed at the serialized-envelope limit. | Revisit when accepting an untrusted or multi-tenant backend, when a supported driver exposes bounded streaming, or when backend reply-size controls become available. |
 
 Review this model whenever identity fields, canonicalization, persistence
 formats, transition scripts, retention, topology claims, or diagnostic fields

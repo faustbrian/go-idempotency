@@ -14,16 +14,26 @@ listed. Byte limits count encoded bytes, not Unicode code points.
 | Metadata entries | empty | 32 | Every store and persisted codec |
 | Metadata key | n/a | 128 bytes | Every store and persisted codec |
 | Metadata value | n/a | 1 KiB | Every store and persisted codec |
+| Valkey encoded metadata | empty object | 221,377 bytes | Before JSON decode of a backend reply |
+| PostgreSQL encoded record | n/a | 2 MiB | Before JSON decode of a backend row |
 | Memory retained records | 10,000 | 1,000,000 | `memory.Options.MaxRecords` |
 | PostgreSQL cleanup batch | n/a | 10,000 | `Store.Cleanup` rejects zero, negative, or larger batches |
 | PostgreSQL retention | caller-selected | 365 days | Store construction |
 | Valkey retention | caller-selected | 365 days | Store construction and key TTL |
 | HTTP buffered body | 64 KiB | 700 KiB | `idempotencyhttp.Options.MaxResponseBytes` |
+| HTTP replay-header names | empty | 32 names, 128 bytes each | Middleware construction and replay decode |
+| HTTP replay-header values | empty | 64 values, 8 KiB each | Before response projection and replay decode |
+| HTTP replay-header projection | empty | 64 KiB | Selected names and values before copying or persistence |
+| HTTP persisted replay envelope | n/a | 1 MiB | Before JSON decode of a stored result |
 | JSON-RPC response envelope | 64 KiB | 900 KiB | `idempotencyrpc.Options.MaxResponseBytes` |
 | Panic cleanup transition | 5 seconds | caller-selected | Detached context always has the configured timeout |
 
-HTTP's maximum leaves space under the 1 MiB stored-result bound for status and
-selected response headers. JSON-RPC requires at least 256 bytes so it can
+HTTP applies its body and replay-header limits before encoding the stored
+projection; the final encoded result must also remain under the 1 MiB
+stored-result bound. Replay rejects a stored result above that bound before
+JSON decoding, then validates every decoded field. Valkey metadata and the
+PostgreSQL record envelope likewise have serialized-input ceilings before JSON
+decoding. JSON-RPC requires at least 256 bytes so it can
 persist the bounded internal-error response. Canonical JSON and byte
 fingerprints require explicit input limits; the package does not read an
 unbounded stream on the caller's behalf.

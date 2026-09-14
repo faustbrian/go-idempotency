@@ -8,7 +8,12 @@ import (
 	"github.com/faustbrian/go-idempotency"
 )
 
-const recordSchema = 1
+const (
+	recordSchema = 1
+	// A valid record is below this ceiling even after base64 and JSON escaping.
+	// The bound is checked before decoding backend-controlled JSON.
+	maxEncodedRecordBytes = 2 * idempotency.MaxResultBytes
+)
 
 type persistedRecord struct {
 	Schema         int               `json:"schema"`
@@ -57,6 +62,12 @@ func encodeRecord(record idempotency.Record) ([]byte, error) {
 }
 
 func decodeRecord(encoded []byte) (idempotency.Record, error) {
+	if len(encoded) > maxEncodedRecordBytes {
+		return idempotency.Record{}, &idempotency.Error{
+			Reason: idempotency.ReasonLimitExceeded,
+			Field:  "record",
+		}
+	}
 	var persisted persistedRecord
 	if err := json.Unmarshal(encoded, &persisted); err != nil {
 		return idempotency.Record{}, payloadError("record", err)

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -102,6 +101,25 @@ func TestRecordCodecRejectsMalformedPersistedData(t *testing.T) {
 	}
 }
 
+func TestRecordCodecRejectsOversizedEnvelopeBeforeJSONDecode(t *testing.T) {
+	_, err := decodeRecord(bytes.Repeat([]byte{' '}, maxEncodedRecordBytes+1))
+	var semantic *idempotency.Error
+	if !errors.As(err, &semantic) || semantic.Reason != idempotency.ReasonLimitExceeded {
+		t.Fatalf("decodeRecord() error = %#v", err)
+	}
+}
+
+func TestRecordCodecAcceptsExactEncodedEnvelopeLimit(t *testing.T) {
+	encoded, err := encodeRecord(codecRecord(t))
+	if err != nil {
+		t.Fatalf("encodeRecord() error = %v", err)
+	}
+	encoded = append(encoded, bytes.Repeat([]byte{' '}, maxEncodedRecordBytes-len(encoded))...)
+	if _, err := decodeRecord(encoded); err != nil {
+		t.Fatalf("decodeRecord() exact envelope error = %v", err)
+	}
+}
+
 func TestRecordEncoderRejectsInvalidAndOversizedValues(t *testing.T) {
 	tests := map[string]func(*idempotency.Record){
 		"key": func(record *idempotency.Record) { record.Key = idempotency.Key{} },
@@ -165,11 +183,12 @@ func TestRecordCodecAcceptsExactPersistenceLimits(t *testing.T) {
 	record.OwnerToken = strings.Repeat("o", idempotency.MaxOwnerTokenBytes)
 	record.Result = make([]byte, idempotency.MaxResultBytes)
 	record.Metadata = make(map[string]string, idempotency.MaxMetadataEntries)
-	for index := range idempotency.MaxMetadataEntries - 1 {
-		record.Metadata[fmt.Sprintf("key-%d", index)] = "value"
+	escapedKeyBytes := []byte{0, 1, 2, 3, 4, 5, 6, 7, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31}
+	for index := range idempotency.MaxMetadataEntries {
+		key := string([]byte{escapedKeyBytes[index/len(escapedKeyBytes)], escapedKeyBytes[index%len(escapedKeyBytes)]}) +
+			strings.Repeat("\x00", idempotency.MaxMetadataKeyBytes-2)
+		record.Metadata[key] = strings.Repeat("\x00", idempotency.MaxMetadataValueBytes)
 	}
-	record.Metadata[strings.Repeat("k", idempotency.MaxMetadataKeyBytes)] =
-		strings.Repeat("v", idempotency.MaxMetadataValueBytes)
 
 	encoded, err := encodeRecord(record)
 	if err != nil {

@@ -17,6 +17,16 @@ const (
 	HeaderReplayed = canonical.HeaderReplayed
 	// MaxReplayResponseBytes is the largest handler body accepted for replay.
 	MaxReplayResponseBytes = canonical.MaxReplayResponseBytes
+	// MaxReplayHeaderNames bounds configured response-header names.
+	MaxReplayHeaderNames = canonical.MaxReplayHeaderNames
+	// MaxReplayHeaderValues bounds retained response-header field values.
+	MaxReplayHeaderValues = canonical.MaxReplayHeaderValues
+	// MaxReplayHeaderNameBytes bounds each configured response-header name.
+	MaxReplayHeaderNameBytes = canonical.MaxReplayHeaderNameBytes
+	// MaxReplayHeaderValueBytes bounds each retained response-header value.
+	MaxReplayHeaderValueBytes = canonical.MaxReplayHeaderValueBytes
+	// MaxReplayHeaderBytes bounds all retained response-header names and values.
+	MaxReplayHeaderBytes = canonical.MaxReplayHeaderBytes
 )
 
 // ErrResponseTooLarge is returned to a handler whose body crosses its limit.

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/faustbrian/go-idempotency"
+	valkeygo "github.com/valkey-io/valkey-go"
 	valkeymock "github.com/valkey-io/valkey-go/mock"
 	"go.uber.org/mock/gomock"
 )
@@ -59,6 +60,47 @@ func TestNativeExecutorDecodesScriptArray(t *testing.T) {
 	}
 	if len(reply) != 2 || reply[0] != "ok" || reply[1] != "binary\x00value" {
 		t.Fatalf("Exec() = %#v", reply)
+	}
+}
+
+func TestNativeExecutorRejectsOversizedScriptArray(t *testing.T) {
+	t.Parallel()
+
+	messages := make([]valkeygo.ValkeyMessage, maxRecordReplyValues+1)
+	for index := range messages {
+		messages[index] = valkeymock.ValkeyString("field")
+	}
+	client := valkeymock.NewClient(gomock.NewController(t))
+	client.EXPECT().Do(gomock.Any(), gomock.Any()).Return(
+		valkeymock.Result(valkeymock.ValkeyArray(messages...)),
+	)
+
+	_, err := (&nativeExecutor{client: client}).Exec(
+		context.Background(), operationInspect, "key", nil,
+	)
+	var semantic *idempotency.Error
+	if !errors.As(err, &semantic) || semantic.Reason != idempotency.ReasonLimitExceeded {
+		t.Fatalf("Exec() error = %#v", err)
+	}
+}
+
+func TestNativeExecutorAcceptsExactScriptArrayLimit(t *testing.T) {
+	t.Parallel()
+
+	messages := make([]valkeygo.ValkeyMessage, maxRecordReplyValues)
+	for index := range messages {
+		messages[index] = valkeymock.ValkeyString("field")
+	}
+	client := valkeymock.NewClient(gomock.NewController(t))
+	client.EXPECT().Do(gomock.Any(), gomock.Any()).Return(
+		valkeymock.Result(valkeymock.ValkeyArray(messages...)),
+	)
+
+	reply, err := (&nativeExecutor{client: client}).Exec(
+		context.Background(), operationInspect, "key", nil,
+	)
+	if err != nil || len(reply) != maxRecordReplyValues {
+		t.Fatalf("Exec() = %d values, %v", len(reply), err)
 	}
 }
 
