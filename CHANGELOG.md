@@ -6,6 +6,8 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-21
+
 ### Security
 
 - Update the compatibility harness to `google.golang.org/grpc` 1.83.2 so its
@@ -16,6 +18,16 @@ public API reaches its first stable version.
   replay the existing terminal HTTP 500 instead of amplifying storage work.
 - Reject oversized HTTP replay envelopes, Valkey metadata JSON, and PostgreSQL
   record envelopes before JSON decoding backend-controlled data.
+- Validate the complete Valkey hash schema, logical identity, field sizes, and
+  semantic values inside each script before any state or TTL mutation. Invalid
+  records now return a bounded error reply instead of materializing an
+  attacker-sized hash response in the client.
+
+### Changed
+
+- Raise the minimum supported Go version from 1.26.6 to 1.27.0. Consumers must
+  select Go 1.27 or newer before upgrading; the stable v1 module and import
+  paths remain unchanged.
 
 ### Documentation
 
@@ -206,6 +218,7 @@ public API reaches its first stable version.
 
 - The public API follows stable v1 semantic-versioning compatibility.
 
-[Unreleased]: https://github.com/faustbrian/go-idempotency/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/faustbrian/go-idempotency/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/faustbrian/go-idempotency/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/faustbrian/go-idempotency/releases/tag/v1.1.0
 [1.0.0]: https://github.com/faustbrian/go-idempotency/releases/tag/v1.0.0

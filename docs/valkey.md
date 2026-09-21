@@ -139,11 +139,16 @@ still be absent after failover.
 
 Persisted hashes carry schema version `1`. Unknown schema versions, malformed
 counters, timestamps, fingerprints, metadata, states, and oversized results
-fail closed as `invalid_payload`. Rolling releases must retain decoding support
-for every schema that may remain within the retention window.
+fail closed. Every script checks the exact field set, byte ceilings, semantic
+values, and requested logical identity before any mutation or record reply.
+Rejection is a fixed two-value reply, so an oversized stored field is not
+returned to or materialized by the client. Rolling releases must retain decoding
+support for every schema that may remain within the retention window.
 
 The integration suite requires Valkey 9 and runs the same conformance contract
 against both standalone and three-primary cluster deployments. It also verifies
 active and terminal TTLs, binary result replay, closed-client failure behavior,
 unknown results after the server executes a script but its reply is lost, and
-replica-promotion recovery of synchronized ownership.
+replica-promotion recovery of synchronized ownership. The hostile-record suite
+runs under RESP2 and RESP3 and proves rejected records preserve their serialized
+value and absolute expiry.

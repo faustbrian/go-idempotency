@@ -100,7 +100,7 @@ to the application's privacy policy.
 
 | Risk | Owner | Rationale | Mitigation | Review condition |
 | --- | --- | --- | --- | --- |
-| A compromised PostgreSQL or Valkey server can make its client allocate an oversized wire reply before the package codec sees it. | Idempotency maintainers and deploying operators | The stores are correctness-critical trusted infrastructure, and their current client APIs materialize replies before codec validation. | Isolate and authenticate backends, restrict write access, cap backend and client resources, monitor record size, and fail codec parsing closed at the serialized-envelope limit. | Revisit when accepting an untrusted or multi-tenant backend, when a supported driver exposes bounded streaming, or when backend reply-size controls become available. |
+| A compromised PostgreSQL or Valkey server can send an oversized wire reply before the client codec can reject it. | Idempotency maintainers and deploying operators | The Valkey scripts prevent oversized persisted fields from entering normal record replies, but a compromised server can ignore the script contract; PostgreSQL currently materializes JSONB before package codec validation. | Isolate and authenticate backends, restrict write access, cap backend and client resources, monitor record size, and fail package parsing closed at the serialized-envelope limit. | Revisit when accepting an untrusted or multi-tenant backend, when supported clients expose bounded streaming, or when backend reply-size controls become available. |
 
 Review this model whenever identity fields, canonicalization, persistence
 formats, transition scripts, retention, topology claims, or diagnostic fields

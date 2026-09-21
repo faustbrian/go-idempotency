@@ -214,7 +214,12 @@ func (s *Store) executeRecord(ctx context.Context, operation operation, key idem
 	if err := ctx.Err(); err != nil {
 		return idempotency.Record{}, err
 	}
-	reply, err := s.executor.Exec(ctx, operation, recordKey(s.prefix, key), args)
+	identity := []string{
+		key.Namespace(), key.Tenant(), key.Operation(), key.Caller(), key.Value(),
+	}
+	reply, err := s.executor.Exec(
+		ctx, operation, recordKey(s.prefix, key), append(identity, args...),
+	)
 	if err != nil {
 		return idempotency.Record{}, err
 	}
@@ -255,7 +260,8 @@ func decodeSemanticReply(reply []string) error {
 	reason := idempotency.Reason(reply[1])
 	switch reason {
 	case idempotency.ReasonNotFound, idempotency.ReasonStaleOwner,
-		idempotency.ReasonLeaseExpired, idempotency.ReasonInvalidTransition:
+		idempotency.ReasonLeaseExpired, idempotency.ReasonInvalidTransition,
+		idempotency.ReasonInvalidPayload, idempotency.ReasonLimitExceeded:
 		return &idempotency.Error{Reason: reason, Field: "record"}
 	default:
 		return recordError(errors.New("unknown semantic reason"))
