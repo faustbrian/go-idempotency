@@ -65,7 +65,7 @@ direct service flow above. The helper does not commit or roll back: callers
 must return on either insert or completion failure so the deferred rollback
 runs, and commit only after every transaction-bound business write succeeds.
 
-The root module does not import `outbox`. A pinned Go 1.26 compatibility
+The root module does not import `outbox`. A pinned Go 1.27 compatibility
 module proves that `outbox/postgres.Writer` satisfies the generic writer
 contract at every CI and release gate.
 

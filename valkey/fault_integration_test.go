@@ -157,6 +157,134 @@ type responseDropper struct {
 	current *dropResponseConn
 }
 
+func TestValkeyRejectsOversizedPersistedRecordBeforeMaterializingReply(t *testing.T) {
+	for _, protocol := range []struct {
+		name  string
+		resp2 bool
+	}{{name: "resp3"}, {name: "resp2", resp2: true}} {
+		t.Run(protocol.name, func(t *testing.T) {
+			testValkeyRejectsOversizedPersistedRecordBeforeMaterializingReply(t, protocol.resp2)
+		})
+	}
+}
+
+func testValkeyRejectsOversizedPersistedRecordBeforeMaterializingReply(t *testing.T, resp2 bool) {
+	t.Helper()
+	address := integrationAddress(t)
+	counter := &responseByteCounter{}
+	client, err := valkeygo.NewClient(valkeygo.ClientOption{
+		InitAddress:       []string{address},
+		ForceSingleClient: true,
+		PipelineMultiplex: -1,
+		DialCtxFn:         counter.dial,
+		AlwaysRESP2:       resp2,
+		DisableCache:      resp2,
+	})
+	if err != nil {
+		t.Fatalf("valkey.NewClient() error = %v", err)
+	}
+	t.Cleanup(client.Close)
+	store, err := Open(context.Background(), client, Options{
+		Prefix: "idempotency-bounded-reply", Retention: time.Minute,
+		OwnerTokens: idempotencytest.NewTokenSource("bounded-owner").Next,
+	})
+	if err != nil {
+		t.Fatalf("Open() error = %v", err)
+	}
+	key, err := idempotency.NewKey("fault", "tenant", "bounded", "caller", t.Name())
+	if err != nil {
+		t.Fatalf("NewKey() error = %v", err)
+	}
+	fingerprint, err := idempotency.NewFingerprint("v1", []byte("bounded reply"))
+	if err != nil {
+		t.Fatalf("NewFingerprint() error = %v", err)
+	}
+	acquired, err := store.Acquire(context.Background(), idempotency.AcquireRequest{
+		Key: key, Fingerprint: fingerprint, Lease: time.Minute,
+	})
+	if err != nil {
+		t.Fatalf("Acquire() error = %v", err)
+	}
+	storageKey := recordKey("idempotency-bounded-reply", key)
+	t.Cleanup(func() {
+		_ = client.Do(context.Background(), client.B().Del().Key(storageKey).Build()).Error()
+	})
+	if err := client.Do(
+		context.Background(),
+		client.B().Hset().Key(storageKey).FieldValue().FieldValue(
+			fieldResult, string(make([]byte, idempotency.MaxResultBytes+1)),
+		).Build(),
+	).Error(); err != nil {
+		t.Fatalf("HSET oversized result error = %v", err)
+	}
+	beforeDump, err := client.Do(
+		context.Background(), client.B().Dump().Key(storageKey).Build(),
+	).ToString()
+	if err != nil {
+		t.Fatalf("DUMP before error = %v", err)
+	}
+	beforeExpiry, err := client.Do(
+		context.Background(), client.B().Pexpiretime().Key(storageKey).Build(),
+	).AsInt64()
+	if err != nil {
+		t.Fatalf("PEXPIRETIME before error = %v", err)
+	}
+
+	counter.reset()
+	_, err = store.Inspect(context.Background(), acquired.Record.Key)
+	assertStoreReason(t, err, idempotency.ReasonLimitExceeded)
+	if received := counter.bytesRead.Load(); received > 4096 {
+		t.Fatalf("Inspect() materialized %d response bytes, want at most 4096", received)
+	}
+	afterDump, dumpErr := client.Do(
+		context.Background(), client.B().Dump().Key(storageKey).Build(),
+	).ToString()
+	if dumpErr != nil {
+		t.Fatalf("DUMP after error = %v", dumpErr)
+	}
+	afterExpiry, expiryErr := client.Do(
+		context.Background(), client.B().Pexpiretime().Key(storageKey).Build(),
+	).AsInt64()
+	if expiryErr != nil {
+		t.Fatalf("PEXPIRETIME after error = %v", expiryErr)
+	}
+	if afterDump != beforeDump || afterExpiry != beforeExpiry {
+		t.Fatal("Inspect() changed malformed record or its absolute expiry")
+	}
+}
+
+type responseByteCounter struct {
+	bytesRead atomic.Int64
+}
+
+func (c *responseByteCounter) dial(
+	ctx context.Context,
+	address string,
+	dialer *net.Dialer,
+	_ *tls.Config,
+) (net.Conn, error) {
+	connection, err := dialer.DialContext(ctx, "tcp", address)
+	if err != nil {
+		return nil, err
+	}
+	return &countedReadConn{Conn: connection, bytesRead: &c.bytesRead}, nil
+}
+
+func (c *responseByteCounter) reset() {
+	c.bytesRead.Store(0)
+}
+
+type countedReadConn struct {
+	net.Conn
+	bytesRead *atomic.Int64
+}
+
+func (c *countedReadConn) Read(buffer []byte) (int, error) {
+	read, err := c.Conn.Read(buffer)
+	c.bytesRead.Add(int64(read))
+	return read, err
+}
+
 func (d *responseDropper) dial(
 	ctx context.Context,
 	address string,

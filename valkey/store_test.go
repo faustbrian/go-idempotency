@@ -246,6 +246,11 @@ func TestStoreRoutesEveryRecordOperation(t *testing.T) {
 			}
 			if call := executor.singleCall(t); call.operation != expected {
 				t.Fatalf("operation = %q, want %q", call.operation, expected)
+			} else if len(call.args) < 5 ||
+				call.args[0] != want.Key.Namespace() || call.args[1] != want.Key.Tenant() ||
+				call.args[2] != want.Key.Operation() || call.args[3] != want.Key.Caller() ||
+				call.args[4] != want.Key.Value() {
+				t.Fatalf("operation identity args = %#v", call.args)
 			}
 		})
 	}
@@ -352,8 +357,8 @@ func TestCompleteAcceptsExactResultLimit(t *testing.T) {
 	}); err != nil {
 		t.Fatalf("Complete() exact result limit error = %v", err)
 	}
-	if call := executor.singleCall(t); len(call.args[2]) != idempotency.MaxResultBytes {
-		t.Fatalf("Complete() result bytes = %d", len(call.args[2]))
+	if call := executor.singleCall(t); len(call.args[7]) != idempotency.MaxResultBytes {
+		t.Fatalf("Complete() result bytes = %d", len(call.args[7]))
 	}
 }
 

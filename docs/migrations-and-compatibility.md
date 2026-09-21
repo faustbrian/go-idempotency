@@ -14,6 +14,12 @@ multi-key work atomic.
 The release notes must identify any change to these minimums. CI is the source
 of truth for the versions tested by each commit.
 
+Version 1.2 raises the Go floor from 1.26.6 to 1.27.0. Upgrade the consumer
+toolchain before selecting v1.2; no module-path or import-path migration is
+required. The release also makes Valkey schema-v1 validation atomic with each
+script. Records written by this module remain compatible, while malformed,
+oversized, or logically mis-keyed hashes fail closed before mutation.
+
 ## Public Go API policy
 
 Major releases may remove or change exported identifiers. Patch
@@ -149,7 +155,7 @@ exact transaction method contracts.
 
 The isolated `compatibility/ecosystem` module pins and compiles the current
 `log`, `migrations`, `outbox`, `queue`, `telemetry`, and
-`webhook` revisions under Go 1.26. It proves the exact public interfaces and
+`webhook` revisions under Go 1.27. It proves the exact public interfaces and
 runs the webhook replay-store adapter against the deterministic memory store at
 every CI and release gate. Pseudo-versions are commit pins, not stability
 claims; review upstream changelogs before updating them.

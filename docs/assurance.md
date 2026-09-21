@@ -14,6 +14,7 @@ documentation.
 | H-003 | The process-local memory store could retain an unbounded number of records. | Closed: `MaxRecords` defaults to 10,000 and cannot exceed 1,000,000. New keys fail at capacity without blocking existing-key replay or transitions. |
 | M-001 | Configured HTTP replay headers could amplify memory before the stored-result limit was enforced. | Closed: name count and bytes, value count and bytes, and aggregate selected-header bytes are rejected before copying, encoding, or persistence. |
 | M-002 | Persisted HTTP replay envelopes and backend metadata JSON were decoded before their serialized byte budgets were checked. | Closed: HTTP stored results, Valkey metadata JSON, and PostgreSQL record envelopes now cross a hard byte ceiling before JSON decoding, followed by existing field-level validation. |
+| M-003 | Valkey scripts returned backend-controlled hashes before the client could enforce record limits, and malformed hashes could be mutated before Go decoding rejected them. | Closed: every script validates the exact schema, field limits, semantic values, and requested logical identity before record-dependent mutation, then returns fields in a fixed order. Rejections use a bounded two-value reply. |
 | E-001 | PostgreSQL did not have live tests for deadlock, serializable abort, or pool saturation. | Closed: failure tests prove rollback and absence of partial record mutation. |
 | E-002 | Valkey reconnect tests covered response loss but not replica promotion. | Closed: a Valkey 9 replica is synchronized, the primary is killed, the replica is promoted, and the same ownership proof completes. |
 | E-003 | State and crash documentation lacked a complete executable evidence map. | Closed: shared conformance rejects every illegal mutation and the crash matrix exercises ownership, heartbeat, fencing, completion, and failure boundaries. |
@@ -47,7 +48,7 @@ remaining recovery obligations are stated in the threat model and crash guide.
 | Hostile canonicalization | `TestJSONRejectsHostileOrAmbiguousInput`, `TestJSONEnforcesAllResourceLimits`, and `FuzzJSONIsIdempotent` |
 | Encodings and versioned fingerprints | `FuzzBytesFingerprintPreservesEncoding`, `FuzzFingerprintPolicyVersionsRemainDistinct`, and shared cross-version conflict conformance |
 | Persisted compatibility | PostgreSQL and Valkey `TestRecordVersion1FixtureRemainsReadableAndWritable`; both persisted-record fuzzers |
-| Bounded results and metadata | shared invalid-data conformance, pre-decode PostgreSQL/Valkey codec limits, HTTP hostile replay-header resource tests, and HTTP/JSON-RPC replay-bound tests |
+| Bounded results and metadata | shared invalid-data conformance, pre-decode PostgreSQL limits, Valkey RESP2/RESP3 script-validation and transport-byte tests, HTTP hostile replay-header resource tests, and HTTP/JSON-RPC replay-bound tests |
 | Bounded diagnostics | `TestObserverWritesOnlyBoundedFields`, `TestObserverRecordsBoundedMetricAttributes`, and `TestNewHMACKeyHasherProtectsLogicalIdentity` |
 
 ## Release-blocker disposition
@@ -59,7 +60,7 @@ remaining recovery obligations are stated in the threat model and crash guide.
 | A fingerprint conflict replays as equivalent | Blocked before replay, including equal digests with different policy versions. |
 | Unbounded wait, lease, result, retry, cleanup, or memory | No package wait or retry loop exists; leases, results, metadata, cleanup batches, transition contexts, and memory records are bounded. Caller polling and retries remain caller-owned and must have deadlines. |
 | Unsupported exactly-once claim | Documentation consistently describes at-most-one current owner and deterministic replay, with explicit external-effect ambiguity. |
-| Missing meaningful 100% coverage or failing gate | Pending hosted CI: exact production coverage is 100.0%, every local stage before lint passed, and `actionlint` validates both workflows. Local lint was unavailable because the toolchain linker rejected the installed macOS SDK; the configured hosted gates must pass for the pushed commit or release tag. |
+| Missing meaningful coverage or failing gate | Publication is blocked unless the required hosted checks pass on the exact release commit. Local or branch-only results are not substituted for that exact-head evidence. |
 
 ## Recovery obligations
 
