@@ -6,7 +6,7 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
-## [1.2.0] - 2026-09-21
+## [1.2.0] - 2026-09-22
 
 ### Security
 
