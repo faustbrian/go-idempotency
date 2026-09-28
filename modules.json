@@ -418,7 +418,7 @@
         "github.com/faustbrian/go-idempotency/compatibility/ecosystem",
         "github.com/faustbrian/go-scheduler",
         "github.com/faustbrian/go-service/integration/reference-durability",
-        "github.com/faustbrian/go-webhook"
+        "github.com/faustbrian/go-webhook/v2"
       ],
       "external_runtime_dependencies": [
         "github.com/deszhou/jcs",
@@ -495,8 +495,8 @@
         "github.com/faustbrian/go-migrations",
         "github.com/faustbrian/go-transactional-outbox",
         "github.com/faustbrian/go-queue",
-        "github.com/faustbrian/go-telemetry",
-        "github.com/faustbrian/go-webhook"
+        "github.com/faustbrian/go-telemetry/v2",
+        "github.com/faustbrian/go-webhook/v2"
       ],
       "reverse_owned_dependencies": [],
       "external_runtime_dependencies": [],

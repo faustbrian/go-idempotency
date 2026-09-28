@@ -6,6 +6,12 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+### Changed
+
+- Exercise the published `go-webhook/v2` and `go-telemetry/v2` contracts in
+  the ecosystem compatibility harness while preserving replay and observation
+  behavior. The root idempotency module and migrations dependency remain v1.
+
 ## [1.2.0] - 2026-09-22
 
 ### Security
