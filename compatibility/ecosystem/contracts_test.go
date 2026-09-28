@@ -19,11 +19,11 @@ import (
 	migrations "github.com/faustbrian/go-migrations"
 	postgres "github.com/faustbrian/go-postgres"
 	queuecore "github.com/faustbrian/go-queue/core"
-	telemetry "github.com/faustbrian/go-telemetry"
+	telemetry "github.com/faustbrian/go-telemetry/v2"
 	"github.com/faustbrian/go-transactional-outbox"
 	outboxpostgres "github.com/faustbrian/go-transactional-outbox/postgres"
-	webhook "github.com/faustbrian/go-webhook"
-	webhookidempotency "github.com/faustbrian/go-webhook/adapters/idempotency"
+	webhook "github.com/faustbrian/go-webhook/v2"
+	webhookidempotency "github.com/faustbrian/go-webhook/v2/adapters/idempotency"
 	"github.com/jackc/pgx/v5"
 )
 

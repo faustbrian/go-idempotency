@@ -42,7 +42,7 @@ service, err := idempotency.NewServiceWithOptions(store, idempotency.ServiceOpti
 ```
 
 Here `log.New` is `github.com/faustbrian/go-log.New`, and `runtime` is a
-`*github.com/faustbrian/go-telemetry.Runtime`. The logging adapter writes the
+`*github.com/faustbrian/go-telemetry/v2.Runtime`. The logging adapter writes the
 five bounded observation fields. The telemetry adapter increments
 `idempotency.transitions` with only `transition`, `outcome`, `reason`, and
 `durable` attributes; it deliberately excludes correlation.
