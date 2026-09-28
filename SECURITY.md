@@ -2,9 +2,20 @@
 
 ## Supported versions
 
-Only the latest stable v1 release receives security
-fixes. Unreleased commits on `main` are development snapshots and are not a
-supported production channel.
+Until `v2.0.0` is published, the latest published v1 patch receives security
+fixes. From `v2.0.0` publication onward, the latest published v2 patch receives
+security fixes. The latest v1 patch also receives fixes through at least
+2026-12-31 while owned direct consumers migrate.
+
+By 2026-12-31, review the actual dependency versions of the ecosystem
+compatibility harness, `go-scheduler`,
+`go-service/integration/reference-durability`, and `go-webhook/v2`. Extend v1
+support with a published revised date if a supported owned consumer still
+requires it. Retire v1 support only after the non-releasable harnesses have
+verified v2 adoption, releasable consumers have published v2 adoption, or a
+consumer has been explicitly retired. Announce that decision before the
+support window closes. Unreleased commits on `main` are development snapshots,
+not a supported production channel.
 
 ## Reporting a vulnerability
 

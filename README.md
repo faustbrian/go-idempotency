@@ -5,7 +5,7 @@
 [![Coverage](https://img.shields.io/badge/coverage-100%25_required-blue)](CONTRIBUTING.md#verification)
 [![Mutation](https://img.shields.io/badge/mutation-100%25_required-blue)](CONTRIBUTING.md#verification)
 [![Documentation](https://img.shields.io/badge/docs-checked_in_CI-blue)](docs/)
-[![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-idempotency.svg)](https://pkg.go.dev/github.com/faustbrian/go-idempotency)
+[![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-idempotency/v2.svg)](https://pkg.go.dev/github.com/faustbrian/go-idempotency/v2)
 [![Release](https://img.shields.io/github/v/release/faustbrian/go-idempotency?sort=semver)](https://github.com/faustbrian/go-idempotency/releases)
 [![Go](https://img.shields.io/badge/go-1.27.0-00ADD8?logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -25,27 +25,32 @@ The public contract, deterministic memory adapter, bounded JSON
 canonicalization, PostgreSQL and Valkey adapters, buffered HTTP middleware,
 method-aware JSON-RPC middleware, queue and webhook deduplication, named command
 and import helpers, transactional `outbox` coordination, and bounded logging
-and telemetry observers are implemented. The API is stable at v1 and is
-released as stable.
+and telemetry observers are implemented. This `main` source prepares the stable
+`/v2` module. Until `v2.0.0` is tagged, `v1.2.0` remains the latest published
+release and untagged `main` is not a supported installation. After publication,
+the latest v2 patch receives security fixes; v1 remains supported during the
+owned-consumer transition described in the [security policy](SECURITY.md).
 
 New integrations use target-oriented packages under `adapters/`:
 
 | Concern | Canonical package |
 | --- | --- |
-| Commands and imports | `github.com/faustbrian/go-idempotency/adapters/command` |
-| HTTP | `github.com/faustbrian/go-idempotency/adapters/http` |
-| JSON-RPC | `github.com/faustbrian/go-idempotency/adapters/jsonrpc` |
-| OpenTelemetry | `github.com/faustbrian/go-idempotency/adapters/otel` |
-| Transactional outbox | `github.com/faustbrian/go-idempotency/adapters/outbox` |
-| Queue consumers | `github.com/faustbrian/go-idempotency/adapters/queue` |
-| Structured logging | `github.com/faustbrian/go-idempotency/adapters/slog` |
-| Webhooks | `github.com/faustbrian/go-idempotency/adapters/webhook` |
+| Commands and imports | `github.com/faustbrian/go-idempotency/v2/adapters/command` |
+| HTTP | `github.com/faustbrian/go-idempotency/v2/adapters/http` |
+| JSON-RPC | `github.com/faustbrian/go-idempotency/v2/adapters/jsonrpc` |
+| OpenTelemetry | `github.com/faustbrian/go-idempotency/v2/adapters/otel` |
+| Transactional outbox | `github.com/faustbrian/go-idempotency/v2/adapters/outbox` |
+| Queue consumers | `github.com/faustbrian/go-idempotency/v2/adapters/queue` |
+| Structured logging | `github.com/faustbrian/go-idempotency/v2/adapters/slog` |
+| Webhooks | `github.com/faustbrian/go-idempotency/v2/adapters/webhook` |
 
-The released `idempotencycommand`, `idempotencyhttp`, `idempotencylog`,
+The `idempotencycommand`, `idempotencyhttp`, `idempotencylog`,
 `idempotencyoutbox`, `idempotencyqueue`, `idempotencyrpc`,
 `idempotencytelemetry`, and `idempotencywebhook` paths remain compatibility
-facades. Existing callers can migrate imports independently without changing
-their observable contracts.
+facades within each major. Callers can move from a facade to its `adapters/*`
+path independently of other adapters. Moving from v1 to v2 is a separate
+module-path migration; `postgres.GoMigration` returns the distinct
+`go-migrations/v2` type.
 
 ## Core acquisition outcomes
 
@@ -61,8 +66,10 @@ their observable contracts.
 
 ## Start in five minutes
 
+After `v2.0.0` is published, install the v2 module:
+
 ```sh
-go get github.com/faustbrian/go-idempotency
+go get github.com/faustbrian/go-idempotency/v2
 ```
 
 The [quickstart](docs/quickstart.md) demonstrates acquisition, completion, and

@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency"
-	"github.com/faustbrian/go-idempotency/canonical"
+	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency/v2/canonical"
 )
 
 func FuzzJSONIsIdempotent(f *testing.F) {

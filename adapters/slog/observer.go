@@ -7,7 +7,7 @@ import (
 	"errors"
 	"log/slog"
 
-	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/v2"
 )
 
 // ErrNilLogger reports an unusable logger configuration.

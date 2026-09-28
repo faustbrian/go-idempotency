@@ -1,6 +1,6 @@
 // Package idempotencytelemetry is the legacy OpenTelemetry adapter.
 //
-// Deprecated: use github.com/faustbrian/go-idempotency/adapters/otel. This
+// Deprecated: use github.com/faustbrian/go-idempotency/v2/adapters/otel. This
 // package remains supported for the longer of 180 days after successor
 // availability and two subsequently published stable root-module minor
 // releases.
@@ -9,8 +9,8 @@ package idempotencytelemetry
 import (
 	"context"
 
-	"github.com/faustbrian/go-idempotency"
-	canonical "github.com/faustbrian/go-idempotency/adapters/otel"
+	"github.com/faustbrian/go-idempotency/v2"
+	canonical "github.com/faustbrian/go-idempotency/v2/adapters/otel"
 	"go.opentelemetry.io/otel/metric"
 )
 

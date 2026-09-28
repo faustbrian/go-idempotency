@@ -8,6 +8,7 @@ non-secret logs.
 Use GitHub Discussions for adoption questions and design exploration. Use the
 private process in [`SECURITY.md`](SECURITY.md) for vulnerabilities.
 
-Support covers released module versions according to
-[`COMPATIBILITY.md`](COMPATIBILITY.md). Unreleased main-branch behavior may
-change while remediation gates are incomplete.
+Support covers released module versions according to the
+[security policy](SECURITY.md) and [compatibility policy](COMPATIBILITY.md).
+Unreleased main-branch behavior may change while remediation gates are
+incomplete.

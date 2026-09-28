@@ -6,11 +6,17 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-28
+
 ### Changed
 
 - Exercise the published `go-webhook/v2` and `go-telemetry/v2` contracts in
   the ecosystem compatibility harness while preserving replay and observation
-  behavior. The root idempotency module and migrations dependency remain v1.
+  behavior.
+- Move the root module and its PostgreSQL migration binding to `/v2` to adopt
+  `go-migrations/v2` without changing the exported `GoMigration` return type
+  within the published v1 import path. Consumers must update idempotency and
+  migrations imports together; v1 remains available at its original path.
 
 ## [1.2.0] - 2026-09-22
 
@@ -224,7 +230,8 @@ public API reaches its first stable version.
 
 - The public API follows stable v1 semantic-versioning compatibility.
 
-[Unreleased]: https://github.com/faustbrian/go-idempotency/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/faustbrian/go-idempotency/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/faustbrian/go-idempotency/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/faustbrian/go-idempotency/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/faustbrian/go-idempotency/releases/tag/v1.1.0
 [1.0.0]: https://github.com/faustbrian/go-idempotency/releases/tag/v1.0.0

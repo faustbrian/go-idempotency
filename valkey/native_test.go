@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/v2"
 	valkeygo "github.com/valkey-io/valkey-go"
 	valkeymock "github.com/valkey-io/valkey-go/mock"
 	"go.uber.org/mock/gomock"
