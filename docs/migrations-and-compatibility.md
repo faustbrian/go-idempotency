@@ -1,6 +1,8 @@
 # Migrations and compatibility
 
-The module follows stable v1 source compatibility. Persisted records and
+The v2 module changes the published `postgres.GoMigration` result to the
+`go-migrations/v2` named type. V1 stays available at its original import path;
+consumers must migrate both module imports together. Persisted records and
 rolling deployments still require explicit compatibility discipline.
 
 ## Supported runtime matrix
@@ -153,9 +155,11 @@ those contracts without depending on unreleased upstream commit identities.
 `outbox/postgres.Writer` and the idempotency PostgreSQL store through their
 exact transaction method contracts.
 
-The isolated `compatibility/ecosystem` module pins and compiles the current
-`log`, `migrations`, `outbox`, `queue`, `telemetry`, and
-`webhook` revisions under Go 1.27. It proves the exact public interfaces and
-runs the webhook replay-store adapter against the deterministic memory store at
-every CI and release gate. Pseudo-versions are commit pins, not stability
-claims; review upstream changelogs before updating them.
+The isolated `compatibility/ecosystem` module pins published v1 idempotency and
+migrations contracts alongside `log`, `outbox`, `queue`, `telemetry`, and
+`webhook` under Go 1.27. This remains an intentional v1 consumer while the
+root module moves to `/v2`, because the published webhook replay adapter accepts
+the v1 service type. It proves those exact public interfaces and runs the
+webhook replay-store adapter against the deterministic memory store at every
+CI and release gate. Pseudo-versions are commit pins, not stability claims;
+review upstream changelogs before updating them.

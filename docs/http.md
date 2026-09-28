@@ -6,7 +6,7 @@ register](specification-decisions.md) for structured-field and status-mapping
 differences.
 
 Import `idempotencyhttp` from
-`github.com/faustbrian/go-idempotency/adapters/http`. It requires
+`github.com/faustbrian/go-idempotency/v2/adapters/http`. It requires
 `Idempotency-Key`, elects one durable handler owner, and stores a bounded,
 versioned response. A completed response is replayed only when the
 application-supplied fingerprint matches.

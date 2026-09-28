@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency"
-	"github.com/faustbrian/go-idempotency/idempotencytelemetry"
+	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency/v2/idempotencytelemetry"
 	"go.opentelemetry.io/otel/attribute"
 	metricapi "go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/sdk/metric"

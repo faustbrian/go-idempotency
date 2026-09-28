@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency/idempotencytest"
+	"github.com/faustbrian/go-idempotency/v2/idempotencytest"
 )
 
 func TestClockAdvancesDeterministically(t *testing.T) {

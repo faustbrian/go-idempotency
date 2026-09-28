@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/v2"
 )
 
 func TestNewServiceRequiresAStore(t *testing.T) {

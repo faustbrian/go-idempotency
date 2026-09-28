@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency"
+	"github.com/faustbrian/go-idempotency/v2"
 )
 
 func TestCrashPointMatrix(t *testing.T) {

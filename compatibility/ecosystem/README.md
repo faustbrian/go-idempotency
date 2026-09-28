@@ -13,9 +13,10 @@ idempotency contract's explicit fencing and unknown-outcome boundaries.
 
 The compile-checked recipe in `contracts_test.go` is the integration boundary
 for a PostgreSQL service. `go-postgres` owns pool construction and bounded
-transaction cleanup; `go-migrations` applies each module's migrations before
-serving traffic; `go-idempotency/postgres` owns idempotency records; and
-`go-transactional-outbox/postgres` owns outbox persistence. A request acquires
+transaction cleanup; the published v1 `go-migrations` applies each module's
+migrations before serving traffic; the published v1 `go-idempotency/postgres`
+owns idempotency records; and `go-transactional-outbox/postgres` owns outbox
+persistence. A request acquires
 an idempotency lease, performs the business write, calls
 `idempotencyoutbox.InsertAndComplete` with the same `pgx.Tx`, and commits once.
 The application owns the transaction and must roll back on every error. A

@@ -37,5 +37,8 @@
 - [Contribution guide](../CONTRIBUTING.md)
 - [Changelog](../CHANGELOG.md)
 
-The API is stable at v1. Read the state machine and crash semantics before adopting an
-adapter or integration; a quickstart alone is not a correctness specification.
+The published v1 API remains at its original module path. The v2 API in this
+source uses `/v2` and becomes an installable release at the `v2.0.0` tag;
+untagged `main` is not a supported installation. Read the state machine and
+crash semantics before adopting an adapter or integration; a quickstart alone
+is not a correctness specification.

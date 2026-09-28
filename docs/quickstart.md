@@ -1,9 +1,10 @@
 # Five-minute quickstart
 
-Install the module:
+After `v2.0.0` is published, install the v2 module. Until then, use a tagged v1
+release at the original module path rather than untagged `main`:
 
 ```sh
-go get github.com/faustbrian/go-idempotency
+go get github.com/faustbrian/go-idempotency/v2
 ```
 
 The in-memory adapter is useful for learning the contract and deterministic
@@ -20,8 +21,8 @@ import (
 	"time"
 
 	clock "github.com/faustbrian/go-clock"
-	"github.com/faustbrian/go-idempotency"
-	"github.com/faustbrian/go-idempotency/memory"
+	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency/v2/memory"
 )
 
 func ownerToken() (string, error) {

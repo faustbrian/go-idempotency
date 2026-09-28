@@ -1,6 +1,6 @@
 // Package idempotencyrpc is the legacy durable JSON-RPC adapter.
 //
-// Deprecated: use github.com/faustbrian/go-idempotency/adapters/jsonrpc. This
+// Deprecated: use github.com/faustbrian/go-idempotency/v2/adapters/jsonrpc. This
 // package remains supported for the longer of 180 days after successor
 // availability and two subsequently published stable root-module minor
 // releases.
@@ -11,8 +11,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/faustbrian/go-idempotency"
-	canonical "github.com/faustbrian/go-idempotency/adapters/jsonrpc"
+	"github.com/faustbrian/go-idempotency/v2"
+	canonical "github.com/faustbrian/go-idempotency/v2/adapters/jsonrpc"
 )
 
 const (

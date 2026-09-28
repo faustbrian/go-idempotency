@@ -6,8 +6,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/faustbrian/go-idempotency"
-	"github.com/faustbrian/go-idempotency/adapters/queue"
+	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency/v2/adapters/queue"
 )
 
 var (
