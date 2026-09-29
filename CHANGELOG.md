@@ -6,6 +6,11 @@ public API reaches its first stable version.
 
 ## [Unreleased]
 
+### Changed
+
+- Validate the supported v1.2.0 security release in the non-releasable
+  ecosystem compatibility harness.
+
 ## [2.0.0] - 2026-09-28
 
 ### Changed
