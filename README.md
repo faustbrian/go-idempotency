@@ -25,11 +25,10 @@ The public contract, deterministic memory adapter, bounded JSON
 canonicalization, PostgreSQL and Valkey adapters, buffered HTTP middleware,
 method-aware JSON-RPC middleware, queue and webhook deduplication, named command
 and import helpers, transactional `outbox` coordination, and bounded logging
-and telemetry observers are implemented. This `main` source prepares the stable
-`/v2` module. Until `v2.0.0` is tagged, `v1.2.0` remains the latest published
-release and untagged `main` is not a supported installation. After publication,
-the latest v2 patch receives security fixes; v1 remains supported during the
-owned-consumer transition described in the [security policy](SECURITY.md).
+and telemetry observers are implemented. The stable `/v2` module is published;
+`v2.0.1` is the latest published release. Untagged `main` is not a supported
+installation. The latest v2 patch receives security fixes; v1 remains supported
+during the owned-consumer transition described in the [security policy](SECURITY.md).
 
 New integrations use target-oriented packages under `adapters/`:
 
@@ -66,7 +65,7 @@ module-path migration; `postgres.GoMigration` returns the distinct
 
 ## Start in five minutes
 
-After `v2.0.0` is published, install the v2 module:
+Install the published v2 module:
 
 ```sh
 go get github.com/faustbrian/go-idempotency/v2
