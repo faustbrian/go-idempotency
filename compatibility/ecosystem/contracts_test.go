@@ -15,7 +15,7 @@ import (
 	"github.com/faustbrian/go-idempotency/idempotencytest"
 	"github.com/faustbrian/go-idempotency/memory"
 	idempotencypostgres "github.com/faustbrian/go-idempotency/postgres"
-	log "github.com/faustbrian/go-log"
+	log "github.com/faustbrian/go-log/v2"
 	migrations "github.com/faustbrian/go-migrations"
 	postgres "github.com/faustbrian/go-postgres"
 	queuecore "github.com/faustbrian/go-queue/core"
