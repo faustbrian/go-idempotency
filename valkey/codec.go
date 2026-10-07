@@ -52,6 +52,7 @@ func recordKey(prefix string, key idempotency.Key) string {
 	for _, part := range []string{
 		key.Namespace(), key.Tenant(), key.Operation(), key.Caller(), key.Value(),
 	} {
+		// #nosec G115 -- private Key parts are empty or bounded to 256 bytes by NewKey.
 		binary.BigEndian.PutUint32(size[:], uint32(len(part)))
 		_, _ = hash.Write(size[:])
 		_, _ = hash.Write([]byte(part))

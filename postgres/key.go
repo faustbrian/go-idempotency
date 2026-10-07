@@ -28,6 +28,7 @@ func RecordKeyDigest(key idempotency.Key) []byte {
 }
 
 func advisoryLockKey(digest []byte) int64 {
+	// #nosec G115 -- preserve all 64 digest bits in PostgreSQL's signed bigint key.
 	return int64(binary.BigEndian.Uint64(digest[:8]))
 }
 

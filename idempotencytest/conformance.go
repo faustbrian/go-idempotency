@@ -134,7 +134,9 @@ func RunStoreConformance(t *testing.T, factory StoreFactory) {
 		const callers = 32
 		results := runConcurrently(callers, func(index int) (idempotency.Record, error) {
 			return fixture.Store.Complete(context.Background(), idempotency.CompleteRequest{
-				Ownership: owner.Record.Ownership(), Result: []byte{byte(index)},
+				Ownership: owner.Record.Ownership(),
+				// #nosec G115 -- runConcurrently with 32 callers supplies only indexes 0..31.
+				Result: []byte{byte(index)},
 			})
 		})
 		completed := 0
