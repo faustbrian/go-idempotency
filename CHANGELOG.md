@@ -8,6 +8,9 @@ public API reaches its first stable version.
 
 ### Changed
 
+- Adopt OpenTelemetry API and metric v1.47.0 while retaining SDK v1.45.0.
+  Preserve the observer API and bounded transition metrics for canonical and
+  legacy adapters, including aggregation without correlation labels.
 - Adopt published Webhook v3 in the non-releasable ecosystem harness while
   preserving its v1.2.0 Idempotency service and replay refusal contract.
 - Raise the root OpenTelemetry dependency floor to v1.45.0, including the

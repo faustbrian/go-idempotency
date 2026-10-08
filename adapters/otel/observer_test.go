@@ -21,24 +21,32 @@ func TestObserverRecordsBoundedMetricAttributes(t *testing.T) {
 		t.Fatalf("New() error = %v", err)
 	}
 
-	observer.Observe(context.Background(), idempotency.Observation{
-		Transition:  idempotency.TransitionAcquire,
-		Outcome:     idempotency.OutcomeAcquired,
-		Reason:      idempotency.ReasonUnavailable,
-		Durable:     true,
-		Correlation: "must-not-be-a-metric-label",
-	})
+	for _, correlation := range []string{"first-private-correlation", "second-private-correlation"} {
+		observer.Observe(context.Background(), idempotency.Observation{
+			Transition:  idempotency.TransitionAcquire,
+			Outcome:     idempotency.OutcomeAcquired,
+			Reason:      idempotency.ReasonUnavailable,
+			Durable:     true,
+			Correlation: correlation,
+		})
+	}
 
 	var data metricdata.ResourceMetrics
 	if err := reader.Collect(context.Background(), &data); err != nil {
 		t.Fatalf("Collect() error = %v", err)
 	}
+	if len(data.ScopeMetrics) != 1 || data.ScopeMetrics[0].Scope.Name != "github.com/faustbrian/go-idempotency/v2" {
+		t.Fatalf("metric scopes = %#v", data.ScopeMetrics)
+	}
 	metrics := data.ScopeMetrics[0].Metrics
 	if len(metrics) != 1 || metrics[0].Name != "idempotency.transitions" {
 		t.Fatalf("metrics = %#v", metrics)
 	}
+	if metrics[0].Unit != "{transition}" || metrics[0].Description != "Idempotency semantic service transitions" {
+		t.Fatalf("metric metadata = %#v", metrics[0])
+	}
 	sum, ok := metrics[0].Data.(metricdata.Sum[int64])
-	if !ok || len(sum.DataPoints) != 1 || sum.DataPoints[0].Value != 1 {
+	if !ok || len(sum.DataPoints) != 1 || sum.DataPoints[0].Value != 2 {
 		t.Fatalf("metric data = %#v", metrics[0].Data)
 	}
 	want := attribute.NewSet(
