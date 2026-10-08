@@ -55,8 +55,8 @@ github.com/faustbrian/go-telemetry/v2 v2.0.0 h1:QhqiUbgdJu4Bus/3yYmDXUBsakSlx7AR
 github.com/faustbrian/go-telemetry/v2 v2.0.0/go.mod h1:LP33MN5e01RYDHBD4SvZSJNphRQ43WpoX3uBtBXdKmM=
 github.com/faustbrian/go-transactional-outbox/v2 v2.0.0 h1:Iz+ILBp6DvVwF2gu68LRJoJhfwfIv/h0w+JWsEMN99E=
 github.com/faustbrian/go-transactional-outbox/v2 v2.0.0/go.mod h1:k54vJO0qAqs/nzIk9tmoWgFRsQkEJ1CvfhH8t1NLaFg=
-github.com/faustbrian/go-webhook/v2 v2.0.0 h1:VzC+LDE2etkWMAlMD94KYVltJlUiZxIlVUzdoCYHw0o=
-github.com/faustbrian/go-webhook/v2 v2.0.0/go.mod h1:pdP6ylTv8Fs1osLP3YwYYBBXrx0Dr0DhSZGsVqfE3ug=
+github.com/faustbrian/go-webhook/v3 v3.0.0 h1:CiSghCPnJlsTkX18HNsRLzAwt1p3532IfH0Lrrbh3Yg=
+github.com/faustbrian/go-webhook/v3 v3.0.0/go.mod h1:l2HkHkzuJ22cOg33UkzUP+w3zLmXXVmQc49VxtyqDbI=
 github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=
 github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
 github.com/go-logr/logr v1.2.2/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=

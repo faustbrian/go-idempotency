@@ -167,5 +167,5 @@ review upstream changelogs before updating them.
 The Outbox v2 PostgreSQL writer composes with the existing generic
 `adapters/outbox.InsertAndComplete` boundary; its actual v2 envelope type is
 compile-checked. This does not change transaction ownership or introduce an
-Idempotency root release. Webhook remains at public `/v2` v2.0.0 in this harness
-pending the separate v3 release and adoption.
+Idempotency root release. Webhook selects public `/v3` v3.0.0 in this harness;
+its replay adapter still accepts the intentional v1 Idempotency service.

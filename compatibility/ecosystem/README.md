@@ -25,8 +25,9 @@ separate outbox relay publishes committed envelopes at least once; no remote
 broker or HTTP call is part of the PostgreSQL transaction.
 
 The harness selects public Outbox v2.0.0 and asserts its exact envelope writer
-contract against the generic v1 idempotency adapter. Webhook remains on its
-published v2.0.0 line here until the separate Webhook v3 release is delivered.
+contract against the generic v1 idempotency adapter. Webhook selects published
+v3.0.0; its replay-store adapter intentionally consumes the v1.2.0 Idempotency
+service and the harness exercises first acceptance and duplicate refusal.
 This internal harness change does not release a new Idempotency module.
 
 Run the harness through the repository contract with `make check`. Shared

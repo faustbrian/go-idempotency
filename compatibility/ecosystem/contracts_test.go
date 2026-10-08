@@ -22,8 +22,8 @@ import (
 	telemetry "github.com/faustbrian/go-telemetry/v2"
 	"github.com/faustbrian/go-transactional-outbox/v2"
 	outboxpostgres "github.com/faustbrian/go-transactional-outbox/v2/postgres"
-	webhook "github.com/faustbrian/go-webhook/v2"
-	webhookidempotency "github.com/faustbrian/go-webhook/v2/adapters/idempotency"
+	webhook "github.com/faustbrian/go-webhook/v3"
+	webhookidempotency "github.com/faustbrian/go-webhook/v3/adapters/idempotency"
 	"github.com/jackc/pgx/v5"
 )
 

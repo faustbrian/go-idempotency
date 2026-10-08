@@ -491,7 +491,7 @@
         "github.com/faustbrian/go-transactional-outbox/v2",
         "github.com/faustbrian/go-queue",
         "github.com/faustbrian/go-telemetry/v2",
-        "github.com/faustbrian/go-webhook/v2"
+        "github.com/faustbrian/go-webhook/v3"
       ],
       "reverse_owned_dependencies": [],
       "external_runtime_dependencies": [],

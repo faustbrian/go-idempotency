@@ -8,6 +8,8 @@ public API reaches its first stable version.
 
 ### Changed
 
+- Adopt published Webhook v3 in the non-releasable ecosystem harness while
+  preserving its v1.2.0 Idempotency service and replay refusal contract.
 - Raise the root OpenTelemetry dependency floor to v1.45.0, including the
   patched SDK. Upgrading selects these dependency versions without changing
   the observer API, bounded metric attributes, or `/v2` imports.
