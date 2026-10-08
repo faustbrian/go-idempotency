@@ -9,7 +9,7 @@ require (
 	github.com/faustbrian/go-postgres v1.0.0
 	github.com/faustbrian/go-queue v1.0.0
 	github.com/faustbrian/go-telemetry/v2 v2.0.0
-	github.com/faustbrian/go-transactional-outbox v1.0.0
+	github.com/faustbrian/go-transactional-outbox/v2 v2.0.0
 	github.com/faustbrian/go-webhook/v2 v2.0.0
 	github.com/jackc/pgx/v5 v5.10.0
 )

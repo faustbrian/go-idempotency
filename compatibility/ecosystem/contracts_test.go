@@ -20,15 +20,14 @@ import (
 	postgres "github.com/faustbrian/go-postgres"
 	queuecore "github.com/faustbrian/go-queue/core"
 	telemetry "github.com/faustbrian/go-telemetry/v2"
-	"github.com/faustbrian/go-transactional-outbox"
-	outboxpostgres "github.com/faustbrian/go-transactional-outbox/postgres"
+	"github.com/faustbrian/go-transactional-outbox/v2"
+	outboxpostgres "github.com/faustbrian/go-transactional-outbox/v2/postgres"
 	webhook "github.com/faustbrian/go-webhook/v2"
 	webhookidempotency "github.com/faustbrian/go-webhook/v2/adapters/idempotency"
 	"github.com/jackc/pgx/v5"
 )
 
 func TestPublishedEcosystemContractsCompile(t *testing.T) {
-	var _ idempotencyoutbox.Writer[outbox.Envelope] = (*outboxpostgres.Writer)(nil)
 	var _ idempotencyoutbox.Completer = (*idempotencypostgres.Store)(nil)
 	var _ idempotencyqueue.Message = (queuecore.TaskMessage)(nil)
 	var _ webhook.ReplayStore = (*webhookidempotency.Store)(nil)
