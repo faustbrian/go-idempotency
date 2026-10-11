@@ -36,6 +36,8 @@ observable evidence; the machine-complete bindings are in
   They do not establish exactly-once execution.
 
 Run `make conformance` for focused Go evidence and maintained-peer JCS
-comparison. CI additionally runs the canonical online source and errata check.
+comparison. Ordinary checks validate the local decision register without
+upstream fetches; `make specification-check-online` or `make check-full`
+selects canonical online source and errata verification for full qualification.
 Reviewed monitoring changes and their decision applicability are preserved in
 the append-only [upstream authority review history](upstream-reviews.md).

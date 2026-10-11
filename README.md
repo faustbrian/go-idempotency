@@ -3,7 +3,7 @@
 [![CI](https://github.com/faustbrian/go-idempotency/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/faustbrian/go-idempotency/actions/workflows/ci.yml)
 [![CodeQL](https://img.shields.io/badge/CodeQL-required-blue)](https://github.com/faustbrian/go-idempotency/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-100%25_required-blue)](CONTRIBUTING.md#verification)
-[![Mutation](https://img.shields.io/badge/mutation-100%25_required-blue)](CONTRIBUTING.md#verification)
+[![Mutation](https://img.shields.io/badge/mutation-local_and_scheduled-blue)](CONTRIBUTING.md#verification)
 [![Documentation](https://img.shields.io/badge/docs-checked_in_CI-blue)](docs/)
 [![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-idempotency/v2.svg)](https://pkg.go.dev/github.com/faustbrian/go-idempotency/v2)
 [![Release](https://img.shields.io/github/v/release/faustbrian/go-idempotency?sort=semver)](https://github.com/faustbrian/go-idempotency/releases)
@@ -103,6 +103,14 @@ production adoption.
 Licensed under the [MIT License](LICENSE). Release history is maintained in the
 [changelog](CHANGELOG.md), and the complete guide index is in
 [docs/README.md](docs/README.md).
+
+For development, use Go 1.27.2 and `GOWORK=off go test ./...`; absent backend
+configuration causes integration tests to skip, not qualify those backends.
+`make check`/`make ci` retain the declared PostgreSQL/Valkey services for both
+catalog modules and a selected memory ownership race. Base-free checks run
+fuzz seeds/corpus, not active campaigns. See
+[contributing](CONTRIBUTING.md#verification) for explicit focused fuzzing and
+`make check-full`/release qualification.
 
 Material canonicalization, JSON-RPC, HTTP, and durable-enforcement choices are
 recorded in the [specification decision register](docs/specification-decisions.md).

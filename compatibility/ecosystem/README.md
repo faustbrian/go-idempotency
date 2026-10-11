@@ -30,6 +30,11 @@ v3.0.0; its replay-store adapter intentionally consumes the v1.2.0 Idempotency
 service and the harness exercises first acceptance and duplicate refusal.
 This internal harness change does not release a new Idempotency module.
 
-Run the harness through the repository contract with `make check`. Shared
+From the repository root, `make check` runs bounded checks across both catalog
+modules, retaining their declared PostgreSQL and Valkey service prerequisites;
+`make check-full` selects original full qualification. To exercise just the
+public interface harness directly, run `GOWORK=off go test ./...` from this
+directory. Its intentional v1 contracts and non-releasable status are unchanged.
+Shared
 construction, ownership, lifecycle, and composition expectations are in the
 versioned [Golib ecosystem index](https://github.com/faustbrian/go-library-tools/blob/v1.3.0/docs/ecosystem/README.md).

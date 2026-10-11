@@ -2,8 +2,8 @@
 
 ## Before Editing
 
-1. Read [`AGENTS.md`](AGENTS.md) and the affected module's goals and docs.
-2. Run `make inventory` and the narrow baseline gate for the module.
+1. Read [`AGENTS.md`](AGENTS.md) and the affected package's docs.
+2. Run the affected package's deterministic Go tests as described below.
 3. Identify owned dependencies and reverse dependants in `modules.json`.
 4. Preserve unrelated work and generated/corpus provenance.
 
@@ -31,7 +31,8 @@ The [specification decision register](docs/specification-decisions.md) and its
 machine bindings preserve superseded entries and append a digest whenever a
 recorded decision changes.
 
-Required mutation gates must finish with zero surviving viable mutants.
+Selected full/release mutation gates must finish with zero surviving viable
+mutants; mutation is not required for an ordinary local or pull-request check.
 
 Do not add package-local workflows, permanent replacements, machine-specific
 paths, bypass flags, broad mutation exclusions, or aggregate quality metrics
@@ -39,21 +40,64 @@ that hide a failing package.
 
 ## Verification
 
-Run during development:
+Use Go 1.27.2 for the producer; both module/API minima remain Go 1.27.0.
+An isolated checkout needs no sibling repositories or coordination goal files.
+Start with deterministic tests and, when its hostile-input boundary changes,
+one explicit active fuzz target:
 
 ```bash
-make inventory
+GOWORK=off go test ./...
+GOWORK=off go test ./canonical -run '^$' -fuzz '^FuzzJSONIsIdempotent$' -fuzztime=2s -timeout=2m
+```
+
+The first command includes fuzz seeds/corpus, not active fuzzing. Backend tests
+skip when `POSTGRES_URL` or `VALKEY_ADDR` is absent; a direct unconfigured Go
+test run does not establish backend qualification. Cluster/failover tests use
+the additional backend configuration documented by their suites.
+
+Install the verified public `golib` release declared in `.golib.yaml`; ordinary
+CI verifies the same release without building it from source:
+
+```bash
 make check
+make ci
+make specification-check
 ```
 
-Before submitting a repository-wide change:
+`make check` and `make ci` retain PostgreSQL and Valkey service prerequisites for
+both the root and intentional v1 `compatibility/ecosystem` module; no test tag
+is declared. They are not database- or Docker-free. `ci` also validates
+repository/cohesion structure; specification checks use the offline decision
+register. The memory race runs once with a two-minute timeout and checks
+single-owner election, fenced takeover, stale-owner refusal and retained
+current results. Base-free local checks run deterministic fuzz seeds/corpus;
+changed-source CI selects active smoke. Run the owned public-contract harness
+from `compatibility/ecosystem` with `GOWORK=off go test ./...` when composition
+changes; its v1 dependencies are intentional and are not migrated by this route.
+
+Optional one-package local mutation:
 
 ```bash
-make ci
+golib mutation --module . --package memory
 ```
 
-The full scheduled and release gate is `make ci`. Report every unavailable or
-failing command; do not describe partial results as release-ready.
+Select full qualification and release rehearsal explicitly:
+
+```bash
+make check-full
+make conformance
+make specification-check-online
+golib api check
+golib release dry-run --module .
+```
+
+Full checks retain all nine native fuzz targets at 10000x/20m each,
+conformance/interoperability, benchmarks and original module gates.
+Conformance installs the locked JavaScript peer for JCS differential checks;
+online specification verification fetches pinned authority/errata sources.
+Release rehearsal can run locally, not only in CI. Report unavailable or
+failing commands and never describe bounded checks alone as release
+qualification.
 
 ## Adding A Module
 
