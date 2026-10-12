@@ -31,8 +31,8 @@ github.com/ebitengine/purego v0.10.0 h1:QIw4xfpWT6GWTzaW5XEKy3HXoqrJGx1ijYHzTF0/
 github.com/ebitengine/purego v0.10.0/go.mod h1:iIjxzd6CiRiOG0UyXP+V1+jWqUXVjPKLAI0mRfJZTmQ=
 github.com/faustbrian/go-cli v1.0.0 h1:K+hYLS572nR/tz/zqkyjN7RT6wa96Ln710Fp1azj2tU=
 github.com/faustbrian/go-cli v1.0.0/go.mod h1:pvGIf3RUGkGjlA7oJwPdTuWkH/lLWgQjroJZEhkrZMM=
-github.com/faustbrian/go-clock v1.1.0 h1:QL1k/Xm+YvoeUs/c2d2grsp6XxxwPRlLUmg792kJAEs=
-github.com/faustbrian/go-clock v1.1.0/go.mod h1:WKZ5p79IKGNTZGDp2L81cYjbsEjv3+9U0be7uwS8t6Y=
+github.com/faustbrian/go-clock v1.2.0 h1:vy2700wB/gaXRgW7zWw1iF7twxrKDyL3dSd3fz1DdAA=
+github.com/faustbrian/go-clock v1.2.0/go.mod h1:ZU+wKx09xmXbtOf+swccuicq5Bkezby3k49uk7PCoA0=
 github.com/faustbrian/go-correlation v1.0.0 h1:2Z+tlY59nNBdlGFBadPTeuDo9/029IvS/DytFFxsMlk=
 github.com/faustbrian/go-correlation v1.0.0/go.mod h1:upLcV0fqKC8IUUx11R6c69CVwC3DO1EeXsw2BQU2PKE=
 github.com/faustbrian/go-idempotency v1.2.0 h1:STogOi/FS9HyaHrbfTq5bD5VHvNClGQOTHofA5g0qVM=
