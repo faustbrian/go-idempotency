@@ -102,3 +102,12 @@ were not removed. Subsequent Go sessions own and remove all three caches and
 helpers. No service, compatibility runtime, race/leak, active fuzz, benchmark,
 JavaScript differential or release campaign was executed by the bounded pass.
 Coordinator retains exact-source remote CI and delivery ownership.
+
+## Objective Enforcement
+
+The checksum-pinned public Tools v2.4.0 verifier now supplies
+`make source-docs-check` as a prerequisite of the existing local and CI Make
+routes. Ordinary shared CI selects strict source-documentation checking and
+requires its result. Native prerequisites, operation budgets, security and
+release controls are retained. Hosted exact-head evidence is recorded by the
+coordination ledger; configuration alone does not establish green delivery.
