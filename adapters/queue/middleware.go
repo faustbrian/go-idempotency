@@ -1,5 +1,9 @@
 // Package idempotencyqueue provides durable consumer ownership and
 // redelivery deduplication for messages exposing a Payload method.
+//
+// Dependencies are borrowed; callbacks are synchronous trusted application code.
+// No automatic lease renewal, worker/client closure or exactly-once effect is owned.
+// Callers enforce authentication, fencing, request admission and IO deadlines.
 package idempotencyqueue
 
 import (
@@ -21,6 +25,8 @@ var (
 
 // Message is satisfied by queue core.TaskMessage and similar deliveries.
 type Message interface {
+	// Payload exposes application data; copying, byte limits and delivery lifetime
+	// remain implementation-owned.
 	Payload() []byte
 }
 
@@ -35,11 +41,17 @@ type FingerprintFunc func(Message) (idempotency.Fingerprint, error)
 
 // Options configures durable consumer ownership and cleanup.
 type Options struct {
-	Service           *idempotency.Service
-	Lease             time.Duration
+	// Service is borrowed; its store determines actual durability and concurrency.
+	Service *idempotency.Service
+	// Lease is positive and at most MaxLease; handlers do not receive automatic renewal.
+	Lease time.Duration
+	// TransitionTimeout supplies a detached cleanup context deadline; zero selects five
+	// seconds.
 	TransitionTimeout time.Duration
-	Key               KeyFunc
-	Fingerprint       FingerprintFunc
+	// Key is trusted application scoping/authentication policy, called synchronously.
+	Key KeyFunc
+	// Fingerprint is trusted canonical business identity policy, called synchronously.
+	Fingerprint FingerprintFunc
 }
 
 // Middleware deduplicates completed deliveries and owns retry transitions.
@@ -79,6 +91,8 @@ func New(options Options) (*Middleware, error) {
 }
 
 // Handle executes handler for an acquired delivery and completes it on success.
+// Handler failure/panic attempts detached release (panic is re-raised); success
+// can fail completion after effects. No heartbeat or handler deadline is added.
 func (m *Middleware) Handle(ctx context.Context, message Message, handler Handler) error {
 	if message == nil {
 		return configurationError("message")

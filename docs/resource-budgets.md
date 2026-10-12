@@ -79,8 +79,12 @@ untracked execution.
 
 ## Diagnostic budget
 
-Metric labels are limited to bounded operation, backend, outcome, state, and
-reason values. Raw key parts, tenants, callers, fingerprints, ownership proofs,
-payloads, responses, and metadata are forbidden. Optional correlation uses an
-HMAC digest rather than the underlying identity. See the threat model and
-observability guide for the complete policy.
+Applications must keep metric operation, outcome and reason classes bounded.
+Custom stores and manually constructed observations can supply arbitrary reason
+text; observers do not normalize it. Raw identities, payloads and ownership
+proofs must stay out of metrics. Custom correlation hashers are likewise trusted
+and unvalidated; use the supplied HMAC helper rather than returning raw identity.
+See the threat model and observability guide for the application policy.
+
+Canonical JSON checks its output budget after canonicalization. That admission
+limit is not a bound on transformer allocations or an upstream request reader.

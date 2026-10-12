@@ -1,5 +1,7 @@
 // Package memory implements deterministic, process-local idempotency storage.
-// It is intended for tests and single-process tooling, not durable coordination.
+// Use New with caller-owned time/token functions for tests/tools, not durable
+// coordination. Records are retained until restart; no cleanup worker exists.
+// Clock/OwnerTokens run under the mutex, so they must not block or reenter Store.
 package memory
 
 import (
@@ -30,13 +32,16 @@ type Clock interface {
 type Options struct {
 	// Clock supplies time for every lease and transition decision.
 	Clock Clock
-	// OwnerTokens returns a unique token for each ownership attempt.
+	// OwnerTokens must return a unique usable token promptly without reentering Store.
 	OwnerTokens func() (string, error)
 	// MaxRecords bounds retained records. Zero selects DefaultMaxRecords.
 	MaxRecords int
 }
 
-// Store keeps idempotency records in process memory under one mutex.
+// Store serializes transitions under one mutex and copies replay data. Use New;
+// its zero value is unusable. Context is checked before locking, not a forced
+// deadline on clock/token callbacks. Supply constructed keys/fingerprints: memory
+// does not reproduce the durable providers' persisted identity validation.
 type Store struct {
 	mu          sync.Mutex
 	records     map[idempotency.Key]idempotency.Record
@@ -291,6 +296,8 @@ func (s *Store) Expire(ctx context.Context, key idempotency.Key) (idempotency.Re
 	return clone(record), nil
 }
 
+// Proof comparison precedes state/expiry classification, so an old attempt
+// cannot mutate its successor even when its original lease had elapsed.
 func (s *Store) current(ownership idempotency.Ownership, now time.Time) (idempotency.Record, error) {
 	record, exists := s.records[ownership.Key]
 	if !exists {

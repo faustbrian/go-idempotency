@@ -9,6 +9,8 @@ import (
 	"github.com/faustbrian/go-idempotency/v2/idempotencytest"
 )
 
+// BenchmarkValkeyReplay measures live server replay, including per-acquisition token
+// generation.
 func BenchmarkValkeyReplay(b *testing.B) {
 	store, request, cleanup := completedValkeyBenchmarkRecord(b)
 	defer cleanup()
@@ -22,6 +24,8 @@ func BenchmarkValkeyReplay(b *testing.B) {
 	}
 }
 
+// BenchmarkValkeyHotKeyReplayContention measures parallel replay of one server key;
+// fixture setup is excluded.
 func BenchmarkValkeyHotKeyReplayContention(b *testing.B) {
 	store, request, cleanup := completedValkeyBenchmarkRecord(b)
 	defer cleanup()

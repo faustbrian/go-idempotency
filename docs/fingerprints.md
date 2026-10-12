@@ -5,9 +5,9 @@ exact RFC 8785, SHA-256, HMAC, resource-bound, and raw-byte choices behind this
 policy, including the deliberate negative-zero rejection.
 
 An idempotency key identifies the caller's intended operation. A fingerprint
-identifies the stable business request associated with that key. Reusing a key
-with a different fingerprint is always a conflict, including after completion
-or terminal failure.
+identifies the stable business request associated with that key. Reusing a
+retained key with a different fingerprint is a conflict, including
+completed/failed states. Purge ends that retained identity domain.
 
 ## Versioning
 
@@ -59,8 +59,13 @@ remove headers, normalize text, or understand business fields.
 ## Bounds and secrecy
 
 Canonicalization limits are application policy and must be chosen before input
-is processed. Errors expose a stable reason and field but omit the payload and
-dependency error text. Logs and telemetry should emit the fingerprint version
+is processed. Owned errors format reason and field rather than dependency error
+text, but Unwrap/errors.As expose original causes and need restricted handling.
+NewFingerprint itself neither canonicalizes nor bounds bytes. Key/version
+constructors accept nonempty byte-bounded strings without authentication or
+UTF-8 normalization; choose portable text when JSON persistence is involved.
+The canonical output cap is checked after transformation, not a peak-memory or
+upstream-read sandbox. Logs and telemetry should emit the fingerprint version
 and a bounded hash prefix only when collision risk is acceptable for that
 diagnostic use; raw keys, payloads, and tenant identifiers are not safe metric
 labels.

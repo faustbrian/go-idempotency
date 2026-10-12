@@ -124,3 +124,13 @@ Persisted schema version `1` rejects unknown versions and malformed keys,
 fingerprints, states, counters, timestamps, results, and metadata. Deploy code
 that can read every record version still inside retention before writing a new
 version.
+
+## Caller and callback lifetime
+
+The pool is borrowed: construction neither applies migrations nor closes it.
+Owner-token generation is synchronous inside acquisition's locked transaction;
+callbacks must return promptly. A returned record accompanying a commit error
+is not committed authority. `CompleteTx` returns provisional state until the
+caller commits. Lease checks use the transition's database timestamp, not a
+second check at the eventual business commit. Deferred rollback detaches caller
+cancellation but does not add a fresh deadline.

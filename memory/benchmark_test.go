@@ -11,6 +11,7 @@ import (
 	"github.com/faustbrian/go-idempotency/v2/memory"
 )
 
+// BenchmarkReplay measures retained single-key replay, excluding fixture construction.
 func BenchmarkReplay(b *testing.B) {
 	store, request := completedBenchmarkRecord(b)
 	b.ReportAllocs()
@@ -23,6 +24,8 @@ func BenchmarkReplay(b *testing.B) {
 	}
 }
 
+// BenchmarkHotKeyReplayContention measures parallel callers sharing one retained
+// replay key and store mutex.
 func BenchmarkHotKeyReplayContention(b *testing.B) {
 	store, request := completedBenchmarkRecord(b)
 	b.ReportAllocs()
@@ -37,6 +40,8 @@ func BenchmarkHotKeyReplayContention(b *testing.B) {
 	})
 }
 
+// BenchmarkAcquireCompleteLifecycle includes per-key construction and periodic store
+// replacement at capacity.
 func BenchmarkAcquireCompleteLifecycle(b *testing.B) {
 	clock := idempotencytest.NewClock(time.Unix(1_700_000_000, 0).UTC())
 	tokens := idempotencytest.NewTokenSource("benchmark")

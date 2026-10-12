@@ -2,6 +2,8 @@ package postgres
 
 import "testing"
 
+// FuzzPersistedRecordDecoderFailsClosed exercises bounded record decoding without a
+// database or transaction.
 func FuzzPersistedRecordDecoderFailsClosed(f *testing.F) {
 	valid, err := encodeRecord(codecRecord(f))
 	if err != nil {

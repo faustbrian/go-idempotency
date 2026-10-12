@@ -16,11 +16,15 @@ import (
 
 // Writer inserts an envelope through a caller-owned transaction.
 type Writer[E any] interface {
+	// Insert must use the supplied transaction; callers roll back on any
+	// insertion/completion error.
 	Insert(context.Context, pgx.Tx, E) error
 }
 
 // Completer conditionally persists completion in a caller-owned transaction.
 type Completer interface {
+	// CompleteTx writes conditional completion in the supplied transaction without
+	// committing it.
 	CompleteTx(context.Context, pgx.Tx, idempotency.CompleteRequest) (idempotency.Record, error)
 }
 

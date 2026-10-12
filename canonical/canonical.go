@@ -1,4 +1,8 @@
-// Package canonical provides bounded, explicit request fingerprint policies.
+// Package canonical supplies caller-bounded raw bytes and RFC 8785 JCS policies
+// through JSON/JSONFingerprint/BytesFingerprint. Pinned deszhou/jcs v1.0.0 follows
+// validation; negative zero is deliberately rejected (IDEMPOTENCY-DEC-002).
+// See ../docs/specification-decisions.md for owned editions/fixtures. No business
+// field selection, Unicode normalization, authentication or context deadline is owned.
 package canonical
 
 import (
@@ -14,7 +18,8 @@ import (
 	"github.com/faustbrian/go-idempotency/v2"
 )
 
-// Limits bounds JSON canonicalization before parsing, encoding, and hashing.
+// Limits admits encoded input/depth before transformation and checks output
+// after transformation. It does not cap peak allocation or upstream acquisition.
 type Limits struct {
 	// MaxInputBytes is the largest encoded JSON input accepted.
 	MaxInputBytes int
@@ -24,7 +29,9 @@ type Limits struct {
 	MaxDepth int
 }
 
-// JSON validates one JSON value under limits and returns its JCS encoding.
+// JSON validates UTF-8/surrogates, nesting and binary64 numbers before pinned
+// JCS transformation, which rejects duplicate names/trailing values. Output is
+// owned and capped after encoding; errors retain causes through errors.As.
 func JSON(input []byte, limits Limits) ([]byte, error) {
 	if err := validateLimits(limits); err != nil {
 		return nil, err
@@ -97,6 +104,8 @@ func validateLimits(limits Limits) error {
 	return nil
 }
 
+// Token/depth and number admission precedes the recursive transformer; output
+// limits cannot preempt allocations made by that dependency.
 func validateTokens(input []byte, maxDepth int) error {
 	decoder := json.NewDecoder(bytes.NewReader(input))
 	decoder.UseNumber()

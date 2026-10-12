@@ -96,5 +96,9 @@ a handler that may already have caused a side effect. Persisted projections are
 rejected above the 1 MiB stored-result bound before JSON decoding and validated
 against the same field limits before replay.
 
-Only configured headers are emitted and persisted. Never include hop-by-hop,
-connection-specific, or secret-bearing headers.
+Fresh responses project only configured headers. Replay uses the stored
+projection within global budgets, not a new smaller MaxResponseBytes or current
+allowlist. Header.Get chooses the first Idempotency-Key value; additional fields
+are not explicitly rejected. Authentication, body admission, callback and server
+deadlines remain application-owned. No automatic handler lease renewal occurs.
+Never include hop-by-hop, connection-specific, or secret-bearing headers.

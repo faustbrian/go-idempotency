@@ -1,4 +1,7 @@
 // Package idempotencyrpc is the legacy durable JSON-RPC adapter.
+// Dependencies are borrowed; callbacks are synchronous trusted application code.
+// No automatic lease renewal, worker/client closure or exactly-once effect is owned.
+// Callers enforce authentication, fencing, request admission and IO deadlines.
 //
 // Deprecated: use github.com/faustbrian/go-idempotency/v2/adapters/jsonrpc. This
 // package remains supported for the longer of 180 days after successor
@@ -24,21 +27,29 @@ const (
 
 // Request contains the business fields used for method-aware idempotency.
 type Request struct {
+	// Method is nonempty and must exactly match the constructed key operation.
 	Method string
+	// Params is borrowed business input; transport ids/batches/notifications are not
+	// modeled.
 	Params json.RawMessage
 }
 
 // Error is a JSON-RPC protocol error that can be durably replayed.
 type Error struct {
-	Code    int             `json:"code"`
-	Message string          `json:"message"`
-	Data    json.RawMessage `json:"data,omitempty"`
+	// Code is the application-selected integer protocol error code.
+	Code int `json:"code"`
+	// Message must be nonempty for admitted replay; it is not secret-filtered.
+	Message string `json:"message"`
+	// Data is optional valid JSON, retained without business-schema validation.
+	Data json.RawMessage `json:"data,omitempty"`
 }
 
 // Response contains exactly one JSON result or protocol error.
 type Response struct {
+	// Result is valid JSON when Error is nil; empty is not a valid result.
 	Result json.RawMessage `json:"result,omitempty"`
-	Error  *Error          `json:"error,omitempty"`
+	// Error is the alternative protocol response; both/neither arms are invalid.
+	Error *Error `json:"error,omitempty"`
 }
 
 // Handler executes one elected JSON-RPC request owner.
@@ -52,18 +63,30 @@ type FingerprintFunc func(Request) (idempotency.Fingerprint, error)
 
 // Options configures method-aware durable JSON-RPC invocation.
 type Options struct {
-	Service           *idempotency.Service
-	Lease             time.Duration
-	MaxResponseBytes  int
+	// Service is borrowed; its store determines actual durability and concurrency.
+	Service *idempotency.Service
+	// Lease is positive and at most MaxLease; handlers do not receive automatic renewal.
+	Lease time.Duration
+	// MaxResponseBytes caps encoded replay after encoding; zero selects 64 KiB, range is
+	// 256 to 900 KiB.
+	MaxResponseBytes int
+	// TransitionTimeout supplies a detached cleanup context deadline; zero selects five
+	// seconds.
 	TransitionTimeout time.Duration
-	Key               KeyFunc
-	Fingerprint       FingerprintFunc
+	// Key is trusted application scoping/authentication policy, called synchronously.
+	Key KeyFunc
+	// Fingerprint is trusted canonical business identity policy, called synchronously.
+	Fingerprint FingerprintFunc
 }
 
 // CallResult reports the semantic outcome and any handler response.
 type CallResult struct {
-	Outcome  idempotency.Outcome
+	// Outcome classifies acquisition or terminal response encoding failure.
+	Outcome idempotency.Outcome
+	// Response is application response data; fresh raw bytes/pointers can still alias
+	// handler output.
 	Response Response
+	// Replayed reports decoded retained data rather than a fresh handler call.
 	Replayed bool
 }
 

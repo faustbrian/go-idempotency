@@ -1,4 +1,4 @@
-// Package idempotencytelemetry adapts bounded observations to OpenTelemetry
+// Package idempotencytelemetry adapts observations to OpenTelemetry
 // metrics. The telemetry runtime exposes the standard MeterProvider used by
 // New, so the integration does not require global provider registration.
 package idempotencytelemetry
@@ -18,7 +18,7 @@ const instrumentationScope = "github.com/faustbrian/go-idempotency/v2"
 // ErrNilMeterProvider reports an unusable telemetry configuration.
 var ErrNilMeterProvider = errors.New("idempotencytelemetry: nil meter provider")
 
-// Observer counts semantic transitions using bounded attributes.
+// Observer counts semantic transitions using caller-provided attributes.
 type Observer struct {
 	transitions metric.Int64Counter
 }
@@ -42,7 +42,9 @@ func New(provider metric.MeterProvider) (*Observer, error) {
 	return &Observer{transitions: transitions}, nil
 }
 
-// Observe increments the transition counter. Correlation is deliberately
+// Observe increments the transition counter synchronously. Custom store reasons
+// and manually supplied labels are not normalized or bounded by this adapter.
+// Correlation is deliberately
 // excluded because keyed digests remain high-cardinality metric attributes.
 func (observer *Observer) Observe(ctx context.Context, event idempotency.Observation) {
 	observer.transitions.Add(ctx, 1, metric.WithAttributes(

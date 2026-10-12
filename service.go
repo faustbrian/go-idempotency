@@ -17,20 +17,32 @@ const (
 
 // BeginRequest combines durable acquisition with an availability policy.
 type BeginRequest struct {
-	Acquire      AcquireRequest
+	// Acquire supplies the stable key/fingerprint and lease request.
+	Acquire AcquireRequest
+	// Availability defaults to fail-closed; untracked execution must be explicitly
+	// duplicate-tolerant.
 	Availability AvailabilityPolicy
 }
 
 // BeginResult describes whether work should execute and whether it is tracked.
 type BeginResult struct {
+	// Outcome is the validated acquisition classification.
 	Outcome Outcome
-	Record  Record
+	// Record contains tracked ownership/replay data when storage succeeded.
+	Record Record
+	// Execute authorizes this caller attempt, not exactly-once effects.
 	Execute bool
+	// Durable means accepted tracked store outcome, not proof a memory store is persistent.
 	Durable bool
+	// Failure retains unavailable acquisition error even when untracked execution
+	// returns nil error.
 	Failure error
 }
 
-// Service normalizes store failures and applies availability policy to acquisition.
+// Service normalizes store failures and applies availability policy. Use NewService;
+// the zero value is unusable. Dependencies are borrowed and calls may run concurrently
+// if their implementations support it. No callback deadline, goroutine, retry loop
+// or heartbeat scheduler is owned. Store/backend and observer latency remains visible.
 type Service struct {
 	store     Store
 	observer  Observer
@@ -42,7 +54,8 @@ func NewService(store Store) (*Service, error) {
 	return NewServiceWithOptions(store, ServiceOptions{})
 }
 
-// NewServiceWithOptions constructs a service with optional bounded observation.
+// NewServiceWithOptions borrows a store and optional trusted instrumentation.
+// Only nil interfaces are rejected; arbitrary typed-nil dependencies are not guarded.
 func NewServiceWithOptions(store Store, options ServiceOptions) (*Service, error) {
 	if store == nil {
 		return nil, &Error{
@@ -55,7 +68,10 @@ func NewServiceWithOptions(store Store, options ServiceOptions) (*Service, error
 	}, nil
 }
 
-// Begin attempts ownership and decides whether the caller may execute.
+// Begin validates availability and acquisition outcome before authorizing execution.
+// Fail-closed is default. AllowUntracked applies only to unavailable storage, not
+// invalid input or cancellation, and preserves Failure even when returning nil error.
+// Durable means tracked store success, not an independent persistence qualification.
 func (s *Service) Begin(
 	ctx context.Context,
 	request BeginRequest,
@@ -112,6 +128,9 @@ func (s *Service) Begin(
 	return result, err
 }
 
+// Observation follows the transition synchronously. Panic containment preserves
+// its semantic result, but blocking callbacks still block return; a hasher panic
+// also prevents delivery. Custom reason/correlation data is trusted, not bounded.
 func (s *Service) observe(
 	ctx context.Context,
 	transition Transition,

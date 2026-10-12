@@ -1,4 +1,7 @@
 // Package idempotencywebhook is the legacy durable webhook adapter.
+// Dependencies are borrowed; callbacks are synchronous trusted application code.
+// No automatic lease renewal, worker/client closure or exactly-once effect is owned.
+// Callers enforce authentication, fencing, request admission and IO deadlines.
 //
 // Deprecated: use github.com/faustbrian/go-idempotency/v2/adapters/webhook. This
 // package remains supported for the longer of 180 days after successor
@@ -25,6 +28,8 @@ var (
 
 // Delivery is the structural payload contract expected from webhook messages.
 type Delivery interface {
+	// Payload exposes provider delivery bytes; authentication and admission occur before
+	// this adapter.
 	Payload() []byte
 }
 
@@ -39,11 +44,17 @@ type FingerprintFunc func(Delivery) (idempotency.Fingerprint, error)
 
 // Options configures durable webhook delivery ownership.
 type Options struct {
-	Service           *idempotency.Service
-	Lease             time.Duration
+	// Service is borrowed; its store determines actual durability and concurrency.
+	Service *idempotency.Service
+	// Lease is positive and at most MaxLease; handlers do not receive automatic renewal.
+	Lease time.Duration
+	// TransitionTimeout supplies a detached cleanup context deadline; zero selects five
+	// seconds.
 	TransitionTimeout time.Duration
-	Key               KeyFunc
-	Fingerprint       FingerprintFunc
+	// Key is trusted application scoping/authentication policy, called synchronously.
+	Key KeyFunc
+	// Fingerprint is trusted canonical business identity policy, called synchronously.
+	Fingerprint FingerprintFunc
 }
 
 // Processor preserves the legacy webhook adapter type identity.
@@ -75,7 +86,8 @@ func New(options Options) (*Processor, error) {
 	return &Processor{inner: inner}, nil
 }
 
-// Handle executes handler once and deduplicates completed redelivery.
+// Handle invokes an acquired owner and suppresses retained completed redelivery.
+// Lease expiry, purge or uncertain completion can permit another invocation.
 func (processor *Processor) Handle(
 	ctx context.Context,
 	delivery Delivery,

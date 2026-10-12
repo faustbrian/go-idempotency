@@ -30,7 +30,8 @@ func New(logger *slog.Logger) (*Observer, error) {
 	return &Observer{inner: inner}, nil
 }
 
-// Observe writes one bounded transition record.
+// Observe delegates synchronously to the canonical adapter, including caller
+// Correlation verbatim. The logger handler owns redaction and blocking behavior.
 func (observer *Observer) Observe(ctx context.Context, event idempotency.Observation) {
 	observer.inner.Observe(ctx, event)
 }

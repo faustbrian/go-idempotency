@@ -10,7 +10,8 @@ import (
 
 const minCorrelationSecretBytes = 32
 
-// KeyHasher returns a non-reversible correlation value for a logical key.
+// KeyHasher is trusted application correlation policy. Use NewHMACKeyHasher for
+// keyed digest output; arbitrary callbacks can return raw or unbounded data.
 type KeyHasher func(Key) string
 
 // Transition identifies one fixed-cardinality semantic service operation.
@@ -33,7 +34,9 @@ const (
 	TransitionExpire Transition = "expire"
 )
 
-// Observation is a bounded service transition signal safe for instrumentation.
+// Observation is structured service instrumentation. Core transitions/outcomes
+// are classified, but custom store reasons and KeyHasher output are not bounded
+// or redacted. Manually constructed observations are arbitrary application data.
 // Correlation is suitable for restricted logs, never metric labels.
 type Observation struct {
 	// Transition identifies the semantic operation.
@@ -42,37 +45,44 @@ type Observation struct {
 	Outcome Outcome
 	// Reason classifies a failed transition and is empty on success.
 	Reason Reason
-	// Durable reports whether the requested state or result is durably established.
+	// Durable reports accepted tracked-store success, not a provider durability certificate.
 	Durable bool
-	// Correlation is a keyed digest when ServiceOptions provides a KeyHasher.
+	// Correlation is trusted KeyHasher output; only the owned HMAC helper guarantees
+	// digest shape.
 	Correlation string
 }
 
-// Observer receives bounded semantic service transition signals. Service
+// Observer receives structured semantic service transition signals. Service
 // isolates observer and key-hasher panics so instrumentation cannot change a
 // semantic result. Implementations should still return quickly and honor ctx.
 type Observer interface {
+	// Observe is synchronous and may run concurrently; cooperation/latency are caller-owned.
 	Observe(context.Context, Observation)
 }
 
 // ObserverFunc adapts a function to Observer.
 type ObserverFunc func(context.Context, Observation)
 
-// Observe calls f with the bounded transition signal.
+// Observe calls f synchronously with the supplied observation; direct calls
+// have no panic containment or input normalization.
 func (f ObserverFunc) Observe(ctx context.Context, observation Observation) {
 	f(ctx, observation)
 }
 
-// ServiceOptions configures optional bounded service instrumentation.
+// ServiceOptions configures optional synchronous trusted instrumentation.
 type ServiceOptions struct {
-	// Observer receives one signal after each instrumented semantic transition.
+	// Observer receives attempted delivery after instrumented transitions; hasher panics
+	// can omit it.
 	Observer Observer
-	// KeyHasher produces restricted-log correlation without exposing logical keys.
+	// KeyHasher is trusted correlation policy; use the HMAC helper rather than returning
+	// raw keys.
 	KeyHasher KeyHasher
 }
 
 // NewHMACKeyHasher constructs a deterministic SHA-256 HMAC key hasher.
-// The secret is copied and must contain at least 32 bytes.
+// The secret is copied and must contain at least 32 bytes; it is retained in
+// the returned closure until unreachable, with no erasure/Close guarantee.
+// Deterministic correlation is not anonymization when an attacker knows the secret.
 func NewHMACKeyHasher(secret []byte) (KeyHasher, error) {
 	if len(secret) < minCorrelationSecretBytes {
 		return nil, &Error{

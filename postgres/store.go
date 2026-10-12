@@ -22,7 +22,10 @@ type Options struct {
 	OwnerTokens func() (string, error)
 }
 
-// Store persists idempotency records through atomic PostgreSQL transactions.
+// Store uses server time and transaction-scoped key serialization through a
+// borrowed pool. OwnerTokens runs under database locks and must be prompt and
+// non-reentrant. Retention is positive and at most 365 days; purge permits a
+// fresh record starting at fence one. Use New; the zero store is not usable.
 type Store struct {
 	executor    recordExecutor
 	retention   time.Duration
@@ -187,8 +190,10 @@ func (s *Store) Complete(
 	})
 }
 
-// CompleteTx persists completion inside an application-owned pgx transaction.
-// The caller remains responsible for committing or rolling back the transaction.
+// CompleteTx returns provisional completion in a caller-owned pgx transaction.
+// Caller commits only after all business/outbox writes succeed, and rolls back
+// on every error. The returned record is not committed authority; lock ordering,
+// isolation, context cooperation and transaction lifetime remain caller-owned.
 func (s *Store) CompleteTx(
 	ctx context.Context,
 	tx pgx.Tx,

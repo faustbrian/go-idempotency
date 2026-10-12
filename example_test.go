@@ -15,6 +15,8 @@ type exampleClock struct {
 
 func (c exampleClock) Now() time.Time { return c.now }
 
+// ExampleService_Begin shows tracked in-memory acquisition and retained replay;
+// Durable here does not mean process-independent persistence.
 func ExampleService_Begin() {
 	clock := exampleClock{now: time.Date(2026, 7, 15, 12, 0, 0, 0, time.UTC)}
 	token := 0

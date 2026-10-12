@@ -1,8 +1,10 @@
 # Logging and telemetry
 
-`Service` can emit one bounded `Observation` after each semantic transition.
-The core does not depend on a logger, metrics client, tracer, or datastore
-client. Applications adapt the signal to their own observability stack.
+`Service` attempts synchronous observation after each semantic transition.
+Owned transitions/outcomes are classified, but custom store reasons and
+KeyHasher output are trusted, not size-bounded or redacted by the core. The
+core does not depend on a logger, metrics client, tracer, or datastore client.
+Applications adapt the signal to their own observability stack.
 
 The optional ecosystem adapters accept the standard types exposed by
 `log` and `telemetry`, so they do not require global logger or telemetry
@@ -42,10 +44,11 @@ service, err := idempotency.NewServiceWithOptions(store, idempotency.ServiceOpti
 ```
 
 Here `log.New` is `github.com/faustbrian/go-log.New`, and `runtime` is a
-`*github.com/faustbrian/go-telemetry/v2.Runtime`. The logging adapter writes the
-five bounded observation fields. The telemetry adapter increments
-`idempotency.transitions` with only `transition`, `outcome`, `reason`, and
-`durable` attributes; it deliberately excludes correlation.
+`*github.com/faustbrian/go-telemetry/v2.Runtime`. The logging adapter writes
+the five structured observation fields, including correlation verbatim. The
+telemetry adapter increments `idempotency.transitions` with only `transition`,
+`outcome`, `reason`, and `durable` attributes; it deliberately excludes
+correlation.
 
 The observer receives only:
 
@@ -53,12 +56,13 @@ The observer receives only:
   `release`, or `expire`;
 - a stable acquisition outcome when the transition is `acquire`;
 - a stable reason code for semantic errors;
-- whether the requested durable state or result was established;
-- an optional keyed correlation digest.
+- whether a tracked store operation succeeded (even for process-local memory);
+- optional trusted KeyHasher output; use NewHMACKeyHasher for digest shape.
 
-It does not receive the logical key fields, fingerprint, owner token, fencing
-token, result, metadata, or backend error. Keep the original error in
-restricted application diagnostics when its cause is operationally necessary.
+There are no dedicated fields for logical keys, fingerprints, ownership proofs,
+results, metadata or backend errors. Custom correlation or reason text can
+still disclose caller data. Keep original errors and custom correlation in
+restricted application diagnostics.
 
 ## Correlation hashing
 
@@ -85,10 +89,11 @@ hash, owner token, fence, or request fingerprint.
 Observation is synchronous after the semantic result is known. Implementations
 should return quickly, honor the context, and hand off expensive export work to
 a bounded observability pipeline. The service isolates panics from both the
-observer and key hasher so instrumentation cannot change acquisition or
-transition semantics. Observer APIs intentionally have no error return; an
-export failure must be surfaced by the observability implementation's own
-health signals.
+observer and key hasher so they do not replace acquisition/transition results.
+A hasher panic can omit delivery; blocking callbacks can still indefinitely
+delay the method return. No callback deadline or background worker is supplied.
+Observer APIs intentionally have no error return; an export failure must be
+surfaced by the observability implementation's own health signals.
 
 Do not perform business writes, ownership decisions, retries, or unbounded
 queueing in an observer. Delivery of telemetry is not part of the idempotency

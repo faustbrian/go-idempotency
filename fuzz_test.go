@@ -7,6 +7,8 @@ import (
 	"github.com/faustbrian/go-idempotency/v2"
 )
 
+// FuzzKeyAndFingerprintValidation checks byte-bounded key/version admission
+// and persisted fingerprint reconstruction.
 func FuzzKeyAndFingerprintValidation(f *testing.F) {
 	f.Add(
 		"http", "tenant", "POST /widgets", "caller", "request-1",
@@ -75,6 +77,8 @@ func FuzzKeyAndFingerprintValidation(f *testing.F) {
 	})
 }
 
+// FuzzFingerprintPolicyVersionsRemainDistinct checks policy-version separation even
+// when canonical payload bytes match.
 func FuzzFingerprintPolicyVersionsRemainDistinct(f *testing.F) {
 	f.Add("jcs-v1", "jcs-v2", []byte(`{"amount":42}`))
 	f.Add("same", "same", []byte{0xff, 0x00, 0x01})

@@ -1,3 +1,7 @@
+// Package valkey uses atomic single-key records with server TIME and caller-owned
+// Valkey clients. Open verifies version 9/noeviction; New skips admission checks.
+// TTL deletion ends fencing history; no separate persistent counter or close/
+// failover/durability policy is supplied. Use portable identities and caller deadlines.
 package valkey
 
 import (
@@ -23,7 +27,8 @@ func New(client valkeygo.Client, options Options) (*Store, error) {
 	return newStore(&nativeExecutor{client: client}, options)
 }
 
-// Open constructs a store and rejects unsafe Valkey versions or eviction policy.
+// Open performs startup version/eviction checks through the borrowed client.
+// It neither closes the client on failure nor continuously rechecks deployment policy.
 func Open(ctx context.Context, client valkeygo.Client, options Options) (*Store, error) {
 	store, err := New(client, options)
 	if err != nil {

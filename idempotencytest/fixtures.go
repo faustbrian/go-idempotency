@@ -1,4 +1,7 @@
-// Package idempotencytest provides reusable adapter conformance and fixtures.
+// Package idempotencytest supplies maintained store conformance fixtures,
+// deterministic clocks and predictable tokens. Use NewClock/NewTokenSource
+// or RunStoreConformance; factories own backend isolation and cleanup. These
+// helpers are not production token entropy or deployment failover qualification.
 package idempotencytest
 
 import (
@@ -28,7 +31,7 @@ func (c *Clock) Now() time.Time {
 	return c.clock.Now()
 }
 
-// Advance moves the clock forward by duration.
+// Advance adds duration; negative values can move time backward for fault tests.
 func (c *Clock) Advance(duration time.Duration) {
 	c.mu.Lock()
 	defer c.mu.Unlock()

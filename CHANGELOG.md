@@ -8,6 +8,9 @@ public API reaches its first stable version.
 
 ### Changed
 
+- Clarify ownership, replay and transaction contracts, provider lifetime limits,
+  caller-controlled instrumentation and adapter callback responsibilities.
+
 - Adopt OpenTelemetry API and metric v1.47.0 while retaining SDK v1.45.0.
   Preserve the observer API and bounded transition metrics for canonical and
   legacy adapters, including aggregation without correlation labels.

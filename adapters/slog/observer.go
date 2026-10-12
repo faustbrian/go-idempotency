@@ -1,4 +1,4 @@
-// Package idempotencylog adapts bounded idempotency observations to log/slog.
+// Package idempotencylog adapts idempotency observations to log/slog.
 // Loggers constructed by github.com/faustbrian/go-log use this standard type.
 package idempotencylog
 
@@ -13,7 +13,7 @@ import (
 // ErrNilLogger reports an unusable logger configuration.
 var ErrNilLogger = errors.New("idempotencylog: nil logger")
 
-// Observer writes bounded semantic transition fields to a slog logger.
+// Observer writes semantic transition fields to a slog logger.
 type Observer struct {
 	logger *slog.Logger
 }
@@ -28,8 +28,9 @@ func New(logger *slog.Logger) (*Observer, error) {
 	return &Observer{logger: logger}, nil
 }
 
-// Observe writes one bounded transition record. Correlation is intended only
-// for restricted logs and is never an unhashed logical idempotency key.
+// Observe logs caller-provided observations synchronously, including Correlation
+// verbatim. Custom hashers/manual events can expose unbounded sensitive text.
+// The application owns handler redaction, blocking and concurrent behavior.
 func (observer *Observer) Observe(ctx context.Context, event idempotency.Observation) {
 	observer.logger.InfoContext(ctx, "idempotency transition",
 		slog.String("transition", string(event.Transition)),

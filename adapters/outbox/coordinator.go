@@ -13,12 +13,16 @@ import (
 // Writer inserts an envelope through a caller-owned transaction. The
 // outbox postgres.Writer satisfies Writer[outbox.Envelope].
 type Writer[E any] interface {
+	// Insert must use the supplied transaction; callers roll back on any
+	// insertion/completion error.
 	Insert(context.Context, pgx.Tx, E) error
 }
 
 // Completer conditionally persists idempotency completion in a caller-owned
 // transaction. The idempotency postgres.Store satisfies this contract.
 type Completer interface {
+	// CompleteTx writes conditional completion in the supplied transaction without
+	// committing it.
 	CompleteTx(
 		context.Context,
 		pgx.Tx,

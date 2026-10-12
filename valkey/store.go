@@ -54,7 +54,11 @@ type Options struct {
 	OwnerTokens func() (string, error)
 }
 
-// Store persists records through atomic single-key Valkey scripts.
+// Store borrows a concurrent client and issues atomic single-key Lua transitions.
+// OwnerTokens is called on every Acquire, even replay/conflict/in-progress; its
+// failures can prevent those reads. Lease/retention durations truncate to integer
+// milliseconds, so tiny positives can expire immediately. TTL deletion resets
+// counters; backend timeout can follow a committed mutation. Use New/Open.
 type Store struct {
 	executor    scriptExecutor
 	prefix      string

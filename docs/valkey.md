@@ -152,3 +152,12 @@ unknown results after the server executes a script but its reply is lost, and
 replica-promotion recovery of synchronized ownership. The hostile-record suite
 runs under RESP2 and RESP3 and proves rejected records preserve their serialized
 value and absolute expiry.
+
+## Caller and callback lifetime
+
+The client remains caller-owned, including when `Open` fails. Its startup checks
+are not continuous enforcement of the deployment policy. Owner-token generation
+runs synchronously on every acquisition, including replay or conflict attempts;
+its failure can prevent those reads. Positive lease and retention durations are
+converted to whole milliseconds, so sub-millisecond values can expire
+immediately. Callers must choose a useful millisecond-scale window.

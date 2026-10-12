@@ -1,9 +1,11 @@
 # Webhook delivery deduplication
 
 Import `idempotencywebhook` from
-`github.com/faustbrian/go-idempotency/v2/adapters/webhook`. It executes a verified
-provider delivery once and treats a completed redelivery as successfully
-handled.
+`github.com/faustbrian/go-idempotency/v2/adapters/webhook`. It acquires
+ownership of a verified provider delivery and treats a retained completed
+redelivery as successfully handled. Lease expiry, retention loss or an
+uncertain completion can permit another handler attempt; this is not an
+exactly-once side-effect guarantee.
 
 Verify the provider signature and bound the request body before entering the
 processor. Never persist or act on an unauthenticated delivery merely to dedupe

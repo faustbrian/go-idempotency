@@ -65,10 +65,13 @@ type Error struct {
 	Cause error
 }
 
+// Error returns reason and field, not Cause text; manually supplied fields remain
+// caller data.
 func (e *Error) Error() string {
 	return fmt.Sprintf("idempotency: %s: %s", e.Reason, e.Field)
 }
 
+// Unwrap exposes the original cause, which can contain sensitive backend/input details.
 func (e *Error) Unwrap() error {
 	return e.Cause
 }
@@ -83,7 +86,9 @@ type Key struct {
 	value     string
 }
 
-// NewKey validates and constructs a namespaced operation identity.
+// NewKey admits nonempty, byte-bounded identity components without trimming,
+// UTF-8 validation or authentication. Callers establish tenant/caller trust and
+// use portable text when a provider serializes identities through JSON.
 func NewKey(namespace, tenant, operation, caller, value string) (Key, error) {
 	parts := []struct {
 		name  string
@@ -116,13 +121,13 @@ func NewKey(namespace, tenant, operation, caller, value string) (Key, error) {
 // Namespace returns the broad collision domain for the key.
 func (k Key) Namespace() string { return k.namespace }
 
-// Tenant returns the authenticated tenant identity for the key.
+// Tenant returns caller-established tenant identity; NewKey does not authenticate it.
 func (k Key) Tenant() string { return k.tenant }
 
 // Operation returns the stable business operation name for the key.
 func (k Key) Operation() string { return k.operation }
 
-// Caller returns the authenticated caller identity for the key.
+// Caller returns caller-established identity; NewKey does not authenticate it.
 func (k Key) Caller() string { return k.caller }
 
 // Value returns the caller-supplied idempotency value for the key.
@@ -134,7 +139,9 @@ type Fingerprint struct {
 	sum     [sha256.Size]byte
 }
 
-// NewFingerprint hashes canonical business input under a stable policy version.
+// NewFingerprint hashes borrowed bytes under a nonempty byte-bounded version.
+// It does not canonicalize, authenticate or bound canonical bytes; use the
+// canonical package for bounded policies. Input is not retained.
 func NewFingerprint(version string, canonical []byte) (Fingerprint, error) {
 	if version == "" {
 		return Fingerprint{}, &Error{
@@ -182,7 +189,8 @@ func (f Fingerprint) Sum() []byte {
 	return sum
 }
 
-// Equal reports whether both the policy version and digest match.
+// Equal compares policy version and digest for business identity; it is not
+// a secret-proof constant-time authentication primitive.
 func (f Fingerprint) Equal(other Fingerprint) bool {
 	return f.version == other.version && f.sum == other.sum
 }

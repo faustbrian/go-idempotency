@@ -11,6 +11,8 @@ import (
 	"github.com/faustbrian/go-idempotency/v2/memory"
 )
 
+// FuzzTakeoverPermanentlyFencesOldOwner checks stale-owner refusal after
+// deterministic expiry and takeover.
 func FuzzTakeoverPermanentlyFencesOldOwner(f *testing.F) {
 	f.Add(uint16(0), false, []byte("ok"), "content-type", "text/plain")
 	f.Add(uint16(65535), true, []byte{0x00, 0xff}, "", "")

@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+// FuzzPersistedHashDecoderFailsClosed exercises client-side hash decoding without
+// running server Lua.
 func FuzzPersistedHashDecoderFailsClosed(f *testing.F) {
 	fields, err := encodeRecord(testRecord(f))
 	if err != nil {

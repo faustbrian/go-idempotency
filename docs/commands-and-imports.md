@@ -2,8 +2,9 @@
 
 Import `idempotencycommand` from
 `github.com/faustbrian/go-idempotency/v2/adapters/command`. Its `Runner` executes
-a named operation once per stable source identity and replays its bounded
-result and metadata.
+new or taken-over ownership for a stable source identity and replays retained
+result and metadata. This is not exactly-once effects: expiry, purge and
+uncertain completion can permit another invocation.
 
 ```go
 runner, err := idempotencycommand.New(idempotencycommand.Options{

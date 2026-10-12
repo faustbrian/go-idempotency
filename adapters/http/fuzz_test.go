@@ -13,6 +13,8 @@ import (
 	"github.com/faustbrian/go-idempotency/v2/memory"
 )
 
+// FuzzMalformedReplayFailsClosed checks malformed retained HTTP replay refuses
+// handler execution.
 func FuzzMalformedReplayFailsClosed(f *testing.F) {
 	f.Add([]byte("not-json"))
 	f.Add([]byte(`{"schema":1,"status":200,"body":"b2s="}`))

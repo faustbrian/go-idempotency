@@ -13,11 +13,15 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// BenchmarkPostgresAcquireCompleteLifecycle measures new-key acquisition and
+// completion against a configured live pool.
 func BenchmarkPostgresAcquireCompleteLifecycle(b *testing.B) {
 	store, fingerprint := postgresBenchmarkStore(b)
 	benchmarkPostgresLifecycle(b, store, fingerprint, []byte("result"))
 }
 
+// BenchmarkPostgresResultStorage compares selected result sizes through the same live
+// lifecycle helper.
 func BenchmarkPostgresResultStorage(b *testing.B) {
 	for _, size := range []int{0, 1024, 64 * 1024, idempotency.MaxResultBytes} {
 		b.Run(fmt.Sprintf("bytes-%d", size), func(b *testing.B) {
@@ -27,6 +31,8 @@ func BenchmarkPostgresResultStorage(b *testing.B) {
 	}
 }
 
+// BenchmarkPostgresReplay measures retained replay including database round trips;
+// setup is excluded.
 func BenchmarkPostgresReplay(b *testing.B) {
 	store, request := completedPostgresBenchmarkRecord(b)
 	b.ReportAllocs()
@@ -39,6 +45,8 @@ func BenchmarkPostgresReplay(b *testing.B) {
 	}
 }
 
+// BenchmarkPostgresHotKeyReplayContention measures parallel replay callers serialized
+// by one database key.
 func BenchmarkPostgresHotKeyReplayContention(b *testing.B) {
 	store, request := completedPostgresBenchmarkRecord(b)
 	b.ReportAllocs()
@@ -53,6 +61,8 @@ func BenchmarkPostgresHotKeyReplayContention(b *testing.B) {
 	})
 }
 
+// BenchmarkPostgresCleanupBatch measures deletion of 100 expired rows; seeding is
+// outside the timer.
 func BenchmarkPostgresCleanupBatch(b *testing.B) {
 	pool := integrationPool(b)
 	store, err := New(pool, Options{

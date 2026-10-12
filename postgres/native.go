@@ -35,6 +35,9 @@ func newNativeExecutor(pool *pgxpool.Pool) *nativeExecutor {
 	return &nativeExecutor{database: poolDatabase{pool: pool}}
 }
 
+// Mutation can populate a public result before commit fails or its reply is
+// lost. Preserve err as the authority boundary and inspect the same logical key;
+// a detached rollback retains no new application deadline here.
 func (e *nativeExecutor) withRecord(
 	ctx context.Context,
 	digest []byte,
@@ -55,6 +58,10 @@ func (e *nativeExecutor) withRecord(
 	return tx.commit(ctx)
 }
 
+// An advisory lock serializes even absent keys, then the row lock protects
+// retained state. A due purge is part of this transaction and resets the record
+// generation; timestamps are sampled by the lock/time statement, not a lease
+// recheck at final business commit.
 func applyRecordMutation(
 	ctx context.Context,
 	tx nativeTransaction,

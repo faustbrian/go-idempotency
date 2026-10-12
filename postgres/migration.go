@@ -4,10 +4,14 @@ import migrations "github.com/faustbrian/go-migrations/v2"
 
 // Migration describes one reversible PostgreSQL schema change.
 type Migration struct {
+	// Version identifies the schema transition, not automatic application.
 	Version uint
-	Name    string
-	Up      string
-	Down    string
+	// Name is the stable migration label.
+	Name string
+	// Up is executable creation SQL for caller-controlled migration execution.
+	Up string
+	// Down is destructive rollback SQL; callers own its sequencing.
+	Down string
 }
 
 // SchemaMigration returns the initial durable-record table migration.

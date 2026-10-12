@@ -12,6 +12,8 @@ import (
 	"github.com/faustbrian/go-idempotency/v2/memory"
 )
 
+// FuzzMalformedReplayFailsClosed checks malformed retained JSON-RPC replay refuses
+// handler execution.
 func FuzzMalformedReplayFailsClosed(f *testing.F) {
 	f.Add([]byte("not-json"))
 	f.Add([]byte(`{"schema":1,"response":{"result":true}}`))

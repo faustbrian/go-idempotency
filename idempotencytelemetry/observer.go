@@ -30,7 +30,8 @@ func New(provider metric.MeterProvider) (*Observer, error) {
 	return &Observer{inner: inner}, nil
 }
 
-// Observe increments the transition counter.
+// Observe increments the transition counter synchronously. Custom store reasons
+// and manually supplied labels are not normalized or bounded by this adapter.
 func (observer *Observer) Observe(ctx context.Context, event idempotency.Observation) {
 	observer.inner.Observe(ctx, event)
 }

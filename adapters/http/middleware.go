@@ -127,7 +127,11 @@ func New(options Options) (*Middleware, error) {
 	}, nil
 }
 
-// Handler wraps next with durable acquisition and response replay.
+// Handler borrows next and buffers its synchronous response before persistence
+// and transport output. Key/fingerprint callbacks are trusted, may inspect the
+// same request body and are not panic-contained. Handler panics attempt detached
+// release then re-panic; no lease renewal or forced termination is supplied.
+// Header.Get selects the first key field value; duplicates are not rejected here.
 func (m *Middleware) Handler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		m.serveHTTP(response, request, next)
@@ -244,6 +248,8 @@ func (m *Middleware) failOversized(
 	writeSnapshot(response, snapshot, idempotency.OutcomeTerminalFailure, false)
 }
 
+// Stored replay is validated against global envelope/body/header budgets,
+// not the currently configured smaller body limit or current header allowlist.
 func (m *Middleware) replay(response http.ResponseWriter, begin idempotency.BeginResult) {
 	snapshot, err := decodeSnapshot(begin.Record.Result)
 	if err != nil {

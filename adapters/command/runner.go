@@ -1,5 +1,9 @@
 // Package idempotencycommand provides durable named command and source-record
 // import execution with bounded result replay.
+//
+// Dependencies are borrowed; callbacks are synchronous trusted application code.
+// No automatic lease renewal, worker/client closure or exactly-once effect is owned.
+// Callers enforce authentication, fencing, request admission and IO deadlines.
 package idempotencycommand
 
 import (
@@ -21,11 +25,17 @@ var (
 
 // Request identifies a named command or one record in an import source.
 type Request struct {
-	Namespace   string
-	Tenant      string
-	Name        string
-	Caller      string
-	SourceID    string
+	// Namespace is the application collision domain.
+	Namespace string
+	// Tenant is caller-established tenant identity, not authenticated here.
+	Tenant string
+	// Name is the stable command/import operation name.
+	Name string
+	// Caller is caller-established authenticated identity.
+	Caller string
+	// SourceID is the stable source-record idempotency value.
+	SourceID string
+	// Fingerprint binds policy version and canonical business input.
 	Fingerprint idempotency.Fingerprint
 }
 
@@ -34,16 +44,24 @@ type Handler func(context.Context) ([]byte, map[string]string, error)
 
 // Options configures command leases and failed-handler cleanup.
 type Options struct {
-	Service           *idempotency.Service
-	Lease             time.Duration
+	// Service is borrowed; its store determines actual durability and concurrency.
+	Service *idempotency.Service
+	// Lease is positive and at most MaxLease; handlers do not receive automatic renewal.
+	Lease time.Duration
+	// TransitionTimeout supplies a detached cleanup context deadline; zero selects five
+	// seconds.
 	TransitionTimeout time.Duration
 }
 
 // Result reports the semantic outcome and bounded replay data.
 type Result struct {
-	Outcome  idempotency.Outcome
-	Result   []byte
+	// Outcome classifies acquired, replayed, in-progress or conflicting work.
+	Outcome idempotency.Outcome
+	// Result is copied replay bytes on successful returned records.
+	Result []byte
+	// Metadata is copied replay metadata; empty is valid.
 	Metadata map[string]string
+	// Replayed reports use of retained terminal data, not execution of the handler.
 	Replayed bool
 }
 
@@ -75,6 +93,8 @@ func New(options Options) (*Runner, error) {
 }
 
 // Run executes handler only for a newly acquired or taken-over source record.
+// Handler failure/panic attempts detached release (panic is re-raised); success
+// can fail completion after effects. No heartbeat or handler deadline is added.
 func (r *Runner) Run(ctx context.Context, request Request, handler Handler) (Result, error) {
 	if handler == nil {
 		return Result{}, configurationError("handler")

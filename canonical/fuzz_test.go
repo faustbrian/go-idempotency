@@ -8,6 +8,8 @@ import (
 	"github.com/faustbrian/go-idempotency/v2/canonical"
 )
 
+// FuzzJSONIsIdempotent checks repeated bounded canonicalization of accepted JSON, not
+// full RFC conformance.
 func FuzzJSONIsIdempotent(f *testing.F) {
 	for _, seed := range [][]byte{
 		[]byte(`null`),
@@ -45,6 +47,8 @@ func FuzzJSONIsIdempotent(f *testing.F) {
 	})
 }
 
+// FuzzBytesFingerprintPreservesEncoding checks byte fingerprints preserve input
+// encoding rather than normalizing it.
 func FuzzBytesFingerprintPreservesEncoding(f *testing.F) {
 	for _, seed := range [][]byte{
 		{},
