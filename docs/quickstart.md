@@ -2,8 +2,9 @@
 
 [Documentation index](README.md) · [Repository entry](../README.md)
 
-After `v2.0.0` is published, install the v2 module. Until then, use a tagged v1
-release at the original module path rather than untagged `main`:
+Version 2 is published at `v2.0.1`. Install the public `/v2` module rather than
+untagged `main`; select an exact published tag such as `v2.0.1` when pinning
+your application dependency:
 
 ```sh
 go get github.com/faustbrian/go-idempotency/v2
