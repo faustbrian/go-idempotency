@@ -1,5 +1,7 @@
 # PostgreSQL adapter
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 The `postgres` package stores one versioned JSONB record per opaque SHA-256 key
 digest. Every transition runs in one transaction and takes a transaction-scoped
 advisory lock derived from that digest before selecting the row `FOR UPDATE`.
@@ -134,3 +136,6 @@ is not committed authority. `CompleteTx` returns provisional state until the
 caller commits. Lease checks use the transition's database timestamp, not a
 second check at the eventual business commit. Deferred rollback detaches caller
 cancellation but does not add a fresh deadline.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

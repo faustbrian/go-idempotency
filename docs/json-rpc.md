@@ -1,5 +1,7 @@
 # JSON-RPC middleware
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 This is a durable per-invocation projection, not a complete JSON-RPC server.
 The [specification decision register](specification-decisions.md) records the
 request, response, error, notification, and batch ownership boundaries.
@@ -60,3 +62,6 @@ death cannot run this cleanup; recovery still waits for lease expiry.
 As with every adapter, lease takeover does not prove old work stopped. Apply the
 ownership from `idempotency.OwnershipFromContext(ctx)` in the transaction or
 conditional write that commits the business side effect.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

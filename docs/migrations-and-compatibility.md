@@ -1,5 +1,7 @@
 # Migrations and compatibility
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 The v2 module changes the published `postgres.GoMigration` result to the
 `go-migrations/v2` named type. V1 stays available at its original import path;
 consumers must migrate both module imports together. Persisted records and
@@ -169,3 +171,6 @@ The Outbox v2 PostgreSQL writer composes with the existing generic
 compile-checked. This does not change transaction ownership or introduce an
 Idempotency root release. Webhook selects public `/v3` v3.0.0 in this harness;
 its replay adapter still accepts the intentional v1 Idempotency service.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

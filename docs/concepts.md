@@ -1,5 +1,7 @@
 # Idempotency and related mechanisms
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 These mechanisms solve different failure modes. Production designs commonly
 need more than one of them.
 
@@ -43,3 +45,6 @@ also records idempotency completion.
 
 Idempotency keys are not locks for arbitrary resources. Scope keys to a stable
 business operation and keep resource concurrency rules in the business model.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

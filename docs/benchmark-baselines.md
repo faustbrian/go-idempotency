@@ -1,5 +1,7 @@
 # Benchmark baselines
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 Benchmarks are release regression signals, not universal latency guarantees.
 Backend results depend on hardware, connection topology, durability settings,
 and concurrent load. Record the exact environment with every release baseline.
@@ -53,3 +55,6 @@ Result-storage benchmarks separately cover empty, 1 KiB, 64 KiB, and 1 MiB
 PostgreSQL results. Any statistically meaningful regression requires
 investigation or an explicit budget change in `CHANGELOG.md`. A release must
 not weaken semantic checks merely to recover benchmark throughput.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

@@ -1,5 +1,7 @@
 # Five-minute quickstart
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 After `v2.0.0` is published, install the v2 module. Until then, use a tagged v1
 release at the original module path rather than untagged `main`:
 
@@ -129,3 +131,6 @@ the business write or outbox record and idempotency completion atomically.
 
 Before production adoption, read the [state machine](state-machine.md), [crash
 semantics](crash-semantics.md), and [operations guide](operations.md).
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

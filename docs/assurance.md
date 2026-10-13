@@ -1,5 +1,7 @@
 # Durable idempotency assurance
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 This document records the package's security, durability, and failure-mode
 assurance evidence.
 The tests named below are executable release evidence, not claims inferred from
@@ -70,3 +72,6 @@ stable business identity. A stale-owner or lease-expired error proves only that
 the idempotency transition was rejected. After Valkey failover, confirm the
 promoted node contains the record and that the deployment's replication and
 persistence policy met its acknowledged-write durability target.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

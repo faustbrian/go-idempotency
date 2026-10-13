@@ -1,5 +1,7 @@
 # Idempotency specification decisions
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 This register records every material standards interpretation and package-owned
 policy for canonical fingerprints, JSON-RPC projection, HTTP idempotency, and
 durable enforcement. Exact source bytes and change authorities are pinned in
@@ -494,3 +496,6 @@ None for the currently supported v1 surfaces. New canonicalization policies,
 transport projections, status mappings, digest framing, persistence semantics,
 or external specification revisions require a new or superseding decision
 before runtime behavior changes.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

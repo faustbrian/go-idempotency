@@ -1,5 +1,7 @@
 # Queue consumer middleware
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 Import `idempotencyqueue` from
 `github.com/faustbrian/go-idempotency/v2/adapters/queue`. It deduplicates completed
 redeliveries and preserves retry behavior for failed handlers. Its structural
@@ -75,3 +77,6 @@ already handled. A crash after a business side effect but before completion is
 still ambiguous. Read ownership with
 `idempotency.OwnershipFromContext(ctx)` inside the handler and apply its fencing
 token or a database uniqueness invariant in the business transaction.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

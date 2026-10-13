@@ -1,5 +1,7 @@
 # Transactions and outbox records
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 `postgres.Store.CompleteTx` joins idempotency completion to an
 application-owned pgx transaction. Use it when the business effect or an outbox
 row lives in the same PostgreSQL database.
@@ -82,3 +84,6 @@ contract at every CI and release gate.
   outbox publisher's own retry contract.
 - Outbox delivery deduplication is separate from producer transaction atomicity.
   Consumers still need stable delivery identities or business constraints.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

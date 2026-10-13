@@ -1,5 +1,7 @@
 # Commands and imports
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 Import `idempotencycommand` from
 `github.com/faustbrian/go-idempotency/v2/adapters/command`. Its `Runner` executes
 new or taken-over ownership for a stable source identity and replays retained
@@ -68,3 +70,6 @@ silently overwriting the original meaning.
 If release fails after the handler error, both errors are joined. Preserve the
 full error chain in logs and do not assume the source record is free for an
 immediate retry.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

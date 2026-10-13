@@ -1,5 +1,7 @@
 # Frequently asked questions
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 ## Does this package provide exactly-once execution?
 
 No. It provides durable ownership and replay for an idempotency record. An old
@@ -140,3 +142,6 @@ returned by `telemetry.Runtime` without using correlation as a metric label.
 Use versioned readers and a staged rolling deployment. Readers for every
 record version still inside retention must be live before new writes begin.
 See [migrations and compatibility](migrations-and-compatibility.md).
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

@@ -1,5 +1,7 @@
 # Troubleshooting
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 Start with the returned outcome or `*idempotency.Error`. Preserve
 `Error.Reason`, `Error.Field`, and the wrapped cause internally, but redact
 keys, results, metadata, and credentials from support output.
@@ -90,3 +92,6 @@ an older reader to encounter a newer schema. Restore with a tested migration
 or application reconciliation; do not weaken decoding or replace the record
 with an assumed state. Report a reproducible decoder bypass through the
 [security policy](../SECURITY.md).
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

@@ -1,5 +1,7 @@
 # Crash and recovery semantics
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 The idempotency record and the business side effect are separate unless an
 adapter-specific transaction integration explicitly combines them. The table
 below states what can be concluded after a process dies.
@@ -68,3 +70,6 @@ deadlock, and serializable-abort tests prove that completion and business data
 roll back together. Cleanup contention and Valkey promotion tests cover the
 remaining backend crash boundaries. See the [assurance
 review](assurance.md) for exact test names.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

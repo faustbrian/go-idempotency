@@ -1,5 +1,7 @@
 # State machine
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 An idempotency record is identified by all five key fields: namespace, tenant,
 operation, caller, and caller-supplied value. The fingerprint is versioned and
 describes the stable business request, not transport details such as tracing
@@ -99,3 +101,6 @@ precedence when a policy version changes. `memory.TestCrashPointMatrix` adds a
 fenced business-resource model in which an expired owner continues after a
 takeover but cannot overwrite the newer fence. The full evidence map is in the
 [assurance review](assurance.md).
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

@@ -1,5 +1,7 @@
 # Logging and telemetry
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 `Service` attempts synchronous observation after each semantic transition.
 Owned transitions/outcomes are classified, but custom store reasons and
 KeyHasher output are trusted, not size-bounded or redacted by the core. The
@@ -107,3 +109,6 @@ returned by `telemetry.Runtime.MeterProvider`. The compatibility module pins
 and compiles the published upstream contracts used by this repository. An
 application must still compile its selected dependency versions and run the
 compatibility tests as part of an upgrade.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

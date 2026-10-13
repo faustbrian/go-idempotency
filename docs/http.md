@@ -1,5 +1,7 @@
 # HTTP middleware
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 The stable v1 profile is compared with the Idempotency-Key draft but does not
 claim full draft conformance. See the [specification decision
 register](specification-decisions.md) for structured-field and status-mapping
@@ -102,3 +104,6 @@ allowlist. Header.Get chooses the first Idempotency-Key value; additional fields
 are not explicitly rejected. Authentication, body admission, callback and server
 deadlines remain application-owned. No automatic handler lease renewal occurs.
 Never include hop-by-hop, connection-specific, or secret-bearing headers.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

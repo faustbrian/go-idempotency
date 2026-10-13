@@ -1,5 +1,7 @@
 # Operations, retention, and capacity
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 Operate the idempotency store as correctness-critical infrastructure. If the
 store cannot establish ownership, the default response is `unavailable`; do
 not turn a datastore incident into duplicate business execution by bypassing
@@ -154,3 +156,6 @@ See [troubleshooting](troubleshooting.md) for reason-specific diagnostics and
 [crash semantics](crash-semantics.md) for recovery at each failure boundary.
 The [threat model](threat-model.md) states the corresponding trust boundaries
 and residual risks.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

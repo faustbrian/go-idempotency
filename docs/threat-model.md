@@ -1,5 +1,7 @@
 # Threat model
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 This model treats the idempotency store as correctness-critical infrastructure.
 It covers the semantic core, the memory, PostgreSQL, and Valkey adapters, and
 the supplied HTTP, JSON-RPC, queue, webhook, command, outbox, logging, and
@@ -105,3 +107,6 @@ to the application's privacy policy.
 Review this model whenever identity fields, canonicalization, persistence
 formats, transition scripts, retention, topology claims, or diagnostic fields
 change.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

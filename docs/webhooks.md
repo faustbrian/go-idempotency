@@ -1,5 +1,7 @@
 # Webhook delivery deduplication
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 Import `idempotencywebhook` from
 `github.com/faustbrian/go-idempotency/v2/adapters/webhook`. It acquires
 ownership of a verified provider delivery and treats a retained completed
@@ -101,3 +103,6 @@ The handler-level `idempotencywebhook` processor above remains useful when the
 application also needs ownership, fencing, failure release, and completed-result
 semantics around provider-specific delivery handling. Its minimal
 `Payload() []byte` contract preserves the application's concrete delivery type.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

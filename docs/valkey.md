@@ -1,5 +1,7 @@
 # Valkey adapter
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 The `valkey` package implements `idempotency.Store` with native
 `github.com/valkey-io/valkey-go` clients. Every transition runs in one Lua
 script and uses Valkey `TIME`, so process clock skew does not authorize a stale
@@ -161,3 +163,6 @@ runs synchronously on every acquisition, including replay or conflict attempts;
 its failure can prevent those reads. Positive lease and retention durations are
 converted to whole milliseconds, so sub-millisecond values can expire
 immediately. Callers must choose a useful millisecond-scale window.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

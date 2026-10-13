@@ -1,5 +1,7 @@
 # Fingerprint policy
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 The [specification decision register](specification-decisions.md) records the
 exact RFC 8785, SHA-256, HMAC, resource-bound, and raw-byte choices behind this
 policy, including the deliberate negative-zero rejection.
@@ -69,3 +71,6 @@ upstream-read sandbox. Logs and telemetry should emit the fingerprint version
 and a bounded hash prefix only when collision risk is acceptable for that
 diagnostic use; raw keys, payloads, and tenant identifiers are not safe metric
 labels.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.

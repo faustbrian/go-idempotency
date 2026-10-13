@@ -1,5 +1,7 @@
 # Resource budgets
 
+[Documentation index](README.md) · [Repository entry](../README.md)
+
 These are hard package limits unless a smaller integration-specific limit is
 listed. Byte limits count encoded bytes, not Unicode code points.
 
@@ -88,3 +90,6 @@ See the threat model and observability guide for the application policy.
 
 Canonical JSON checks its output budget after canonicalization. That admission
 limit is not a bound on transformer allocations or an upstream request reader.
+
+Choose the next guide in the [documentation index](README.md)
+or return to the [repository entry](../README.md) for installation and ownership.
