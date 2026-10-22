@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file. The format is
 based on Keep a Changelog, and releases follow Semantic Versioning after the
 public API reaches its first stable version.
 
+## 2.0.2 - 2026-10-22
+
+### Changed
+
+- Publish the current source and documentation with a fresh immutable tag.
+
 ## [Unreleased]
 
 ### Changed
