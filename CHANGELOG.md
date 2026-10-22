@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file. The format is
 based on Keep a Changelog, and releases follow Semantic Versioning after the
 public API reaches its first stable version.
 
+## Unreleased
+
+### Changed
+
+- Rebind the non-releasable ecosystem harness to the current published
+  majors and drop its webhook scenario, whose published adapter still
+  requires Idempotency v1.
+
 ## 3.0.0 - 2026-10-22
 
 ### Changed

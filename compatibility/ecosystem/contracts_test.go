@@ -38,8 +38,8 @@ func TestPublishedEcosystemContractsCompile(t *testing.T) {
 	_ = bindTelemetry
 	_ = runTransactionalService
 
-	// The published v3 migration must keep the ledger checksum recorded by
-	// earlier majors so aligned ledgers validate without replay.
+	// The published v3 migration must keep the ledger checksum recorded by v2
+	// so aligned ledgers validate without replay.
 	migration, err := bindMigration()
 	if err != nil {
 		t.Fatalf("bindMigration() error = %v", err)

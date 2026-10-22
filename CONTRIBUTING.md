@@ -65,7 +65,7 @@ make specification-check
 ```
 
 `make check` and `make ci` retain PostgreSQL and Valkey service prerequisites for
-both the root and intentional v1 `compatibility/ecosystem` module; no test tag
+both the root and the `compatibility/ecosystem` module; no test tag
 is declared. They are not database- or Docker-free. `ci` also validates
 repository/cohesion structure; specification checks use the offline decision
 register. The memory race runs once with a two-minute timeout and checks
@@ -73,7 +73,7 @@ single-owner election, fenced takeover, stale-owner refusal and retained
 current results. Base-free local checks run deterministic fuzz seeds/corpus;
 changed-source CI selects active smoke. Run the owned public-contract harness
 from `compatibility/ecosystem` with `GOWORK=off go test ./...` when composition
-changes; its v1 dependencies are intentional and are not migrated by this route.
+changes; it binds the current published majors of its dependencies.
 
 Optional one-package local mutation:
 

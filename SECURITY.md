@@ -10,7 +10,8 @@ major count toward that condition.
 
 By 2027-03-27, review the actual dependency versions of the ecosystem
 compatibility harness, `go-scheduler`,
-`go-service/integration/reference-durability`, and `go-webhook/v2`. Extend v1
+`go-service/integration/reference-durability`, and `go-webhook/v3` (whose
+replay adapter still binds Idempotency v1). Extend v1
 or v2 support with a published revised date if a supported owned consumer
 still requires that line. Retire a line only after the non-releasable
 harnesses have verified adoption of a later major, releasable consumers have
