@@ -29,8 +29,8 @@ github.com/docker/go-units v0.5.0 h1:69rxXcBk27SvSaaxTtLh/8llcHD8vYHT7WSdRZ/jvr4
 github.com/docker/go-units v0.5.0/go.mod h1:fgPhTUdO+D/Jk86RDLlptpiXQzgHJF7gydDDbaIK4Dk=
 github.com/ebitengine/purego v0.10.1 h1:dewVBCBT2GaMu1SrNTYxQhgQBethzfhiwvZiLGP/qyY=
 github.com/ebitengine/purego v0.10.1/go.mod h1:iIjxzd6CiRiOG0UyXP+V1+jWqUXVjPKLAI0mRfJZTmQ=
-github.com/faustbrian/go-clock v1.1.0 h1:QL1k/Xm+YvoeUs/c2d2grsp6XxxwPRlLUmg792kJAEs=
-github.com/faustbrian/go-clock v1.1.0/go.mod h1:WKZ5p79IKGNTZGDp2L81cYjbsEjv3+9U0be7uwS8t6Y=
+github.com/faustbrian/go-clock v1.2.0 h1:vy2700wB/gaXRgW7zWw1iF7twxrKDyL3dSd3fz1DdAA=
+github.com/faustbrian/go-clock v1.2.0/go.mod h1:ZU+wKx09xmXbtOf+swccuicq5Bkezby3k49uk7PCoA0=
 github.com/faustbrian/go-idempotency/v3 v3.0.0 h1:0N6I7ceensV9ac1GC5p0cAfHoVsjk3FVVvavxIrWv8Y=
 github.com/faustbrian/go-idempotency/v3 v3.0.0/go.mod h1:IcpzueE0Tpu/vjzbt29/x9M6PUAxMWYeTbSnic2jRZk=
 github.com/faustbrian/go-log/v2 v2.0.3 h1:dPlK+LHH9j552RvCtLyvFQZ6ldawF81cfiudK92mUKM=
