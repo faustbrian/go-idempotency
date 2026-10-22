@@ -3,8 +3,10 @@
 ## Supported versions
 
 The latest published v3 patch receives security fixes. The latest v2 and v1
-patches also receive fixes through at least 2027-03-27, the end of the support
-window announced for the compatibility facades that v3 removes.
+patches also receive fixes through the later of 2027-03-27 and the second
+stable root-module minor release after v2.0.0, the support window announced
+for the compatibility facades that v3 removes. Minor releases of any later
+major count toward that condition.
 
 By 2027-03-27, review the actual dependency versions of the ecosystem
 compatibility harness, `go-scheduler`,
