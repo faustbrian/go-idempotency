@@ -15,7 +15,9 @@ public API reaches its first stable version.
 - The OpenTelemetry adapter's instrumentation scope follows the module path:
   `github.com/faustbrian/go-idempotency/v3`.
 - Raise dependency floors selected by go-migrations v4: pgx v5.11.0,
-  `golang.org/x/sync` v0.23.0 and `golang.org/x/text` v0.42.0.
+  `golang.org/x/sync` v0.23.0 and `golang.org/x/text` v0.42.0. Review pgx
+  5.11's notes if you implement `pgx.Rows` or rely on libpq-style connection
+  string parsing.
 
 ### Removed
 

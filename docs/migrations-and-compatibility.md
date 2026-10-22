@@ -167,7 +167,7 @@ exact transaction method contracts.
 The isolated `compatibility/ecosystem` module pins published v1 idempotency and
 migrations contracts alongside `log`, Outbox `/v2` v2.0.0, `queue`, `telemetry`, and
 `webhook` under Go 1.27. This remains an intentional v1 consumer while the
-root module moves to `/v2`, because the published webhook replay adapter accepts
+root module is at `/v3`, because the published webhook replay adapter accepts
 the v1 service type. It proves those exact public interfaces and runs the
 webhook replay-store adapter against the deterministic memory store at every
 CI and release gate. Pseudo-versions are commit pins, not stability claims;

@@ -3,10 +3,10 @@
 ## Supported versions
 
 The latest published v3 patch receives security fixes. The latest v2 and v1
-patches also receive fixes through at least 2026-12-31 while owned direct
-consumers migrate.
+patches also receive fixes through at least 2027-03-27, the end of the support
+window announced for the compatibility facades that v3 removes.
 
-By 2026-12-31, review the actual dependency versions of the ecosystem
+By 2027-03-27, review the actual dependency versions of the ecosystem
 compatibility harness, `go-scheduler`,
 `go-service/integration/reference-durability`, and `go-webhook/v2`. Extend v1
 or v2 support with a published revised date if a supported owned consumer
