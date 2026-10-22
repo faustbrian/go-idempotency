@@ -164,20 +164,14 @@ those contracts without depending on unreleased upstream commit identities.
 `outbox/postgres.Writer` and the idempotency PostgreSQL store through their
 exact transaction method contracts.
 
-The isolated `compatibility/ecosystem` module pins published v1 idempotency and
-migrations contracts alongside `log`, Outbox `/v2` v2.0.0, `queue`, `telemetry`, and
-`webhook` under Go 1.27. This remains an intentional v1 consumer while the
-root module is at `/v3`, because the published webhook replay adapter accepts
-the v1 service type. It proves those exact public interfaces and runs the
-webhook replay-store adapter against the deterministic memory store at every
-CI and release gate. Pseudo-versions are commit pins, not stability claims;
-review upstream changelogs before updating them.
-
-The Outbox v2 PostgreSQL writer composes with the existing generic
-`adapters/outbox.InsertAndComplete` boundary; its actual v2 envelope type is
-compile-checked. This does not change transaction ownership or introduce an
-Idempotency root release. Webhook selects public `/v3` v3.0.0 in this harness;
-its replay adapter still accepts the intentional v1 Idempotency service.
+The isolated `compatibility/ecosystem` module selects the published v3
+Idempotency, v4 Migrations, v3 PostgreSQL, v2 Queue, v4 Telemetry, `log` and
+Outbox v2 modules together under Go 1.27 and compile-checks their public
+contracts, including the Outbox v2 PostgreSQL writer with
+`adapters/outbox.InsertAndComplete` and the published migration checksum. The
+published Webhook v3 replay adapter still binds Idempotency v1, so the harness
+no longer exercises it; Webhook users stay on Idempotency v1 until Webhook
+adopts v3.
 
 Choose the next guide in the [documentation index](README.md)
 or return to the [repository entry](../README.md) for installation and ownership.

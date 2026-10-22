@@ -3,7 +3,7 @@ package ecosystem_test
 import (
 	"testing"
 
-	idempotencyoutbox "github.com/faustbrian/go-idempotency/adapters/outbox"
+	idempotencyoutbox "github.com/faustbrian/go-idempotency/v3/adapters/outbox"
 	outbox "github.com/faustbrian/go-transactional-outbox/v2"
 	outboxpostgres "github.com/faustbrian/go-transactional-outbox/v2/postgres"
 )
