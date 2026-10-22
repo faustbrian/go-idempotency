@@ -9,10 +9,10 @@ consumers migrate.
 By 2026-12-31, review the actual dependency versions of the ecosystem
 compatibility harness, `go-scheduler`,
 `go-service/integration/reference-durability`, and `go-webhook/v2`. Extend v1
-support with a published revised date if a supported owned consumer still
-requires it. Retire v1 support only after the non-releasable harnesses have
-verified v2 adoption, releasable consumers have published v2 adoption, or a
-consumer has been explicitly retired. Announce that decision before the
+or v2 support with a published revised date if a supported owned consumer
+still requires that line. Retire a line only after the non-releasable
+harnesses have verified adoption of a later major, releasable consumers have
+published that adoption, or the consumer has been explicitly retired. Announce that decision before the
 support window closes. Unreleased commits on `main` are development snapshots,
 not a supported production channel.
 

@@ -11,9 +11,11 @@ public API reaches its first stable version.
 - Move the module to `github.com/faustbrian/go-idempotency/v3`.
   `postgres.GoMigration` now returns a `go-migrations/v4` migration with the
   same version, name, SQL and checksum. Adopting it from go-migrations v2
-  requires the ledger alignment described in the go-migrations v3 guide.
+  requires the [ledger name upgrade](https://github.com/faustbrian/go-migrations/blob/v4.0.0/docs/operations.md#ledger-name-upgrade).
 - The OpenTelemetry adapter's instrumentation scope follows the module path:
   `github.com/faustbrian/go-idempotency/v3`.
+- Raise dependency floors selected by go-migrations v4: pgx v5.11.0,
+  `golang.org/x/sync` v0.23.0 and `golang.org/x/text` v0.42.0.
 
 ### Removed
 
@@ -31,7 +33,7 @@ public API reaches its first stable version.
 - Build with Go 1.27.3 to address GO-2026-6809 in `crypto/x509`.
   Consumers should use Go 1.27.3 or newer.
 
-## [Unreleased]
+## Earlier unversioned notes (shipped by 2.0.2)
 
 ### Changed
 
@@ -273,7 +275,6 @@ public API reaches its first stable version.
 
 - The public API follows stable v1 semantic-versioning compatibility.
 
-[Unreleased]: https://github.com/faustbrian/go-idempotency/compare/v2.0.0...HEAD
 [2.0.0]: https://github.com/faustbrian/go-idempotency/compare/v1.2.0...v2.0.0
 [1.2.0]: https://github.com/faustbrian/go-idempotency/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/faustbrian/go-idempotency/releases/tag/v1.1.0

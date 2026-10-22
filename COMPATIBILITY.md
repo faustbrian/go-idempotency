@@ -1,7 +1,7 @@
 # Compatibility Policy
 
 The root module follows semantic versioning with root `v<version>` tags. Its
-v2 API uses the `/v2` module and import suffix without a version-specific
+v3 API uses the `/v3` module and import suffix without a version-specific
 source directory. The nested ecosystem module is an independent, non-releasable
 compatibility harness and retains its own module path.
 
@@ -14,7 +14,7 @@ The `postgres.GoMigration` result uses the `go-migrations/v4` named type in the
 v3 module. Update the idempotency import path and migrations import path
 together; earlier majors' values are distinct types. Moving from go-migrations
 v2 to v4 also requires aligning the migration ledger table as described in the
-go-migrations v3 upgrade guide; the migration's SQL and checksum are unchanged.
+[go-migrations ledger name upgrade](https://github.com/faustbrian/go-migrations/blob/v4.0.0/docs/operations.md#ledger-name-upgrade); the migration's SQL and checksum are unchanged.
 
 Compatibility includes exported Go APIs, error classification, serialization,
 protocol behavior, persistence schemas, environment variables, command output,

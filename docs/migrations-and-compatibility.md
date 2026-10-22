@@ -113,7 +113,8 @@ the deployment runner and apply it before application readiness.
 The migration's version, name, SQL, and checksum are unchanged from v2. The
 go-migrations v4 runner records history in `public.migrations` rather than the
 v2 `public.go_schema_migrations` ledger, so stop older runners and align the
-existing ledger rows as the go-migrations README describes before
+existing ledger rows as the
+[go-migrations ledger name upgrade](https://github.com/faustbrian/go-migrations/blob/v4.0.0/docs/operations.md#ledger-name-upgrade) describes before
 the first v4 run.
 
 Future SQL migrations must tolerate the supported rolling sequence, avoid a
