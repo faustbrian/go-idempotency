@@ -10,7 +10,7 @@ import (
 	"time"
 
 	clockpkg "github.com/faustbrian/go-clock"
-	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency/v3"
 )
 
 const (
@@ -20,18 +20,10 @@ const (
 	MaxRecordCapacity = 1_000_000
 )
 
-// Clock supplies authoritative time to the deterministic memory store.
-//
-// Deprecated: depend on clock.Clock in new code. This named compatibility
-// contract remains available throughout v1.
-type Clock interface {
-	clockpkg.Clock
-}
-
 // Options configures deterministic time and ownership-token generation.
 type Options struct {
 	// Clock supplies time for every lease and transition decision.
-	Clock Clock
+	Clock clockpkg.Clock
 	// OwnerTokens must return a unique usable token promptly without reentering Store.
 	OwnerTokens func() (string, error)
 	// MaxRecords bounds retained records. Zero selects DefaultMaxRecords.
@@ -45,7 +37,7 @@ type Options struct {
 type Store struct {
 	mu          sync.Mutex
 	records     map[idempotency.Key]idempotency.Record
-	clock       Clock
+	clock       clockpkg.Clock
 	ownerTokens func() (string, error)
 	maxRecords  int
 }

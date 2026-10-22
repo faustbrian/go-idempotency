@@ -7,7 +7,7 @@ untagged `main`; select an exact published tag such as `v2.0.1` when pinning
 your application dependency:
 
 ```sh
-go get github.com/faustbrian/go-idempotency/v2
+go get github.com/faustbrian/go-idempotency/v3
 ```
 
 The in-memory adapter is useful for learning the contract and deterministic
@@ -24,8 +24,8 @@ import (
 	"time"
 
 	clock "github.com/faustbrian/go-clock"
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/memory"
+	"github.com/faustbrian/go-idempotency/v3"
+	"github.com/faustbrian/go-idempotency/v3/memory"
 )
 
 func ownerToken() (string, error) {

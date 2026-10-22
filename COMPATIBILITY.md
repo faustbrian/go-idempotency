@@ -10,10 +10,11 @@ break MUST be documented with migration guidance. Patch releases MUST remain
 backward compatible. At and after `v1`, incompatible exported API or documented
 behavior changes require a new major version.
 
-The `postgres.GoMigration` result uses the `go-migrations/v2` named type in the
-v2 module. V1 consumers retain the published v1 type. Update the idempotency
-import path and migrations import path together; a `/v2` value is not a drop-in
-replacement for the distinct v1 type.
+The `postgres.GoMigration` result uses the `go-migrations/v4` named type in the
+v3 module. Update the idempotency import path and migrations import path
+together; earlier majors' values are distinct types. Moving from go-migrations
+v2 to v4 also requires aligning the migration ledger table as described in the
+go-migrations v3 upgrade guide; the migration's SQL and checksum are unchanged.
 
 Compatibility includes exported Go APIs, error classification, serialization,
 protocol behavior, persistence schemas, environment variables, command output,

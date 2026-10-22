@@ -4,6 +4,25 @@ All notable changes to this project are documented in this file. The format is
 based on Keep a Changelog, and releases follow Semantic Versioning after the
 public API reaches its first stable version.
 
+## 3.0.0 - 2026-10-22
+
+### Changed
+
+- Move the module to `github.com/faustbrian/go-idempotency/v3`.
+  `postgres.GoMigration` now returns a `go-migrations/v4` migration with the
+  same version, name, SQL and checksum. Adopting it from go-migrations v2
+  requires the ledger alignment described in the go-migrations v3 guide.
+- The OpenTelemetry adapter's instrumentation scope follows the module path:
+  `github.com/faustbrian/go-idempotency/v3`.
+
+### Removed
+
+- Remove the deprecated `idempotencycommand`, `idempotencyhttp`,
+  `idempotencylog`, `idempotencyoutbox`, `idempotencyqueue`, `idempotencyrpc`,
+  `idempotencytelemetry` and `idempotencywebhook` facades and the
+  `memory.Clock` alias. Import the matching `adapters/*` package and pass a
+  `clock.Clock` to `memory.Options`.
+
 ## 2.0.2 - 2026-10-22
 
 ### Changed

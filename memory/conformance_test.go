@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/idempotencytest"
-	"github.com/faustbrian/go-idempotency/v2/memory"
+	"github.com/faustbrian/go-idempotency/v3"
+	"github.com/faustbrian/go-idempotency/v3/idempotencytest"
+	"github.com/faustbrian/go-idempotency/v3/memory"
 )
 
 func TestStoreConformance(t *testing.T) {

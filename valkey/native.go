@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency/v3"
 	valkeygo "github.com/valkey-io/valkey-go"
 )
 

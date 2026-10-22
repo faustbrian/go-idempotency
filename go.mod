@@ -1,12 +1,12 @@
-module github.com/faustbrian/go-idempotency/v2
+module github.com/faustbrian/go-idempotency/v3
 
 go 1.27.0
 
 require (
 	github.com/deszhou/jcs v1.0.0
 	github.com/faustbrian/go-clock v1.1.0
-	github.com/faustbrian/go-migrations/v2 v2.0.0
-	github.com/jackc/pgx/v5 v5.10.0
+	github.com/faustbrian/go-migrations/v4 v4.0.0
+	github.com/jackc/pgx/v5 v5.11.0
 	github.com/valkey-io/valkey-go v1.0.76
 	github.com/valkey-io/valkey-go/mock v1.0.76
 	go.opentelemetry.io/otel v1.47.0
@@ -28,7 +28,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.45.0 // indirect
 	go.opentelemetry.io/otel/trace v1.47.0 // indirect
 	golang.org/x/net v0.58.0 // indirect
-	golang.org/x/sync v0.22.0 // indirect
+	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.41.0 // indirect
+	golang.org/x/text v0.42.0 // indirect
 )

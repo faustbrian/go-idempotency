@@ -15,7 +15,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/deszhou/jcs"
-	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency/v3"
 )
 
 // Limits admits encoded input/depth before transformation and checks output

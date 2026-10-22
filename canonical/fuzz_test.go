@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/canonical"
+	"github.com/faustbrian/go-idempotency/v3"
+	"github.com/faustbrian/go-idempotency/v3/canonical"
 )
 
 // FuzzJSONIsIdempotent checks repeated bounded canonicalization of accepted JSON, not

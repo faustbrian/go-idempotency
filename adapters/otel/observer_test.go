@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/adapters/otel"
+	"github.com/faustbrian/go-idempotency/v3"
+	"github.com/faustbrian/go-idempotency/v3/adapters/otel"
 	"go.opentelemetry.io/otel/attribute"
 	metricapi "go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/sdk/metric"
@@ -35,7 +35,7 @@ func TestObserverRecordsBoundedMetricAttributes(t *testing.T) {
 	if err := reader.Collect(context.Background(), &data); err != nil {
 		t.Fatalf("Collect() error = %v", err)
 	}
-	if len(data.ScopeMetrics) != 1 || data.ScopeMetrics[0].Scope.Name != "github.com/faustbrian/go-idempotency/v2" {
+	if len(data.ScopeMetrics) != 1 || data.ScopeMetrics[0].Scope.Name != "github.com/faustbrian/go-idempotency/v3" {
 		t.Fatalf("metric scopes = %#v", data.ScopeMetrics)
 	}
 	metrics := data.ScopeMetrics[0].Metrics

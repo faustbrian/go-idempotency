@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/memory"
+	"github.com/faustbrian/go-idempotency/v3"
+	"github.com/faustbrian/go-idempotency/v3/memory"
 )
 
 type exampleClock struct {

@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/faustbrian/go-idempotency/v2"
-	"github.com/faustbrian/go-idempotency/v2/adapters/command"
-	"github.com/faustbrian/go-idempotency/v2/idempotencytest"
-	"github.com/faustbrian/go-idempotency/v2/memory"
+	"github.com/faustbrian/go-idempotency/v3"
+	"github.com/faustbrian/go-idempotency/v3/adapters/command"
+	"github.com/faustbrian/go-idempotency/v3/idempotencytest"
+	"github.com/faustbrian/go-idempotency/v3/memory"
 )
 
 func TestRunnerExecutesOnceAndReplaysResult(t *testing.T) {

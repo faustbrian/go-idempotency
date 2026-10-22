@@ -51,8 +51,7 @@ unless their own public contract exposes such a choice.
 ## Clock authority
 
 The memory adapter accepts the narrow `clock.Clock` capability for
-deterministic tests. The legacy `memory.Clock` name remains as a v1-compatible
-interface. Durable adapters use backend-authoritative time for ownership
+deterministic tests. Durable adapters use backend-authoritative time for ownership
 comparisons so process clock skew cannot let a caller extend or complete a
 lease. Returned timestamps are diagnostic evidence; clients must not use local
 time to override a backend decision.

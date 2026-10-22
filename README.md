@@ -5,7 +5,7 @@
 [![Coverage](https://img.shields.io/badge/coverage-risk_selected-blue)](CONTRIBUTING.md#verification)
 [![Mutation](https://img.shields.io/badge/mutation-optional_local%2Fselected_scheduled-blue)](CONTRIBUTING.md#verification)
 [![Documentation](https://img.shields.io/badge/docs-checked_in_CI-blue)](docs/)
-[![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-idempotency/v2.svg)](https://pkg.go.dev/github.com/faustbrian/go-idempotency/v2)
+[![Go Reference](https://pkg.go.dev/badge/github.com/faustbrian/go-idempotency/v3.svg)](https://pkg.go.dev/github.com/faustbrian/go-idempotency/v3)
 [![Release](https://img.shields.io/github/v/release/faustbrian/go-idempotency?sort=semver)](https://github.com/faustbrian/go-idempotency/releases)
 [![Go](https://img.shields.io/badge/go-1.27.0-00ADD8?logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -34,22 +34,19 @@ New integrations use target-oriented packages under `adapters/`:
 
 | Concern | Canonical package |
 | --- | --- |
-| Commands and imports | `github.com/faustbrian/go-idempotency/v2/adapters/command` |
-| HTTP | `github.com/faustbrian/go-idempotency/v2/adapters/http` |
-| JSON-RPC | `github.com/faustbrian/go-idempotency/v2/adapters/jsonrpc` |
-| OpenTelemetry | `github.com/faustbrian/go-idempotency/v2/adapters/otel` |
-| Transactional outbox | `github.com/faustbrian/go-idempotency/v2/adapters/outbox` |
-| Queue consumers | `github.com/faustbrian/go-idempotency/v2/adapters/queue` |
-| Structured logging | `github.com/faustbrian/go-idempotency/v2/adapters/slog` |
-| Webhooks | `github.com/faustbrian/go-idempotency/v2/adapters/webhook` |
+| Commands and imports | `github.com/faustbrian/go-idempotency/v3/adapters/command` |
+| HTTP | `github.com/faustbrian/go-idempotency/v3/adapters/http` |
+| JSON-RPC | `github.com/faustbrian/go-idempotency/v3/adapters/jsonrpc` |
+| OpenTelemetry | `github.com/faustbrian/go-idempotency/v3/adapters/otel` |
+| Transactional outbox | `github.com/faustbrian/go-idempotency/v3/adapters/outbox` |
+| Queue consumers | `github.com/faustbrian/go-idempotency/v3/adapters/queue` |
+| Structured logging | `github.com/faustbrian/go-idempotency/v3/adapters/slog` |
+| Webhooks | `github.com/faustbrian/go-idempotency/v3/adapters/webhook` |
 
-The `idempotencycommand`, `idempotencyhttp`, `idempotencylog`,
-`idempotencyoutbox`, `idempotencyqueue`, `idempotencyrpc`,
-`idempotencytelemetry`, and `idempotencywebhook` paths remain compatibility
-facades within each major. Callers can move from a facade to its `adapters/*`
-path independently of other adapters. Moving from v1 to v2 is a separate
-module-path migration; `postgres.GoMigration` returns the distinct
-`go-migrations/v2` type.
+Version 3 removed the former `idempotencycommand`, `idempotencyhttp`,
+`idempotencylog`, `idempotencyoutbox`, `idempotencyqueue`, `idempotencyrpc`,
+`idempotencytelemetry`, and `idempotencywebhook` facades; import the matching
+`adapters/*` path. `postgres.GoMigration` returns the `go-migrations/v4` type.
 
 ## Core acquisition outcomes
 
@@ -68,7 +65,7 @@ module-path migration; `postgres.GoMigration` returns the distinct
 Install the published v2 module:
 
 ```sh
-go get github.com/faustbrian/go-idempotency/v2
+go get github.com/faustbrian/go-idempotency/v3
 ```
 
 The [quickstart](docs/quickstart.md) demonstrates acquisition, completion, and

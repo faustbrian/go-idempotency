@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	migrations "github.com/faustbrian/go-migrations/v2"
+	migrations "github.com/faustbrian/go-migrations/v4"
 )
 
 func TestSchemaMigrationDefinesDurableRecordAndCleanupIndex(t *testing.T) {
@@ -51,5 +51,21 @@ func TestGoMigrationReturnsPublishedMigration(t *testing.T) {
 	}
 	if migration.Checksum() == (migrations.Checksum{}) {
 		t.Fatal("Checksum() is empty")
+	}
+}
+
+// TestGoMigrationChecksumMatchesPublishedV2 pins the ledger identity across
+// the go-migrations v2 to v4 binding: databases that recorded this migration
+// under idempotency v2 must see the same version, name and checksum.
+func TestGoMigrationChecksumMatchesPublishedV2(t *testing.T) {
+	migration, err := GoMigration()
+	if err != nil {
+		t.Fatal(err)
+	}
+	const publishedChecksum = "sha256:fcdb32f4aa05f4c08b7e49e2c2acccff81eadb1320c0063ffc907e34c7d2040f"
+	if migration.Version() != 1 || migration.Name() != "create_idempotency_records" ||
+		migration.Checksum().String() != publishedChecksum {
+		t.Fatalf("migration = %d %q %s, want 1 create_idempotency_records %s",
+			migration.Version(), migration.Name(), migration.Checksum(), publishedChecksum)
 	}
 }

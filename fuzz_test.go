@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/faustbrian/go-idempotency/v2"
+	"github.com/faustbrian/go-idempotency/v3"
 )
 
 // FuzzKeyAndFingerprintValidation checks byte-bounded key/version admission
