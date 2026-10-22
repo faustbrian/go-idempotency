@@ -25,10 +25,9 @@ The public contract, deterministic memory adapter, bounded JSON
 canonicalization, PostgreSQL and Valkey adapters, buffered HTTP middleware,
 method-aware JSON-RPC middleware, queue and webhook deduplication, named command
 and import helpers, transactional `outbox` coordination, and bounded logging
-and telemetry observers are implemented. The stable `/v2` module is published;
-`v2.0.1` is the latest published release. Untagged `main` is not a supported
-installation. The latest v2 patch receives security fixes; v1 remains supported
-during the owned-consumer transition described in the [security policy](SECURITY.md).
+and telemetry observers are implemented. The stable `/v3` module is the
+current major. Untagged `main` is not a supported installation. Supported
+release lines are listed in the [security policy](SECURITY.md).
 
 New integrations use target-oriented packages under `adapters/`:
 
@@ -62,7 +61,7 @@ Version 3 removed the former `idempotencycommand`, `idempotencyhttp`,
 
 ## Start in five minutes
 
-Install the published v2 module:
+Install the published v3 module:
 
 ```sh
 go get github.com/faustbrian/go-idempotency/v3

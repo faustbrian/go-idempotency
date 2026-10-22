@@ -2,9 +2,8 @@
 
 [Documentation index](README.md) · [Repository entry](../README.md)
 
-Version 2 is published at `v2.0.1`. Install the public `/v2` module rather than
-untagged `main`; select an exact published tag such as `v2.0.1` when pinning
-your application dependency:
+Install the public `/v3` module rather than untagged `main`; select an exact
+published tag when pinning your application dependency:
 
 ```sh
 go get github.com/faustbrian/go-idempotency/v3

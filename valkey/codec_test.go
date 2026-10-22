@@ -81,6 +81,17 @@ func TestRecordKeyIsOpaqueAndClusterSafe(t *testing.T) {
 	}
 }
 
+func TestRecordKeyMatchesRetainedFormat(t *testing.T) {
+	t.Parallel()
+
+	// Retained Valkey records are addressed by this exact key; any change to
+	// the length-prefixed SHA-256 framing would orphan them.
+	const want = "idempotency:{86c78874c4858ffe11b62d1e47945f245b501333562b5af1a1fdec1fbe0e22ba}"
+	if got := recordKey("idempotency", testKey(t, "request")); got != want {
+		t.Fatalf("recordKey() = %q, want %q", got, want)
+	}
+}
+
 func TestRecordCodecPreservesPersistedState(t *testing.T) {
 	t.Parallel()
 

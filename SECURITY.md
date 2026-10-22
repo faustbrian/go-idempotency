@@ -2,9 +2,9 @@
 
 ## Supported versions
 
-The latest published v2 patch receives security fixes. The latest v1 patch
-also receives fixes through at least 2026-12-31 while owned direct consumers
-migrate.
+The latest published v3 patch receives security fixes. The latest v2 and v1
+patches also receive fixes through at least 2026-12-31 while owned direct
+consumers migrate.
 
 By 2026-12-31, review the actual dependency versions of the ecosystem
 compatibility harness, `go-scheduler`,

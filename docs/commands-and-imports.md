@@ -3,7 +3,7 @@
 [Documentation index](README.md) · [Repository entry](../README.md)
 
 Import `idempotencycommand` from
-`github.com/faustbrian/go-idempotency/v2/adapters/command`. Its `Runner` executes
+`github.com/faustbrian/go-idempotency/v3/adapters/command`. Its `Runner` executes
 new or taken-over ownership for a stable source identity and replays retained
 result and metadata. This is not exactly-once effects: expiry, purge and
 uncertain completion can permit another invocation.

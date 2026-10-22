@@ -3,7 +3,7 @@
 [Documentation index](README.md) · [Repository entry](../README.md)
 
 Import `idempotencywebhook` from
-`github.com/faustbrian/go-idempotency/v2/adapters/webhook`. It acquires
+`github.com/faustbrian/go-idempotency/v3/adapters/webhook`. It acquires
 ownership of a verified provider delivery and treats a retained completed
 redelivery as successfully handled. Lease expiry, retention loss or an
 uncertain completion can permit another handler attempt; this is not an

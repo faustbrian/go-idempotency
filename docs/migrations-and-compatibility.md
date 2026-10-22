@@ -2,10 +2,11 @@
 
 [Documentation index](README.md) · [Repository entry](../README.md)
 
-The v2 module changes the published `postgres.GoMigration` result to the
-`go-migrations/v2` named type. V1 stays available at its original import path;
-consumers must migrate both module imports together. Persisted records and
-rolling deployments still require explicit compatibility discipline.
+The v3 module changes the published `postgres.GoMigration` result to the
+`go-migrations/v4` named type and removes the v1.1 compatibility facades. V2
+stays available at its original import path; consumers must migrate the
+idempotency and migrations imports together. Persisted records and rolling
+deployments still require explicit compatibility discipline.
 
 ## Supported runtime matrix
 
@@ -37,10 +38,11 @@ upgrading. Do not deploy an unreviewed `main` snapshot as a production upgrade.
 
 ## Adapter path migration
 
-Version 1.1 adds target-oriented adapter paths while retaining every released
-v1 integration path as a compatibility facade:
+Version 1.1 added target-oriented adapter paths and kept every earlier
+integration path as a compatibility facade through v2. Version 3 removes the
+facades; replace each import with its canonical path:
 
-| Released compatibility path | Canonical path |
+| Removed facade path | Canonical path |
 | --- | --- |
 | `idempotencycommand` | `adapters/command` |
 | `idempotencyhttp` | `adapters/http` |
@@ -51,13 +53,11 @@ v1 integration path as a compatibility facade:
 | `idempotencytelemetry` | `adapters/otel` |
 | `idempotencywebhook` | `adapters/webhook` |
 
-Migrate by changing one import path at a time. Public signatures, stable error
-sentinels, durable state transitions, payload bounds, ownership, cancellation,
-and replay behavior remain compatible. Legacy concrete and named types retain
-their original package identity while delegating to the canonical
-implementation. The compatibility paths remain supported for the longer of
-180 days after v1.1.0 and two subsequently published stable root-module minor
-releases, following `DEPRECATION.md`.
+Public signatures, stable error sentinels, durable state transitions, payload
+bounds, ownership, cancellation, and replay behavior of the canonical packages
+match the removed facades. Code that named a facade's own concrete or named
+type must switch to the canonical package's type. The facades remain available
+and supported on the v2 line under the security policy.
 
 ## Persisted record policy
 
@@ -109,6 +109,12 @@ deployment tooling. `postgres.GoMigration()` returns the same validated SQL as
 an immutable `migrations.Migration`, including its default transactional
 mode and content checksum. Add that value to the `migrations` source used by
 the deployment runner and apply it before application readiness.
+
+The migration's version, name, SQL, and checksum are unchanged from v2. The
+go-migrations v4 runner records history in `public.migrations` rather than the
+v2 `public.go_schema_migrations` ledger, so stop older runners and align the
+existing ledger rows as the go-migrations README describes before
+the first v4 run.
 
 Future SQL migrations must tolerate the supported rolling sequence, avoid a
 long blocking rewrite on a populated table, and include an operational plan
